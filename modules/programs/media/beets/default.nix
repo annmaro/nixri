@@ -1,9 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
-  programs.beets = {
-    enable = true;
-    settings = {
+  home-manager.sharedModules = [
+    (_: {
+   
+    programs.beets = {
+     enable = true;
+     settings = {
       directory = "~/Music";
       library = "~/Data/musiclibrary.db";
       import = {
@@ -16,4 +19,7 @@
       ];
     };
   };
+};
+)];
 }
+
