@@ -132,11 +132,7 @@
                             (kind: Property(Song(Title)), style: (fg: "#cad3f5", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#cad3f5", modifiers: "Bold")))
                         ],
                         right: [
-                            (kind: Text("Volume: "), style: (fg: "#8aadf4")),
-                            (kind: Property(Widget(Volume)), style: (fg: "#8aadf4")),
-                            (kind: Text(" "), style: (fg: "#8aadf4")),
-                            (kind: Property(Status(Volume)), style: (fg: "#8aadf4")),
-                            (kind: Text("%"), style: (fg: "#8aadf4"))
+                            (kind: Property(Widget(Volume)), style: (fg: "#8aadf4"))
                         ]
                     ),
                     (
