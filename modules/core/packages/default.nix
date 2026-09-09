@@ -42,6 +42,7 @@
     imagemagickBig # Software suite to create, edit, compose, or convert bitmap images
     nomacs # Qt-based image viewer
     epiphany # WebKit based web browser
+    kid3-qt # Simple and powerful audio tag editor
     # digikam # Photo management application
     spek # Acoustic spectrum analyser for audio files
     losslessaudiochecker # Utility to check whether audio is truly lossless or not

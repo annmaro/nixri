@@ -56,7 +56,6 @@ in
     "${self}/modules/programs/cli/cava"
     "${self}/modules/programs/cli/btop"
     # "${self}/modules/programs/media/discord"
-    "${self}/modules/programs/media/beets"
     "${self}/modules/programs/media/spicetify"
     "${self}/modules/programs/media/euphonica"
     "${self}/modules/programs/media/easyeffects"
