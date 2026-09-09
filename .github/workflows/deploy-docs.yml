@@ -153,6 +153,7 @@ jobs:
                         <li>🔍 <a href="/nixri/docs/rofi.html">Rofi Config</a></li>
                         <li>📝 <a href="/nixri/docs/neovim.html">Neovim Config</a></li>
                         <li>🔐 <a href="/nixri/docs/sops-rclone-git.html">Security & Deployment</a></li>
+                        <li>🎵 <a href="/nixri/docs/audio.html">Audio Suite</a></li>
                       </ul>
                     </div>
                   </nav>

@@ -16,15 +16,16 @@ All active features of the Dank Material Shell are configured within the modular
 ### 1. Unified Status Bar (`modules.bar = true`)
 The shell renders a premium top bar, custom-tailored with the following layout and design variables:
 
-- **Floating Capsule-only Aesthetic**: The main bar transparency is set to `0.50` with widget opacity at `0.90`. Spacing is set to `0`. This creates a floating pill look where the background is subtle but provides distinct separation from the wallpaper.
-- **High-Visibility Widget Outlines**: Widget outlines are enabled (`widgetOutlineEnabled = true`), styled in the theme's primary color, set to fully opaque (`1.0`), and given a clean 1px thickness for maximum contrast and defined borders.
+- **Floating Capsule-only Aesthetic**: The main bar transparency is set to `0.0` with widget opacity at `0.85`. Spacing is set to `0`. This effectively hides the background bar, allowing only the styled widgets to display as floating pill capsules.
+- **Dynamic Island**: A fully featured dynamic island is enabled (`island = true`) with a "hybrid" interaction mode, transparency of `0.65`, corner radius of `16`, and an adjacent satellite layout. The island home layout contains modules for `media`, `clock`, `weather`, `status`, `volume`, `brightness`, and `notifications`.
+- **Minimal Widget Outlines**: Widget outlines are explicitly disabled (`widgetOutlineEnabled = false`) for a cleaner appearance, while still defining properties like a 1px primary-colored outline when outlines might be used elsewhere.
 - **Geometric Controls**: The configuration forces `squareCorners = true` to give all corners a classic square shape, overriding any `gothCornersEnabled` parameters.
-- **Enhanced Scale**: Fonts and icons are scaled to `1.5` to provide an impactful visual presence and high readability on the bar.
+- **Enhanced Scale**: Fonts and icons are scaled to `1.2` to provide an impactful visual presence and high readability on the bar without being too overwhelming.
 - **Minimalist Workspaces**: The workspace switcher (`workspace_switcher`) explicitly hides text labels (`show_labels = false`) and uses a modern "pill" indicator style.
 - **Custom Widget Layout**:
   - **Left Area**: `launcherButton` (configured with `launcherLogoMode = "os"` to display a custom inline QML NixOS logo), `workspaceSwitcher`, and `focusedWindow`.
-  - **Center Area**: `clock` (for elegant central timekeeping).
-  - **Right Area**: `weather`, `cpuTemp`, `systemTray`, `memUsage`, `controlCenterButton`, and `notificationButton`.
+  - **Center Area**: Left empty (`[ ]`), as central widgets are now handled by the dynamic island.
+  - **Right Area**: `cpuTemp`, `systemTray`, and `memUsage`.
 - **Interactive Applets**: Clicking the network and audio icons automatically triggers their respective system applets (`network_click_action = "applet"`, `audio_click_action = "applet"`).
 
 ### 2. Notification Daemon (`modules.notifications = true`)
