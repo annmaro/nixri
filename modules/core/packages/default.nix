@@ -44,6 +44,8 @@
     epiphany # WebKit based web browser
     kid3-qt # Simple and powerful audio tag editor
     # digikam # Photo management application
+    bc # GNU software calculator
+    sox # Sample Rate Converter for audio
     spek # Acoustic spectrum analyser for audio files
     losslessaudiochecker # Utility to check whether audio is truly lossless or not
     qbittorrent # Featureful free software BitTorrent client
