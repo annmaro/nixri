@@ -302,7 +302,7 @@ in
               "Mod+Shift+E" { spawn "dms" "ipc" "call" "session" "toggle"; }
               "Mod+Shift+C" { spawn "code"; }
               "Mod+Shift+T" { spawn "sh" "-c" "thunar -q && thunar --daemon"; }
-              "Mod+Ctrl+T" { spawn "Tor Browser"; }
+              "Mod+Ctrl+T" { spawn "Tor" "Browser"; }
               
               "Mod+Shift+R" { spawn "${getExe screenRecorder}" "m"; }
               "Mod+Escape" { spawn "pkill" "-SIGINT" "-x" "wf-recorder"; }

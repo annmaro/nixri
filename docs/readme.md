@@ -64,7 +64,7 @@
 > Before proceeding with the installation, check these files and adjust them for your system:
 >
 > - `hosts/default/variables.nix`: Contains host-specific variables.
-> - `hosts/default/host-packages.nix`: Lists installed packages for the host.
+> - `hosts/default/host-packages.nix`: Installed packages for the host.
 > - `hosts/default/configuration.nix`: Module imports for the host and extra configuration.
 > - `modules/core/packages/`: Contains the list of packages to be installed.
 > - `modules/hardware/drives/`: Optional fstab-style mounts for extra volumes (e.g. games/work).
@@ -110,8 +110,9 @@ The install and rebuild scripts automate the setup process, including hosts, use
 
 Apply configuration changes:
 
-- **nixos-rebuild:** `sudo nixos-rebuild switch --flake ~/nixri#<HOST>`
-- **nh:** `nh os switch --hostname <HOST>`
+- **nixos-rebuild:** `sudo nixos-rebuild boot --flake ~/nixri#<HOST>`
+- **nh:** `nh os boot --hostname <HOST>`
+- **Reboot**
 
 Replace `<HOST>` with the name of your host (e.g., `Laptop`).
 
