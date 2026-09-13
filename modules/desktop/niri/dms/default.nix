@@ -124,7 +124,7 @@
           owner = "motor-dev";
           repo = "wallpaperCarousel";
           rev = "main";
-          hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # <-- Replace with the actual hash, or use lib.fakeHash to let Nix tell you the correct one on your first build
+          hash = "sha256-/LoehTfSeeqkgIXw46Ll/PrxeEDhg4RZI5BXib6yEnI="; # <-- Replace with the actual hash, or use lib.fakeHash to let Nix tell you the correct one on your first build
         };
 
         xdg.configFile."DankMaterialShell/settings.json".text = builtins.toJSON {
