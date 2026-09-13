@@ -114,6 +114,19 @@
           fi
         '';
 
+        # =====================================================================
+        # 🧩 THIRD-PARTY PLUGINS
+        # =====================================================================
+        # Declaratively install the wallpaperCarousel plugin.
+        # Home Manager will automatically symlink this to ~/.config/DankMaterialShell/plugins/wallpaperCarousel
+
+        xdg.configFile."DankMaterialShell/plugins/wallpaperCarousel".source = pkgs.fetchFromGitHub {
+          owner = "motor-dev";
+          repo = "wallpaperCarousel";
+          rev = "main";
+          hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # <-- Replace with the actual hash, or use lib.fakeHash to let Nix tell you the correct one on your first build
+        };
+
         xdg.configFile."DankMaterialShell/settings.json".text = builtins.toJSON {
           configVersion = 18;
           use24HourClock = true;
@@ -130,9 +143,6 @@
             launcher = false; # Handled by your native rofi setup
             dock = false;
           };
-
-
-
 
           dynamicTheming = false; # Disable dynamic theming to maintain a consistent look across all widgets, regardless of the current wallpaper or system theme. This ensures that your custom color choices are always applied.
           currentThemeName = "custom"; # Use "custom" to apply your custom theme file specified below
