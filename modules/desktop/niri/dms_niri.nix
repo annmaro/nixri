@@ -299,6 +299,7 @@ in
               "Mod+Ctrl+T" { spawn "Tor" "Browser"; }
               
               "Mod+Shift+R" { spawn "${getExe screenRecorder}" "m"; }
+              "Mod+W" { spawn "dms" "ipc" "wallpaperCarousel" "toggle"; }
               "Mod+Escape" { spawn "pkill" "-SIGINT" "-x" "wf-recorder"; }
               "Mod+Backspace" { spawn "sh" "-c" "pkill -x wlogout || wlogout -b 4"; }
               "Mod+Shift+S" { spawn "spotify"; }
@@ -333,7 +334,7 @@ in
               "Mod+M" { maximize-column; }
               "Alt+Return" { fullscreen-window; }
               "Mod+Shift+V" { toggle-window-floating; }
-              "Mod+W" { switch-focus-between-floating-and-tiling; }
+              "Mod+S" { switch-focus-between-floating-and-tiling; }
               
               // Adjust Column Width (Horizontal)
               "Mod+Equal" { set-column-width "+10%"; }
