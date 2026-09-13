@@ -132,7 +132,7 @@
           use24HourClock = true;
 
           wallpaperCarousel = {
-            "wallpaperPath": "/home/annmaro/Pictures/Wallpapers";
+            wallpaperPath = "/home/annmaro/Pictures/Wallpapers";
           };
 
           screenPreferences = {
