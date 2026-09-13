@@ -30,7 +30,7 @@
         settings = {
           theme = {
             mode = "dark";
-            source = "builtin";
+            source = lib.mkForce "builtin";
             builtin = "Catppuccin";
           };
 
