@@ -43,7 +43,6 @@ in
     thunar-volman # Necessary if you use Thunar for drive popups
     gnome-disk-utility # Gives you a clean GUI to verify physical blocks
     wlsunset # Day/night gamma adjustments for Wayland
-    waypaper # Wayland background setter, used here to manage wallpaper cycles with awww
   ];
 
   # Niri binary cache settings to prevent local compilation
