@@ -130,8 +130,13 @@
         xdg.configFile."DankMaterialShell/settings.json".text = builtins.toJSON {
           configVersion = 18;
           use24HourClock = true;
+
+          wallpaperCarousel = {
+            "wallpaperPath": "/home/annmaro/Pictures/Wallpapers";
+          };
+
           screenPreferences = {
-            wallpaper = [ ]; # This replaces the old disableWallpaper = true flag in DMS v6
+            wallpaper = [ ];
           };
 
           modules = {
