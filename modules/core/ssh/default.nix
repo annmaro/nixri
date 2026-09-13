@@ -22,4 +22,13 @@
   '';
 
   networking.firewall.allowedTCPPorts = [ 22 ];
+
+  services.gvfs.enable = true; # For Mounting USB & More
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    # Allows browsing services advertised on the local network
+    browseDomains = [ ];
+  };
 }
