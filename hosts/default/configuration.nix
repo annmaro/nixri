@@ -47,6 +47,7 @@ in
     "${self}/modules/programs/cli/${vars.tuiFileManager}" # Set file-manager defined in variables.nix
     "${self}/modules/programs/editor/vscode"
     "${self}/modules/programs/editor/antigravity"
+    "${self}/modules/programs/editor/ollama"
     #"${self}/modules/programs/editor/cursor"
     # "${self}/modules/programs/browser/zen"
     "${self}/modules/programs/browser/vimb"
