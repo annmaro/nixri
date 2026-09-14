@@ -1,22 +1,20 @@
 { pkgs, ... }:
 let
-  # Wrapped qute-bitwarden with Python dependencies and CLI binaries pinned in its PATH
-  quteBitwarden = pkgs.writers.writePython3Bin "qute-bitwarden" {
-    libraries = with pkgs.python3Packages; [
-      tldextract
-      pyperclip
-    ];
-    makeWrapperArgs = [
-      "--prefix"
-      "PATH"
-      ":"
-      (pkgs.lib.makeBinPath [
-        pkgs.bitwarden-cli
-        pkgs.rofi
-        pkgs.keyutils
-      ])
-    ];
-  } (builtins.readFile "${pkgs.qutebrowser}/share/qutebrowser/userscripts/qute-bitwarden");
+  pythonEnv = pkgs.python3.withPackages (ps: with ps; [
+    tldextract
+    pyperclip
+  ]);
+
+  # Wrap qute-bitwarden with Python libraries and system binaries without flake8 lint checks
+  quteBitwarden = pkgs.writeShellScriptBin "qute-bitwarden" ''
+    export PATH="${pkgs.lib.makeBinPath [
+      pythonEnv
+      pkgs.bitwarden-cli
+      pkgs.rofi
+      pkgs.keyutils
+    ]}:$PATH"
+    exec ${pythonEnv}/bin/python3 "${pkgs.qutebrowser}/share/qutebrowser/userscripts/qute-bitwarden" "$@"
+  '';
 in
 {
   home-manager.sharedModules = [
@@ -38,7 +36,6 @@ in
 
         # Declarative qutebrowser configuration
         xdg.configFile."qutebrowser/config.py".text = ''
-          # Load autoconfig.yml if it exists
           config.load_autoconfig(False)
 
           # --- General Settings ---
@@ -59,7 +56,6 @@ in
           }
 
           # --- Adblocking Configuration ---
-          # Uses Brave-core filter engine + hosts lists for optimal cosmetic and network blocking
           c.content.blocking.enabled = true
           c.content.blocking.method = "both"
           c.content.blocking.adblock.lists = [
@@ -98,10 +94,10 @@ in
           # Raindrop Web Clipper Bookmarklet injection
           config.bind(',rb', "open javascript:(function(){var%20e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','https://raindrop.io/embed/bookmarklet.js?'+Math.floor(89999999*Math.random()+1e7));document.body.appendChild(e)})();", mode='normal')
 
-          # Toggle dark mode on/off per domain/session
+          # Toggle dark mode on/off
           config.bind(',td', 'config-cycle colors.webpage.darkmode.enabled true false', mode='normal')
 
-          # Toggle JavaScript execution per tab
+          # Toggle JavaScript execution
           config.bind(',s', 'config-cycle content.javascript.enabled true false', mode='normal')
 
           # Quickmarks
@@ -111,7 +107,7 @@ in
           })
         '';
 
-        # Optional Greasemonkey userscript for YouTube ad defusing / cosmetic cleanup
+        # Greasemonkey cosmetic ad skip scriptlet
         xdg.dataFile."qutebrowser/greasemonkey/cosmetic-ad-skip.user.js".text = ''
           // ==UserScript==
           // @name         Qutebrowser Cosmetic & YT Skipper
@@ -123,7 +119,6 @@ in
           (function() {
               'use strict';
 
-              // YouTube ad skipper
               if (window.location.hostname.includes("youtube.com")) {
                   setInterval(() => {
                       const skipButtons = [
