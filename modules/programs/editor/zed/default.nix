@@ -89,7 +89,7 @@
           };
 
           ui_font_size = 16;
-          buffer_font_size = 15;
+          # buffer_font_size = 15;
           relative_line_numbers = true;
           format_on_save = "on";
           show_whitespaces = "selection";
