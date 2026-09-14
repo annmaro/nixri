@@ -90,6 +90,13 @@
           relative_line_numbers = true;
           show_whitespaces = "selection";
 
+          # Zeta Predictions & Completion UI
+          show_completions_on_input = true;
+          show_completion_documentation = true;
+          edit_predictions = {
+          provider = "zeta";
+          };
+
           # Modern formatting schema
           formatter = "language_server";
           auto_format = true;
@@ -143,7 +150,7 @@
               language_servers = [ "nil" ];
               formatter = {
                 external = {
-                  command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+                  command = "${pkgs.nixfmt}/bin/nixfmt";
                 };
               };
             };
