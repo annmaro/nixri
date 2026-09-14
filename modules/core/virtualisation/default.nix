@@ -16,19 +16,25 @@ in
     nixvirt.nixosModules.default
   ];
 
-  # Enable standard libvirtd options
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu = {
-      package = pkgs.qemu_kvm;
-      runAsRoot = true;
-      swtpm.enable = true;
-    };
-  };
+  # Consolidated Virtualisation Block
+    virtualisation = {
+      # Libvirtd configuration
+      libvirtd = {
+        enable = true;
+        qemu = {
+          package = pkgs.qemu_kvm;
+          runAsRoot = true;
+          swtpm.enable = true;
+        };
+      };
 
-  docker = {
-    enable = true;
-  };
+      # Docker configuration
+      docker = {
+        enable = true;
+        enableOnBoot = true;
+      };
+    };
+
 
   # Helpful packages for managing VMs
   environment.systemPackages = with pkgs; [
@@ -38,7 +44,6 @@ in
     spice-gtk
     spice-protocol
     lazydocker
-    docker-client
   ];
 
   /*
