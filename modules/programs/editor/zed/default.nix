@@ -95,7 +95,7 @@
           show_completions_on_input = true;
           show_completion_documentation = true;
           edit_predictions = {
-          provider = "zeta";
+          provider = "zed";
           };
 
           # Modern formatting schema
