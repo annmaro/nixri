@@ -33,11 +33,10 @@ in
             path = "${config.home.homeDirectory}/.ssh/id_ed25519";
             mode = "0600";
           };
-          /*
-                "rclone_gdrive_env" = {
-              file = ../../../secrets/rclone_gdrive_env.age;
-            };
-          */
+          "rclone_gdrive_env" = {
+            file = ../../../secrets/rclone_gdrive_env.age;
+          };
+
           "git_key_id" = {
             file = ../../../secrets/git_key_id.age;
           };
