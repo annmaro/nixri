@@ -146,12 +146,12 @@ in
            workspace "2"
 
             // 🌫️ GLOBAL COMPOSITOR CONFIGURATION (Top Level)
-            
+
            blur {
                passes 3        // To keep the gradients perfectly smooth
                offset 2.0      // Low offset to prevent pixelated blockiness
                noise 0.0       // Zero grain for an ultra-clean, liquid surface
-               saturation 1.0  // Natural color pass-through 
+               saturation 1.0  // Natural color pass-through
            }
 
           // 📐 LAYOUT STYLE & WINDOW GAPS
@@ -187,11 +187,11 @@ in
 
 
           overview {
-             
-               workspace-shadow { 
+
+               workspace-shadow {
                 off
                }
-           }           
+           }
 
            layer-rule {
                match namespace="^rofi$"
@@ -204,7 +204,7 @@ in
                background-effect {
                    xray false
                }
-           } 
+           }
 
 
           // 🖼️ WINDOW RULES & TRANSPARENCY
@@ -241,13 +241,13 @@ in
           }
 
           window-rule {
-              match app-id="^(Emacs|obsidian|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|VSCodium|code|thunar)$"
+              match app-id="^(Emacs|obsidian|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$"
               opacity 0.85
               draw-border-with-background false
               background-effect {
                    blur true
                    xray false
-             }      
+             }
           }
 
           window-rule {
@@ -281,6 +281,7 @@ in
               "Mod+A" { spawn "antigravity"; }
               "Mod+Space" { spawn "rofi" "-show" "drun"; }
               "Mod+V" { spawn "rofi" "-show" "clipboard"; }
+              "Mod+O" { toggle-overview }
               "Mod+Z" { spawn "zen-beta"; }
               "Mod+Shift+K" { spawn "${getExe keybindsRofi}"; }
               "Mod+G" { spawn "launcher" "games"; }
@@ -293,10 +294,10 @@ in
               "Mod+N" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
               "Mod+D" { spawn "eww" "open" "--toggle" "dashboard"; }
               "Mod+Shift+E" { spawn "dms" "ipc" "call" "session" "toggle"; }
-              "Mod+Shift+C" { spawn "code"; }
+              "Mod+Shift+C" { spawn "dev.zed.Zed"; }
               "Mod+Shift+T" { spawn "sh" "-c" "thunar -q && thunar --daemon"; }
               "Mod+Ctrl+T" { spawn "Tor" "Browser"; }
-              
+
               "Mod+Shift+R" { spawn "${getExe screenRecorder}" "m"; }
               "Mod+W" { spawn "dms" "ipc" "wallpaperCarousel" "toggle"; }
               "Mod+Escape" { spawn "pkill" "-SIGINT" "-x" "wf-recorder"; }
@@ -308,21 +309,21 @@ in
               "Mod+Ctrl+C" { spawn "hyprpicker" "--autocopy" "--format=hex"; }
               "Mod+F9" { spawn "sh" "-c" "wlsunset -T 3800 -t 3799"; }
               "Mod+F10" { spawn-sh "pkill -9 wlsunset || killall -9 wlsunset"; }
-              
+
               "Mod+Left" { focus-column-left; }
               "Mod+Right" { focus-column-right; }
               "Mod+H" { focus-column-left; }
               "Mod+L" { focus-column-right; }
               "Mod+Ctrl+Left" { move-column-left; }
               "Mod+Ctrl+Right" { move-column-right; }
-              
+
               "Mod+K" { focus-window-up; }
               "Mod+J" { focus-window-down; }
               "Mod+Ctrl+K" { move-column-to-workspace-up; }
               "Mod+Ctrl+J" { move-column-to-workspace-down; }
               "Mod+WheelScrollDown" { focus-workspace-down; }
               "Mod+WheelScrollUp" { focus-workspace-up; }
-             
+
               "Mod+Up" { focus-window-or-workspace-up; }
               "Mod+Down" { focus-window-or-workspace-down; }
               "Mod+Ctrl+Up" { move-workspace-up; }
@@ -333,15 +334,15 @@ in
               "Alt+Return" { fullscreen-window; }
               "Mod+Shift+V" { toggle-window-floating; }
               "Mod+S" { switch-focus-between-floating-and-tiling; }
-              
+
               // Adjust Column Width (Horizontal)
               "Mod+Equal" { set-column-width "+10%"; }
               "Mod+Minus" { set-column-width "-10%"; }
-             
+
              // Adjust Window Height (Vertical)
               "Mod+Shift+Minus" { set-window-height "-10%"; }
               "Mod+Shift+Equal" { set-window-height "+10%"; }
-              
+
               "Mod+1" { focus-workspace 1; }
               "Mod+2" { focus-workspace 2; }
               "Mod+3" { focus-workspace 3; }
