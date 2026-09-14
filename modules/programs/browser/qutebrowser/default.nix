@@ -28,7 +28,6 @@ in
           quteBitwarden
           bitwarden-cli
           keyutils
-          rofi-wayland
         ];
 
         # Place the userscript where qutebrowser natively discovers it
