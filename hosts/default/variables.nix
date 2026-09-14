@@ -5,7 +5,7 @@
   gitEmail = "anandk60440@gmail.com";
   desktop = "niri"; # Window manager (niri)
   terminal = "foot"; # Options: foot, kitty
-  editor = "neovim"; # Options: vscode, antigravity, neovim
+  editor = "helix"; # Options: helix, zed
   browser = "firefox"; # Options: firefox, zen
   tuiFileManager = "yazi"; # Options: yazi, lf
   shell = "fish"; # Options: bash, zsh, fish

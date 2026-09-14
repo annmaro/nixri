@@ -131,7 +131,7 @@ in
                   accel-speed 0.0
               }
               warp-mouse-to-focus
-              focus-follows-mouse
+             // focus-follows-mouse
           }
 
           // 🖥️ DISPLAY OUTPUTS & PERSISTENT LAYOUT
