@@ -17,6 +17,7 @@
           "cpp"
           "qml"
           "catppuccin"
+          "catppuccin-icons"
         ];
 
         userKeymaps = [
