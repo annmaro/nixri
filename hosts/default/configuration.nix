@@ -10,6 +10,7 @@ in
 
     # Core Modules (Don't change unless you know what you're doing)
     "${self}/modules/core/adblock"
+    "${self}/modules/core/agenix"
     "${self}/modules/core/boot"
     "${self}/modules/core/bash"
     "${self}/modules/core/fish"
@@ -25,7 +26,6 @@ in
     "${self}/modules/core/sddm"
     "${self}/modules/core/security"
     "${self}/modules/core/services"
-    "${self}/modules/core/git-sops"
     "${self}/modules/core/spoofdpi"
     "${self}/modules/core/ssh"
     # "${self}/modules/core/syncthing"
