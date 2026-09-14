@@ -294,7 +294,7 @@ in
               "Mod+N" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
               "Mod+D" { spawn "eww" "open" "--toggle" "dashboard"; }
               "Mod+Shift+E" { spawn "dms" "ipc" "call" "session" "toggle"; }
-              "Mod+Shift+C" { spawn "dev.zed.Zed"; }
+              "Mod+Shift+C" { spawn "zededitor"; }
               "Mod+Shift+T" { spawn "sh" "-c" "thunar -q && thunar --daemon"; }
               "Mod+Ctrl+T" { spawn "Tor" "Browser"; }
 
