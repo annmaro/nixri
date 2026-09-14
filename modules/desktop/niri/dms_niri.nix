@@ -281,7 +281,7 @@ in
               "Mod+A" { spawn "antigravity"; }
               "Mod+Space" { spawn "rofi" "-show" "drun"; }
               "Mod+V" { spawn "rofi" "-show" "clipboard"; }
-              "Mod+O" { toggle-overview }
+              "Mod+O" { toggle-overview; }
               "Mod+Z" { spawn "zen-beta"; }
               "Mod+Shift+K" { spawn "${getExe keybindsRofi}"; }
               "Mod+G" { spawn "launcher" "games"; }
