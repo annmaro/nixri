@@ -34,10 +34,10 @@ in
         stateVersion = "26.05"; # Do not change!
         sessionVariables = {
           EDITOR =
-            if (editor == "nixvim" || editor == "neovim" || editor == "nvchad") then
+            if (editor == "hx" || editor == "neovim" || editor == "nvchad") then
               "nvim"
-            else if editor == "vscode" then
-              "code"
+            else if editor == "zed" then
+              "zed"
             else
               "nano";
           BROWSER = "${browser}";
