@@ -12,7 +12,7 @@ let
       ":"
       (pkgs.lib.makeBinPath [
         pkgs.bitwarden-cli
-        pkgs.rofi-wayland
+        pkgs.rofi
         pkgs.keyutils
       ])
     ];
