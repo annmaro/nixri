@@ -79,7 +79,7 @@
                 "v" = "vsplit";
                 "s" = "hsplit";
                 "f" = "file_picker";
-                "p" = "format";
+                "p" = ":format";
                 "c" = {
                   "a" = "code_action";
                 };
