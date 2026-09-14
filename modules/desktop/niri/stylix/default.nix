@@ -96,7 +96,7 @@
 
             # --- DISABLE STYLIX FOR THESE SPECIFIC APPS ---
             kitty.enable = false; # Disabled because Stylix dims terminal colors unexpectedly
-            vscode.enable = false;
+            zed.enable = false;
             waybar.enable = false; # We want to manage Waybar's theme manually to leverage its native styling capabilities
             dank-material-shell.enable = false;
 
