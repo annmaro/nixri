@@ -26,6 +26,10 @@ in
     };
   };
 
+  docker = {
+    enable = true;
+  };
+
   # Helpful packages for managing VMs
   environment.systemPackages = with pkgs; [
     virt-manager
@@ -33,6 +37,8 @@ in
     spice
     spice-gtk
     spice-protocol
+    lazydocker
+    docker-client
   ];
 
   /*
