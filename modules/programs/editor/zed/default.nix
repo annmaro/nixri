@@ -85,8 +85,8 @@
             light = "Catppuccin Latte";
           };
 
-          ui_font_size = 18;
-          #buffer_font_size = 15;
+          #ui_font_size = 18;
+          buffer_font_size = 24;
           relative_line_numbers = true;
           show_whitespaces = "selection";
 
