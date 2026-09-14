@@ -47,6 +47,7 @@ in
     "${self}/modules/programs/cli/${vars.tuiFileManager}" # Set file-manager defined in variables.nix
     "${self}/modules/programs/editor/zed"
     "${self}/modules/programs/editor/antigravity"
+    "${self}/modules/programs/editor/forgejo"
     "${self}/modules/programs/editor/opencode"
     #"${self}/modules/programs/editor/cursor"
     # "${self}/modules/programs/browser/zen"
