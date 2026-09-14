@@ -3,7 +3,7 @@
 {
   home-manager.sharedModules = [
     (
-      { config, ... }:
+      { config, lib, ... }:
       {
         # 1. Packages for terminal agent & local model runner
         home.packages = with pkgs; [
@@ -16,51 +16,40 @@
           enable = true;
         };
 
-        # 3. Declarative OpenCode configuration (~/.config/opencode/opencode.json)
-        xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
-          "$schema" = "https://opencode.ai/config.json";
-
-          # Active model pointer using Ollama's auto-discovered model ID
-          model = "ollama/qwen2.5-coder:7b";
-
-          # Compatibility for v1 engine
-          provider = {
-            ollama = {
-              name = "Ollama";
-              npm = "@ai-sdk/openai-compatible";
-              options = {
-                baseURL = "http://127.0.0.1:11434/v1"; # Added /v1 suffix
-              };
-              models = {
-                "qwen2.5-coder:7b" = { name = "Qwen 2.5 Coder (7B)"; contextWindow = 32768; maxTokens = 8192; };
-              };
-            };
-          };
-
-          # Compatibility for v2 engine
-          providers = {
-            ollama = {
-              name = "Ollama";
-              package = "@opencode/ai/providers/openai-compatible";
-              settings = {
-                baseURL = "http://127.0.0.1:11434/v1"; # Added /v1 suffix
-              };
-              models = {
-                "qwen2.5-coder:7b" = { name = "Qwen 2.5 Coder (7B)"; contextWindow = 32768; maxTokens = 8192; };
-              };
-            };
-          };
-
-          # Route built-in primary agents to the local model
-          agents = {
-            build = {
-              model = "ollama/qwen2.5-coder:7b";
-            };
-            plan = {
-              model = "ollama/qwen2.5-coder:7b";
-            };
-          };
-        };
+        # 3. Create a real physical file instead of a Nix symlink
+        home.activation.writeOpenCodeConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          mkdir -p $HOME/.config/opencode
+          cat << 'EOF' > $HOME/.config/opencode/opencode.json
+          {
+            "$schema": "https://opencode.ai/config.json",
+            "model": "local/qwen2.5-coder:7b",
+            "provider": {
+              "local": {
+                "name": "Ollama",
+                "npm": "@ai-sdk/openai-compatible",
+                "options": {
+                  "baseURL": "http://127.0.0"
+                },
+                "models": {
+                  "qwen2.5-coder:7b": {
+                    "name": "Qwen 2.5 Coder (7B)",
+                    "contextWindow": 32768,
+                    "maxTokens": 8192
+                  }
+                }
+              }
+            },
+            "agents": {
+              "build": {
+                "model": "local/qwen2.5-coder:7b"
+              },
+              "plan": {
+                "model": "local/qwen2.5-coder:7b"
+              }
+            }
+          }
+          EOF
+        '';
       }
     )
   ];
