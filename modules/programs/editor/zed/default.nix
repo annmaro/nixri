@@ -144,7 +144,7 @@
               language_servers = [ "nil" ];
               formatter = {
                 external = {
-                  command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+                  command = "${pkgs.nixfmt}/bin/nixfmt";
                 };
               };
             };

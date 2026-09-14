@@ -9,7 +9,7 @@
       home.packages = with pkgs; [
         # Language Servers, Linters & Formatters
         nil # Nix LSP
-        nixfmt-rfc-style # Nix formatter
+        nixfmt # Nix formatter
         rust-analyzer # Rust LSP
         rustfmt # Rust formatter
         clippy # Rust linter
@@ -98,7 +98,7 @@
         languages = {
           language-server.nil = {
             command = "${pkgs.nil}/bin/nil";
-            config.nil.formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
+            config.nil.formatting.command = [ "${pkgs.nixfmt}/bin/nixfmt" ];
           };
 
           language-server.pyright = {
@@ -136,7 +136,7 @@
               auto-format = true;
               language-servers = [ "nil" ];
               formatter = {
-                command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+                command = "${pkgs.nixfmt}/bin/nixfmt";
               };
             }
             {
