@@ -6,9 +6,6 @@
 {
   home-manager.sharedModules = [
     (_: {
-      # Optional: set Vulkan software fallback if ever running on a headless or VM setup
-      # home.sessionVariables.LIBGL_ALWAYS_SOFTWARE = "0";
-
       programs.zed-editor = {
         enable = true;
 
@@ -24,7 +21,7 @@
 
         userKeymaps = [
           {
-            context = "VimControl && !menu";
+            context = "Editor && vim_mode == normal && !menu";
             bindings = {
               # Buffer navigation
               "shift-h" = "pane::ActivatePrevItem";
@@ -47,26 +44,26 @@
               "space p" = "editor::Format";
               "space c a" = "editor::ToggleCodeActions";
 
-              # Diagnostics
-              "[ d" = "editor::GoToPrevDiagnostic";
-              "] d" = "editor::GoToNextDiagnostic";
+              # Diagnostics & hover
+              "[ d" = "editor::GoToPreviousDiagnostic";
+              "] d" = "editor::GoToDiagnostic";
               "g h" = "editor::Hover";
 
-              # Sidebar toggle
-              "ctrl-n" = "workspace::ToggleLeftDock";
+              # Project drawer / sidebar toggle
+              "ctrl-n" = "project_panel::ToggleFocus";
             };
           }
           {
-            context = "VimControl && vim_mode == insert";
+            context = "Editor && vim_mode == insert";
             bindings = {
               # kj to exit insert mode
               "k j" = "vim::NormalBefore";
             };
           }
           {
-            context = "VimControl && vim_mode == visual";
+            context = "Editor && vim_mode == visual";
             bindings = {
-              # Stay in visual mode while indenting
+              # Keep visual selection while indenting
               "<" = "editor::Outdent";
               ">" = "editor::Indent";
 
@@ -89,10 +86,13 @@
           };
 
           ui_font_size = 16;
-          # buffer_font_size = 15;
+          buffer_font_size = 15;
           relative_line_numbers = true;
-          format_on_save = "on";
           show_whitespaces = "selection";
+
+          # Modern formatting schema
+          formatter = "language_server";
+          auto_format = true;
 
           telemetry = {
             diagnostics = false;
@@ -105,7 +105,6 @@
             show_parameter_hints = true;
           };
 
-          # Explicitly bound to system packages to bypass NixOS glibc issues
           lsp = {
             nil = {
               binary = {
@@ -144,7 +143,7 @@
               language_servers = [ "nil" ];
               formatter = {
                 external = {
-                  command = "${pkgs.nixfmt}/bin/nixfmt";
+                  command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
                 };
               };
             };
