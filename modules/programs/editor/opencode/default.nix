@@ -23,6 +23,16 @@
           # Active model pointer using Ollama's auto-discovered model ID
           model = "ollama/qwen2.5-coder:7b";
 
+          provider = {
+            ollama = {
+              name = "Ollama";
+              npm = "@ai-sdk/openai-compatible";
+              options = {
+                baseURL = "http://127.0.0.1:11434";
+              };
+            };
+          };
+
           # Route built-in primary agents to the local model
           agents = {
             build = {
