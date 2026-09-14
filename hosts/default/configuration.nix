@@ -50,7 +50,7 @@ in
     "${self}/modules/programs/editor/opencode"
     #"${self}/modules/programs/editor/cursor"
     # "${self}/modules/programs/browser/zen"
-    "${self}/modules/programs/browser/cutebrowser"
+    "${self}/modules/programs/browser/qutebrowser"
     "${self}/modules/programs/browser/vimb"
     "${self}/modules/programs/cli/direnv"
     "${self}/modules/programs/terminal/fastfetch"
