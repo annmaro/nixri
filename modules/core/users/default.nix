@@ -34,12 +34,13 @@ in
         stateVersion = "26.05"; # Do not change!
         sessionVariables = {
           EDITOR =
-            if (editor == "hx" || editor == "neovim" || editor == "nvchad") then
-              "nvim"
+            if editor == "hx" then
+              "hx"
             else if editor == "zed" then
-              "zed"
+              "zeditor"
             else
-              "nano";
+              "hx"; # Default fallback to hx
+          VISUAL = if editor == "zed" then "zeditor" else "hx";
           BROWSER = "${browser}";
           TERMINAL = "${terminal}";
         };
