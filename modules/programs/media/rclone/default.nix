@@ -34,7 +34,7 @@
           Service = {
             Type = "notify";
             # Pulls the decrypted sops file reference built dynamically in sops.nix
-            EnvironmentFile = config.sops.secrets."rclone_gdrive_env".path;
+            EnvironmentFile = config.age.secrets."rclone_gdrive_env".path;
 
             ExecStart = ''
               ${pkgs.rclone}/bin/rclone mount mydrive: "${mountDir}" \
