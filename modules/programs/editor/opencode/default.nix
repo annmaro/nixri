@@ -20,33 +20,10 @@
         xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
           "$schema" = "https://opencode.ai/config.json";
 
-          # Active model pointer
+          # Active model pointer using Ollama's auto-discovered model ID
           model = "ollama/qwen2.5-coder:7b";
 
-          # Ollama local OpenAI-compatible endpoint
-          providers = {
-            ollama = {
-              name = "Ollama";
-              npm = "@ai-sdk/openai-compatible";
-              options = {
-                baseURL = "http://127.0.0.1:11434";
-              };
-              models = {
-                "qwen2.5-coder:7b" = {
-                  name = "Qwen 2.5 Coder (7B)";
-                  contextWindow = 32768;
-                  maxTokens = 8192;
-                };
-                "deepseek-coder-v2:16b" = {
-                  name = "DeepSeek Coder V2 (16B)";
-                  contextWindow = 65536;
-                  maxTokens = 8192;
-                };
-              };
-            };
-          };
-
-          # Route primary subagents to local Ollama
+          # Route built-in primary agents to the local model
           agents = {
             build = {
               model = "ollama/qwen2.5-coder:7b";
