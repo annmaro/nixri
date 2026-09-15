@@ -158,8 +158,8 @@
             };
           };
 
-          # Default assistant model (can also be changed directly inside the panel dropdown)
-          assistant = {
+          # Default agent model (can also be changed directly inside the panel dropdown)
+          agent = {
             default_model = {
               provider = "google";
               model = "gemini-2.5-flash";
