@@ -24,6 +24,12 @@ in
     overwriteBackup = true;
     backupFileExtension = "backup";
     users.${username} = {
+      services.zed-backup = {
+              enable = true;
+              interval = 120;         # 2 minutes
+              maxBackups = 30;
+              backupDir = "~/zed_backups";
+            };
       # Let Home Manager install and manage itself.
       programs.home-manager.enable = true;
       xdg.enable = true;
