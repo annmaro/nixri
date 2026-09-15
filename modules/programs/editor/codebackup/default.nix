@@ -1,9 +1,10 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
+  cfg = config.services.zed-backup;
+
   zedBackupScript = pkgs.writers.writePython3Bin "zed-backup" { } ''
     import os
-    import platform
     import shutil
     import sqlite3
     import sys
@@ -11,8 +12,8 @@ let
     from datetime import datetime
     from pathlib import Path
 
-    BACKUP_INTERVAL = 120
-    MAX_BACKUPS_TO_KEEP = 30
+    BACKUP_INTERVAL = ${toString cfg.interval}
+    MAX_BACKUPS_TO_KEEP = ${if cfg.maxBackups == null then "None" else toString cfg.maxBackups}
 
     def get_zed_db_paths() -> list[Path]:
         home = Path.home()
@@ -56,7 +57,7 @@ let
             if dest_conn:
                 dest_conn.close()
 
-        if MAX_BACKUPS_TO_KEEP:
+        if MAX_BACKUPS_TO_KEEP is not None:
             existing = sorted(dest_dir.glob("db_*.sqlite"), key=os.path.getmtime)
             while len(existing) > MAX_BACKUPS_TO_KEEP:
                 oldest = existing.pop(0)
@@ -66,7 +67,7 @@ let
                     pass
 
     def main():
-        backup_root = Path.home() / "zed_backups"
+        backup_root = Path("${cfg.backupDir}").expanduser()
         print(f"Starting Zed DB Auto-Backup (Interval: {BACKUP_INTERVAL}s)", flush=True)
         print(f"Target directory: {backup_root}", flush=True)
 
@@ -88,24 +89,46 @@ let
   '';
 in
 {
-  # Adds the executable to your user PATH so you can test it directly via CLI
-  home.packages = [ zedBackupScript ];
+  options.services.zed-backup = {
+    enable = lib.mkEnableOption "Zed editor database background backup daemon";
 
-  # Sets up the background user daemon
-  systemd.user.services.zed-backup = {
-    Unit = {
-      Description = "Zed Editor Database Auto-Backup Service";
-      After = [ "default.target" ];
+    interval = lib.mkOption {
+      type = lib.types.int;
+      default = 120;
+      description = "Interval between database backups in seconds.";
     };
 
-    Service = {
-      ExecStart = "${zedBackupScript}/bin/zed-backup";
-      Restart = "always";
-      RestartSec = "10s";
+    maxBackups = lib.mkOption {
+      type = lib.types.nullOr lib.types.int;
+      default = 30;
+      description = "Max backups to keep per profile (set to null to disable purging).";
     };
 
-    Install = {
-      WantedBy = [ "default.target" ];
+    backupDir = lib.mkOption {
+      type = lib.types.str;
+      default = "~/zed_backups";
+      description = "Directory where database snapshots should be stored.";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    home.packages = [ zedBackupScript ];
+
+    systemd.user.services.zed-backup = {
+      Unit = {
+        Description = "Zed Editor Database Auto-Backup Service";
+        After = [ "default.target" ];
+      };
+
+      Service = {
+        ExecStart = "${zedBackupScript}/bin/zed-backup";
+        Restart = "always";
+        RestartSec = "10s";
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
     };
   };
 }
