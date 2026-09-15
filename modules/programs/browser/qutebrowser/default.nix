@@ -38,11 +38,29 @@ in
         xdg.configFile."qutebrowser/config.py".text = ''
           config.load_autoconfig(False)
 
+          # --- Chromium Flags & Engine Workarounds ---
+          c.qt.args = [
+              "disable-blink-features=AutomationControlled",
+              "enable-features=NetworkService,NetworkServiceInProcess"
+          ]
+
+          # --- Google Login Spoofing ---
+          c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          c.content.canvas_reading = True
+          c.content.webgl = True
+
           # --- General Settings ---
           c.url.start_pages = ["https://duckduckgo.com"]
           c.url.default_page = "https://duckduckgo.com"
           c.downloads.location.directory = "~/Downloads"
+          c.zoom.default = 140
+
+          # --- General Settings ---
+          c.url.start_pages = ["https://duckduckgo.com"]
+          c.downloads.location.directory = "~/Downloads"
           c.zoom.default = 125
+          # Spoof standard Chrome User-Agent and Client Hints
+          c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
           # --- Search Engines ---
           c.url.searchengines = {
@@ -56,7 +74,7 @@ in
           }
 
           # --- Adblocking Configuration ---
-          c.content.blocking.enabled = true
+          c.content.blocking.enabled = True
           c.content.blocking.method = "both"
           c.content.blocking.adblock.lists = [
               "https://easylist.to/easylist/easylist.txt",
@@ -67,7 +85,7 @@ in
 
           # --- Native Dark Mode ---
           c.colors.webpage.preferred_color_scheme = "dark"
-          c.colors.webpage.darkmode.enabled = true
+          c.colors.webpage.darkmode.enabled = True
           c.colors.webpage.darkmode.algorithm = "lightness-cielab"
           c.colors.webpage.darkmode.policy.images = "never"
 
