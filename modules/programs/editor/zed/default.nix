@@ -118,47 +118,51 @@
             };
           };
 
-          # Model Providers (Local Ollama, Gemini, and OpenRouter)
+          # Model Providers (Local Ollama, Gemini, and OpenRouter via openai_compatible)
           language_models = {
             ollama = {
               api_url = "http://localhost:11434";
               auto_discover = true;
             };
+
+            # Google AI — API key via GEMINI_API_KEY env var or Settings > AI > LLM Providers
             google = {
               available_models = [
                 {
                   name = "gemini-2.5-flash";
                   display_name = "Gemini 2.5 Flash";
                   max_tokens = 1000000;
-                  supports_tools = true;
                 }
                 {
                   name = "gemini-2.5-pro";
                   display_name = "Gemini 2.5 Pro";
                   max_tokens = 1000000;
-                  supports_tools = true;
                 }
               ];
             };
-            open_router = {
-              available_models = [
-                {
-                  name = "deepseek/deepseek-chat:free";
-                  display_name = "DeepSeek V3 (Free)";
-                  max_tokens = 64000;
-                  supports_tools = true;
-                }
-                {
-                  name = "qwen/qwen-2.5-coder-32b-instruct:free";
-                  display_name = "Qwen 2.5 Coder 32B (Free)";
-                  max_tokens = 32768;
-                  supports_tools = true;
-                }
-              ];
+
+            # OpenRouter — latest schema: use openai_compatible, not the deprecated open_router key
+            # API key via OPENROUTER_API_KEY env var or Settings > AI > LLM Providers
+            openai_compatible = {
+              OpenRouter = {
+                api_url = "https://openrouter.ai/api/v1";
+                available_models = [
+                  {
+                    name = "deepseek/deepseek-chat:free";
+                    display_name = "DeepSeek V3 (Free)";
+                    max_tokens = 64000;
+                  }
+                  {
+                    name = "qwen/qwen-2.5-coder-32b-instruct:free";
+                    display_name = "Qwen 2.5 Coder 32B (Free)";
+                    max_tokens = 32768;
+                  }
+                ];
+              };
             };
           };
 
-          # Default agent model (can also be changed directly inside the panel dropdown)
+          # Default agent model — points to native Google provider (uses GEMINI_API_KEY)
           agent = {
             default_model = {
               provider = "google";
