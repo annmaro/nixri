@@ -7,6 +7,7 @@
     devmon.enable = true; # For Mounting USB & More
     udisks2.enable = true; # For Mounting USB & More
     dbus.enable = true; # interprocess communications manager
+    zed-backup.enable = true;
 
     # Userspace CPU Scheduler for Improved Latency for Gaming (Hardware Specific)
     # services.scx = {
