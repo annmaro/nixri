@@ -3,7 +3,9 @@
 let
   cfg = config.services.zed-backup;
 
-  zedBackupScript = pkgs.writers.writePython3Bin "zed-backup" { } ''
+  zedBackupScript = pkgs.writers.writePython3Bin "zed-backup" {
+    flake8 = false;
+  } ''
     import os
     import shutil
     import sqlite3
