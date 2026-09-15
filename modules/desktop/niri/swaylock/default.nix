@@ -36,9 +36,9 @@
           };
 
           timeouts = [
-            # Timeout 1: Lock the screen after 5 minutes of inactivity
+            # Timeout 1: Lock the screen after 10 minutes of inactivity
             {
-              timeout = 300;
+              timeout = 600;
               command = "${pkgs.swaylock-effects}/bin/swaylock -f";
             }
             # Timeout 2: Turn off the displays via Niri 2 minutes after locking
