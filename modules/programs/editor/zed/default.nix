@@ -6,7 +6,7 @@
 }:
 {
   home-manager.sharedModules = [
-    (_: {
+    ({ config, ... }: {
       programs.zed-editor = {
         enable = true;
 
