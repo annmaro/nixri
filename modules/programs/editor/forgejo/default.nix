@@ -18,7 +18,7 @@
       name = "nixos-local-runner";
       url = "https://codeberg.org";
 
-      # Point to the system-decrypted agenix path
+      # The decrypted file must be a systemd EnvironmentFile containing TOKEN=...
       tokenFile = config.age.secrets."codeberg-runner-token".path;
 
       labels = [
@@ -39,9 +39,4 @@
     };
   };
 
-  # 3. Ensure runner waits for agenix and docker
-  systemd.services."gitea-runner-codeberg-runner" = {
-    after = [ "agenix.service" "docker.service" ];
-    wants = [ "agenix.service" "docker.service" ];
-  };
 }
