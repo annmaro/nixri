@@ -1,7 +1,15 @@
-{ pkgs, self, ... }:
+{ pkgs, config, self, ... }:
 
 {
-  # Configure the Forgejo runner instance
+  # 1. Decrypt token at system level and grant read access to the runner
+  age.secrets."codeberg-runner-token" = {
+    file = "${self}/secrets/codeberg-runner-token.age";
+    mode = "0440";
+    owner = "gitea-runner";
+    group = "gitea-runner";
+  };
+
+  # 2. Configure the Forgejo runner instance
   services.gitea-actions-runner = {
     package = pkgs.forgejo-runner;
 
@@ -10,10 +18,9 @@
       name = "nixos-local-runner";
       url = "https://codeberg.org";
 
-      # File holding only the plain registration token from Codeberg
-      tokenFile = "/home/annmaro/.config/forgejo-runner/token";
+      # Point to the system-decrypted agenix path
+      tokenFile = config.age.secrets."codeberg-runner-token".path;
 
-      # Map the labels from your workflow to Docker images
       labels = [
         "codeberg:docker://node:18-bullseye"
         "ubuntu-latest:docker://node:18-bullseye"
@@ -21,15 +28,20 @@
 
       settings = {
         runner = {
-          capacity = 1; # Concurrent jobs allowed
+          capacity = 1;
           timeout = "3h";
         };
         container = {
-          # Connect directly to the system Docker socket
           docker_host = "unix:///var/run/docker.sock";
           network = "bridge";
         };
       };
     };
+  };
+
+  # 3. Ensure runner waits for agenix and docker
+  systemd.services."gitea-runner-codeberg-runner" = {
+    after = [ "agenix.service" "docker.service" ];
+    wants = [ "agenix.service" "docker.service" ];
   };
 }
