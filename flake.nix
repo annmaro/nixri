@@ -131,6 +131,7 @@
           inherit system;
           modules = [
             inputs.disko.nixosModules.disko
+            inputs.agenix.nixosModules.default
             ./hosts/${host}/configuration.nix
             {
               nixpkgs.overlays = [
