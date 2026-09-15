@@ -1,13 +1,6 @@
 { pkgs, self, ... }:
 
 {
-
-  # Define the agenix secret
-  age.secrets.codeberg-runner-token = {
-    file = "${self}/secrets/codeberg-runner-token.age";
-    mode = "0400";
-  };
-
   # Configure the Forgejo runner instance
   services.gitea-actions-runner = {
     package = pkgs.forgejo-runner;
@@ -18,7 +11,7 @@
       url = "https://codeberg.org";
 
       # File holding only the plain registration token from Codeberg
-      tokenFile = "/var/lib/secrets/codeberg-runner-token";
+      tokenFile = "/home/annmaro/.config/forgejo-runner/token";
 
       # Map the labels from your workflow to Docker images
       labels = [
