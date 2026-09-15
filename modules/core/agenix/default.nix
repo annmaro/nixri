@@ -36,7 +36,10 @@ in
           "rclone_gdrive_env" = {
             file = "${self}/secrets/rclone_gdrive_env.age";
           };
-
+          "codeberg-runner-token" = {
+            file = "${self}/secrets/codeberg-runner-token.age";
+            path = "${config.home.homeDirectory}/.config/forgejo-runner/token";
+          };
           "git_key_id" = {
             file = "${self}/secrets/git_key_id.age";
           };
