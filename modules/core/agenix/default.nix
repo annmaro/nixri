@@ -16,7 +16,7 @@ in
     {
 
       imports = [
-        inputs.agenix.homeManagerModules.age
+        inputs.agenix.homeManagerModules.default
         ./git.nix
       ];
 
