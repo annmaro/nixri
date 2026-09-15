@@ -36,16 +36,24 @@ in
           "rclone_gdrive_env" = {
             file = "${self}/secrets/rclone_gdrive_env.age";
           };
-          "codeberg-runner-token" = {
-            file = "${self}/secrets/codeberg-runner-token.age";
-            path = "${config.home.homeDirectory}/.config/forgejo-runner/token";
-          };
           "git_key_id" = {
             file = "${self}/secrets/git_key_id.age";
           };
           "gemini_api_key" = {
             file = "${self}/secrets/gemini_api_key.age";
           };
+          "openrouter_api_key" = {
+            file = "${self}/secrets/openrouter_api_key.age";
+          };
+          # Export the decrypted agenix keys for Zed to pick up on launch
+          home.sessionVariablesExtra = ''
+            if [ -f "${config.age.secrets.gemini_api_key.path}" ]; then
+              export GEMINI_API_KEY="$(cat "${config.age.secrets.gemini_api_key.path}")"
+            fi
+            if [ -f "${config.age.secrets.openrouter_api_key.path}" ]; then
+              export OPENROUTER_API_KEY="$(cat "${config.age.secrets.openrouter_api_key.path}")"
+            fi
+          '';
         };
       };
     };
