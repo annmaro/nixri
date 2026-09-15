@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }:
 {
@@ -57,22 +58,16 @@
           {
             context = "Editor && vim_mode == insert";
             bindings = {
-              # kj to exit insert mode
               "k j" = "vim::NormalBefore";
             };
           }
           {
             context = "Editor && vim_mode == visual";
             bindings = {
-              # Keep visual selection while indenting
               "<" = "editor::Outdent";
               ">" = "editor::Indent";
-
-              # Move lines up/down
               "shift-j" = "editor::MoveLineDown";
               "shift-k" = "editor::MoveLineUp";
-
-              # Toggle comment on selection
               "space c" = "editor::ToggleComments";
             };
           }
@@ -86,7 +81,6 @@
             light = "Catppuccin Latte";
           };
 
-          #ui_font_size = 18;
           buffer_font_size = 24;
           relative_line_numbers = true;
           show_whitespaces = "selection";
@@ -95,7 +89,7 @@
           show_completions_on_input = true;
           show_completion_documentation = true;
           edit_predictions = {
-          provider = "zed";
+            provider = "zed";
           };
 
           # Modern formatting schema
@@ -113,10 +107,83 @@
             show_parameter_hints = true;
           };
 
+          # MCP Context Servers
+          context_servers = {
+            nixos = {
+              command = "${pkgs.uv}/bin/uvx";
+              args = [
+                "--install-deps"
+                "mcp-nixos"
+              ];
+            };
+          };
+
+          # Model Providers (Local Ollama, Gemini, and OpenRouter)
+          language_models = {
+            ollama = {
+              api_url = "http://localhost:11434";
+              auto_discover = true;
+            };
+            google = {
+              available_models = [
+                {
+                  name = "gemini-2.5-flash";
+                  display_name = "Gemini 2.5 Flash";
+                  max_tokens = 1000000;
+                  supports_tools = true;
+                }
+                {
+                  name = "gemini-2.5-pro";
+                  display_name = "Gemini 2.5 Pro";
+                  max_tokens = 1000000;
+                  supports_tools = true;
+                }
+              ];
+            };
+            open_router = {
+              available_models = [
+                {
+                  name = "deepseek/deepseek-chat:free";
+                  display_name = "DeepSeek V3 (Free)";
+                  max_tokens = 64000;
+                  supports_tools = true;
+                }
+                {
+                  name = "qwen/qwen-2.5-coder-32b-instruct:free";
+                  display_name = "Qwen 2.5 Coder 32B (Free)";
+                  max_tokens = 32768;
+                  supports_tools = true;
+                }
+              ];
+            };
+          };
+
+          # Default assistant model (can also be changed directly inside the panel dropdown)
+          assistant = {
+            default_model = {
+              provider = "google";
+              model = "gemini-2.5-flash";
+            };
+            version = "2";
+          };
+
           lsp = {
-            nil = {
+            nixd = {
               binary = {
-                path = "${pkgs.nil}/bin/nil";
+                path = "${pkgs.nixd}/bin/nixd";
+              };
+              settings = {
+                nixpkgs = {
+                  expr = "import <nixpkgs> { }";
+                };
+                formatting = {
+                  command = [ "${pkgs.nixfmt}/bin/nixfmt" ];
+                };
+                options = {
+                  nixos = {
+                    expr = ''(builtins.getFlake "${config.home.homeDirectory}/dotfiles").nixosConfigurations.default.options'';
+                  };
+                };
               };
             };
             rust-analyzer = {
@@ -148,7 +215,7 @@
 
           languages = {
             Nix = {
-              language_servers = [ "nil" ];
+              language_servers = [ "nixd" ];
               formatter = {
                 external = {
                   command = "${pkgs.nixfmt}/bin/nixfmt";
