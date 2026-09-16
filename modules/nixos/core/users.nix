@@ -34,7 +34,9 @@ in
   nix.settings.allowed-users = [ username ];
 
   home-manager = {
-    useGlobalPkgs = true;
+    # Stylix's Home Manager module provides package overlays of its own,
+    # so it cannot be combined with useGlobalPkgs = true.
+    useGlobalPkgs = false;
     useUserPackages = true;
 
     # These modules are applied to every Home Manager user. Keeping the
@@ -52,6 +54,8 @@ in
     };
 
     users.${username} = {
+      nixpkgs.config.allowUnfree = true;
+
       homeSettings = {
         username = username;
         gitUsername = config.systemSettings.gitUsername;
