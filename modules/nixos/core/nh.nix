@@ -2,7 +2,7 @@
 
 let
   username = config.systemSettings.username;
-  flakePath = "/home/${username}/Documents/New";
+  flakePath = "/home/${username}/nixri";
 in
 {
   programs.nh = {

@@ -23,7 +23,7 @@ let
     nrs = "sudo nixos-rebuild switch --flake .#laptop";
     dr = "nixos-rebuild dry-run --flake .#laptop";
     ncb = "sudo nix-collect-garbage -d";
-    dots = "cd /home/annmaro/Documents/New";
+    dots = "cd /home/annmaro/nixri";
   };
 in
 {
