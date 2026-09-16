@@ -18,7 +18,7 @@
 
         bgColor = "#${stylixColors.base00 or "1e1e2e"}"; # Background
         fgColor = "#${stylixColors.base05 or "cdd6f4"}"; # Default Text
-        accentColor = "#${stylixColors.base0A or "d79921"}"; # Primary Accent (Gruvbox yellow)
+        accentColor = "#d79921"; # Primary Accent (Gruvbox yellow)
         surfaceMuted = "#${stylixColors.base03 or "45475a"}";
 
         # Cleaned up payload block: Defined once, inherited for both dark & light modes
@@ -123,9 +123,7 @@
           configVersion = 18;
           use24HourClock = true;
 
-          screenPreferences = {
-            wallpaper = [ "all" ];
-          };
+
 
           modules = {
             bar = true;
