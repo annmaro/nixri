@@ -34,7 +34,7 @@ pkgs.writeShellApplication {
     # Waypaper accepts a tilde in config.ini, but shell variables do not
     # perform tilde expansion after command substitution.
     case "$TARGET_WALL" in
-      ~/*) TARGET_WALL="$HOME/${TARGET_WALL#~/}" ;;
+      ~/*) TARGET_WALL="$HOME/''${TARGET_WALL#~/}" ;;
     esac
 
     case "$TARGET_WALL" in
