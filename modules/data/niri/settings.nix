@@ -13,7 +13,7 @@ let
   kbdLayout = config.systemSettings.kbdLayout;
   kbdVariant = config.systemSettings.kbdVariant;
   isDms = bar == "DMS";
-  accentColor = "#${lib.attrByPath [ "lib" "stylix" "colors" "base0E" ] "cba6f7" config}";
+  accentColor = "#${lib.attrByPath [ "lib" "stylix" "colors" "base0A" ] "d79921" config}";
   barNamespace = if isDms then "^dms:.*" else "^noctalia:.*";
   restartBar = if isDms then "dms" else "noctalia";
   screenshot = ''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.satty}/bin/satty -f - -o ~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png'';
@@ -277,8 +277,8 @@ in
       "-c"
       "sleep 2 && thunar --daemon"
     ]
-  ]
-  ++ lib.optional (!isDms) [ (getExe wallpaper) ];
+    [ (getExe wallpaper) ]
+  ];
 
   input = {
     keyboard = {
@@ -340,7 +340,10 @@ in
 
   layer-rules = [
     {
-      matches = [ { namespace = "^awww-daemon$"; } ];
+      matches = [
+        { namespace = "^awww-daemon$"; }
+        { namespace = "^mpvpaper$"; }
+      ];
       place-within-backdrop = true;
     }
     {
@@ -387,12 +390,7 @@ in
         "toggle"
       ];
       "Mod+Shift+C".spawn = "zededitor";
-      "Mod+W".spawn = [
-        "dms"
-        "ipc"
-        "wallpaperCarousel"
-        "toggle"
-      ];
+      "Mod+W".spawn = "waypaper";
       "Mod+S".switch-focus-between-floating-and-tiling = _: { };
     }
     // lib.optionalAttrs (!isDms) {
