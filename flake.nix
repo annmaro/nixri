@@ -1,17 +1,25 @@
 {
   description = "My NixOS niri flake";
 
+  nixConfig = {
+    extra-substituters = [ "https://niri.cachix.org" ];
+    extra-trusted-public-keys = [
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
+
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak?ref=latest";
     };
 
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    niri.url = "github:sodiboo/niri-flake";
 
     agenix = {
       url = "github:ryantm/agenix";
@@ -68,11 +76,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    cursor = {
-      url = "github:omarcresp/cursor-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     silentSDDM = {
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -83,7 +86,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur.url = "github:nix-community/NUR";
+
     betterfox = {
       url = "github:yokoffing/Betterfox";
       flake = false;
@@ -110,61 +113,13 @@
     };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      ...
-    }@inputs:
-    let
-      inherit (self) outputs;
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      installerPkg = import ./installer.nix { inherit self pkgs; }; # this is so that we can use installer.nix as a module
-      mkHost =
-        host:
-        let
-          # 1. Import your list of overlays for this specific host
-          hostOverlays = import ./overlays { inherit self inputs host; };
-        in
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.agenix.nixosModules.default
-            ./hosts/${host}/configuration.nix
-            {
-              nixpkgs.overlays = [
-                hostOverlays.additions
-                hostOverlays.modifications
-                inputs.niri.overlays.niri
-              ];
-            }
-          ];
-          specialArgs = {
-            inherit
-              self
-              inputs
-              outputs
-              host
-              ;
-          };
-        };
-    in
-    {
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-tree;
+  outputs = inputs@{ flake-parts, import-tree, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      # Automatically discover flake-parts modules under ./flake-modules.
+      imports = [ (import-tree ./flake-modules) ];
 
-      # 2. Expose the installer binary layout package matching flake targets
-      packages.${system}.installer = installerPkg;
-
-      # 3. Expose the interactive executable target application block
-      apps.${system}.installer = {
-        type = "app";
-        program = "${installerPkg}/bin/installer";
-      };
-
-      nixosConfigurations = {
-        default = mkHost "default";
-      };
+      systems = [
+        "x86_64-linux"
+      ];
     };
 }
