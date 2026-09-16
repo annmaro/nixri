@@ -1,7 +1,8 @@
 { lib, ... }:
 let
   inherit (lib) mkOption types;
-in {
+in
+{
   options.systemSettings = {
     username = mkOption {
       type = types.str;
@@ -28,37 +29,59 @@ in {
     };
 
     terminal = mkOption {
-      type = types.enum [ "foot" "kitty" ];
+      type = types.enum [
+        "foot"
+        "kitty"
+      ];
       default = "foot";
       description = "Default terminal emulator.";
     };
 
     editor = mkOption {
-      type = types.enum [ "hx" "zed" "antigravity" ];
-      default = "hx";
+      type = types.enum [
+        "hx"
+        "zed"
+        "antigravity"
+      ];
+      default = "zed";
       description = "Default text editor executable.";
     };
 
     browser = mkOption {
-      type = types.enum [ "firefox" "qutebrowser" "vimb" "zen" ];
+      type = types.enum [
+        "firefox"
+        "qutebrowser"
+        "vimb"
+        "zen"
+      ];
       default = "firefox";
       description = "Primary web browser.";
     };
 
     tuiFileManager = mkOption {
-      type = types.enum [ "yazi" "lf" ];
+      type = types.enum [
+        "yazi"
+        "lf"
+      ];
       default = "yazi";
       description = "Default terminal file manager.";
     };
 
     shell = mkOption {
-      type = types.enum [ "bash" "zsh" "fish" ];
+      type = types.enum [
+        "bash"
+        "zsh"
+        "fish"
+      ];
       default = "fish";
       description = "Default interactive shell.";
     };
 
     bar = mkOption {
-      type = types.enum [ "DMS" "noctalia" ];
+      type = types.enum [
+        "DMS"
+        "noctalia"
+      ];
       default = "DMS";
       description = "Desktop status bar or shell component.";
     };
@@ -70,7 +93,11 @@ in {
     };
 
     videoDriver = mkOption {
-      type = types.enum [ "nvidia" "amdgpu" "intel" ];
+      type = types.enum [
+        "nvidia"
+        "amdgpu"
+        "intel"
+      ];
       default = "intel";
       description = "Primary GPU driver family.";
     };
