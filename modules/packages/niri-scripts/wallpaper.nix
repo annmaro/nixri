@@ -17,6 +17,11 @@ pkgs.writeShellApplication {
     VIDEO_WALL="$HOME/Pictures/Wallpapers/output.mp4"
     mkdir -p "$CACHE_DIR"
 
+    # Clean up hooks from the old Waypaper configuration. That hook decoded the
+    # video indefinitely with ImageMagick/ffmpeg and could leave many workers.
+    pkill -f 'magick .*niri-overview-blurred' 2>/dev/null || true
+    pkill -f 'ffmpeg.*magick-' 2>/dev/null || true
+
     # Waypaper runs this as its post-command. Its current selection is written
     # to config.ini, so the same command also works when called by Niri startup.
     if [ "$#" -ge 1 ] && [ -n "$1" ]; then

@@ -11,15 +11,18 @@ in
     wallpaper
   ];
 
-  xdg.configFile."waypaper/config.ini".text = ''
+  xdg.configFile."waypaper/config.ini" = {
+    force = true;
+    text = ''
     [Settings]
     language = en
     folder = ~/Pictures/Wallpapers
     monitors = All
     wallpaper = ~/Pictures/Wallpapers/output.mp4
-    backend = awww
+    backend = mpvpaper
     fill = fill
     sort = name
     post_command = ${wallpaper}/bin/wallpaper
   '';
+  };
 }

@@ -10,7 +10,7 @@
   config = lib.mkIf (config.systemSettings.bar == "DMS") {
     home-manager.sharedModules = [
     (
-      { config, ... }:
+      { config, lib, ... }:
 
       let
         # Safe extraction of Stylix colors with a fallback syntax layout
@@ -112,21 +112,14 @@
         # Declaratively install the wallpaperCarousel plugin.
         # Home Manager will automatically symlink this to ~/.config/DankMaterialShell/plugins/wallpaperCarousel
 
-        xdg.configFile."DankMaterialShell/plugins/wallpaperCarousel".source = pkgs.fetchFromGitHub {
-          owner = "motor-dev";
-          repo = "wallpaperCarousel";
-          rev = "main";
-          hash = "sha256-/LoehTfSeeqkgIXw46Ll/PrxeEDhg4RZI5BXib6yEnI="; # <-- Replace with the actual hash, or use lib.fakeHash to let Nix tell you the correct one on your first build
-        };
 
-        xdg.configFile."DankMaterialShell/plugin_settings.json".text = builtins.toJSON {
-          wallpaperCarousel = {
-            enabled = false;
-            wallpaperDirectory = "${config.home.homeDirectory}/Pictures/Wallpapers";
-          };
-        };
+        home.activation.removeDmsWallpaperCarousel = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+          rm -rf "$HOME/.config/DankMaterialShell/plugins/wallpaperCarousel"
+        '';
 
-        xdg.configFile."DankMaterialShell/settings.json".text = builtins.toJSON {
+        xdg.configFile."DankMaterialShell/settings.json" = {
+          force = true;
+          text = builtins.toJSON {
           configVersion = 18;
           use24HourClock = true;
 
@@ -257,6 +250,7 @@
               show_labels = false;
               indicator_style = "pill";
             };
+          };
           };
         };
       }
