@@ -26,37 +26,58 @@ in
         };
 
         terminal = mkOption {
-          type = types.enum [ "foot" "kitty" ];
+          type = types.enum [
+            "foot"
+            "kitty"
+          ];
           default = "foot";
           description = "Default terminal emulator for this user.";
         };
 
         editor = mkOption {
-          type = types.enum [ "hx" "zed" "antigravity" ];
+          type = types.enum [
+            "hx"
+            "zed"
+            "antigravity"
+          ];
           default = "hx";
           description = "Default editor for this user.";
         };
 
         browser = mkOption {
-          type = types.enum [ "firefox" "qutebrowser" "vimb" "zen" ];
+          type = types.enum [
+            "firefox"
+            "qutebrowser"
+            "vimb"
+          ];
           default = "firefox";
           description = "Default browser for this user.";
         };
 
         tuiFileManager = mkOption {
-          type = types.enum [ "yazi" "lf" ];
+          type = types.enum [
+            "yazi"
+            "lf"
+          ];
           default = "yazi";
           description = "Default terminal file manager for this user.";
         };
 
         shell = mkOption {
-          type = types.enum [ "bash" "zsh" "fish" ];
+          type = types.enum [
+            "bash"
+            "zsh"
+            "fish"
+          ];
           default = "fish";
           description = "Default interactive shell for this user.";
         };
 
         bar = mkOption {
-          type = types.enum [ "DMS" "noctalia" ];
+          type = types.enum [
+            "DMS"
+            "noctalia"
+          ];
           default = "DMS";
           description = "Desktop bar or shell for this user.";
         };
@@ -72,18 +93,22 @@ in
     description = "Per-user Home Manager settings.";
   };
 
-  config = let
-    editor = {
+  config =
+    let
+      editor =
+        {
           hx = "hx";
           zed = "zeditor";
           antigravity = "antigravity";
-        }.${config.homeSettings.editor};
-  in {
-    home.sessionVariables = {
-      EDITOR = editor;
-      VISUAL = editor;
-      BROWSER = config.homeSettings.browser;
-      TERMINAL = config.homeSettings.terminal;
+        }
+        .${config.homeSettings.editor};
+    in
+    {
+      home.sessionVariables = {
+        EDITOR = editor;
+        VISUAL = editor;
+        BROWSER = config.homeSettings.browser;
+        TERMINAL = config.homeSettings.terminal;
+      };
     };
-  };
 }

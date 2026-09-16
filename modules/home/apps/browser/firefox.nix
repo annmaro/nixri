@@ -1,9 +1,18 @@
-{ config, inputs, lib, pkgs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   theme = import ../../../data/browser/firefox-usertheme.nix { inherit config; };
 in
 {
+  # Keep Firefox available even when another browser is the default.
+  home.packages = lib.optional (config.homeSettings.browser != "firefox") pkgs.firefox;
+
   programs.firefox = lib.mkIf (config.homeSettings.browser == "firefox") {
     enable = true;
     languagePacks = [
@@ -20,8 +29,8 @@ in
       name = "default";
       isDefault = true;
       settings = import ../../../data/browser/firefox-settings.nix {
-              inherit config lib;
-            };
+        inherit config lib;
+      };
       bookmarks = import ../../../data/browser/bookmarks.nix;
       search = import ../../../data/browser/firefox-search.nix { inherit pkgs; };
       userChrome = theme.userChrome;

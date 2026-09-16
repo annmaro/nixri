@@ -1,8 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  config = lib.mkIf (config.homeSettings.editor == "zed") {
-      programs.zed-editor = {
+  # Keep Zed installed as an alternate editor.
+  home.packages = [ pkgs.zed-editor ];
+
+  programs.zed-editor = lib.mkIf (config.homeSettings.editor == "zed") {
         enable = true;
 
         extensions = [
@@ -251,5 +253,4 @@
           };
         };
       };
-  };
 }

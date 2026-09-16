@@ -43,7 +43,7 @@ in
         "zed"
         "antigravity"
       ];
-      default = "zed";
+      default = "hx";
       description = "Default text editor executable.";
     };
 
@@ -52,7 +52,6 @@ in
         "firefox"
         "qutebrowser"
         "vimb"
-        "zen"
       ];
       default = "firefox";
       description = "Primary web browser.";

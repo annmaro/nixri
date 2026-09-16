@@ -25,7 +25,6 @@
           polarity = "dark";
           enableReleaseChecks = false;
 
-
           base16Scheme = {
             base00 = "1e1e2e"; # Base (Background)
             base01 = "181825"; # Mantle
@@ -84,10 +83,6 @@
             btop.enable = true;
             swaylock.enable = true; # Tells Stylix to inject the colors into the locker lock ring
             firefox = {
-              enable = true; # Ensures Stylix automatically hooks into the layout template
-              profileNames = [ "default" ]; # Instructs Stylix which specific active profiles to look up
-            };
-            zen-browser = {
               enable = true; # Ensures Stylix automatically hooks into the layout template
               profileNames = [ "default" ]; # Instructs Stylix which specific active profiles to look up
             };
