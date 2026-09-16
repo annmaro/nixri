@@ -23,6 +23,8 @@ let
     nrs = "sudo nixos-rebuild switch --flake .#laptop";
     dr = "nixos-rebuild dry-run --flake .#laptop";
     ncb = "sudo nix-collect-garbage -d";
+    nhb = "nh os boot --hostname laptop";
+    nhu = "nh os switch --hostname laptop";
     dots = "cd /home/annmaro/nixri";
   };
 in
