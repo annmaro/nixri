@@ -18,7 +18,7 @@
 
         bgColor = "#${stylixColors.base00 or "1e1e2e"}"; # Background
         fgColor = "#${stylixColors.base05 or "cdd6f4"}"; # Default Text
-        accentColor = "#${stylixColors.base0E or "cba6f7"}"; # Primary Accent (Mauve)
+        accentColor = "#${stylixColors.base0A or "d79921"}"; # Primary Accent (Gruvbox yellow)
         surfaceMuted = "#${stylixColors.base03 or "45475a"}";
 
         # Cleaned up payload block: Defined once, inherited for both dark & light modes
@@ -121,7 +121,7 @@
 
         xdg.configFile."DankMaterialShell/plugin_settings.json".text = builtins.toJSON {
           wallpaperCarousel = {
-            enabled = true;
+            enabled = false;
             wallpaperDirectory = "${config.home.homeDirectory}/Pictures/Wallpapers";
           };
         };
@@ -139,7 +139,7 @@
             notifications = true;
             idle = true;
             lockscreen = true;
-            wallpaper = true; # DMS must manage wallpapers for wallpaperCarousel to work
+            wallpaper = false; # The shared Waypaper/mpvpaper switcher owns the backdrop
             launcher = false; # Handled by your native rofi setup
             dock = false;
           };

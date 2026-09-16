@@ -9,6 +9,7 @@ let
 
   bg = "#${stylixColors.base00 or "282828"}";
   bgAlt = "#${stylixColors.base01 or "3c3836"}";
+  bgSelected = "#${stylixColors.base02 or "504945"}";
   yellow = "#${stylixColors.base0A or "d79921"}";
 
   powermenuTheme = pkgs.writeText "style-1.rasi" ''
@@ -32,7 +33,7 @@ let
 
         background-window:          ${bg};
         background-normal:          ${bgAlt};
-        background-selected:        ${bgAlt};
+        background-selected:        ${bgSelected};
         foreground-normal:          ${yellow};
         foreground-selected:        ${yellow};
     }
@@ -124,6 +125,8 @@ let
     }
 
     element selected.normal {
+        border:                     3px solid;
+        border-color:               var(foreground-selected);
         background-color:           var(background-selected);
         text-color:                 var(foreground-selected);
     }
