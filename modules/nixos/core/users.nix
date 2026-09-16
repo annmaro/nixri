@@ -70,6 +70,11 @@ in
       };
 
       programs.home-manager.enable = true;
+
+      # KeePassXC is a user application; its vault backup timer runs in the
+      # user systemd instance and uses the existing rclone secret.
+      services.keepassxc-backup.enable = true;
+
       xdg.enable = true;
       home = {
         inherit username;
