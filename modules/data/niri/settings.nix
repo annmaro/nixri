@@ -111,7 +111,7 @@ let
     ];
     "Mod+O".toggle-overview = _: { };
 
-    "Mod+Shift+K".spawn = getExe keybindsRofi;
+    "Ctrl+Shift+K".spawn = getExe keybindsRofi;
     "Mod+G".spawn = [
       "launcher"
       "games"
@@ -241,7 +241,7 @@ let
       "systemctl"
       "suspend"
     ];
-    "Mod+P".spawn = "rofi-rbw";
+    "Mod+P".spawn = "keepassxc";
     "Mod+Ctrl+P".spawn-sh = screenshot;
   };
 in
@@ -277,8 +277,8 @@ in
       "-c"
       "sleep 2 && thunar --daemon"
     ]
-    [ (getExe wallpaper) ]
-  ];
+  ]
+  ++ lib.optional (!isDms) [ (getExe wallpaper) ];
 
   input = {
     keyboard = {

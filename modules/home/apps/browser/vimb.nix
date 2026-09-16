@@ -25,8 +25,6 @@ in
     {
       home.packages = with pkgs; [
         vimbWrapped
-        rbw
-        rofi-rbw
         pinentry-gnome3
         gst_all_1.gstreamer
         gst_all_1.gst-plugins-base
