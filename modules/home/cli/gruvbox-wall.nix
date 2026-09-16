@@ -28,7 +28,7 @@ let
 
       # Map image colors to standard Gruvbox colors:
       # #282828 (Dark background) to #ebdbb2 (Light foreground)
-      magick "$INPUT_IMG" -colorspace gray +level-colors "#282828","#ebdbb2" "$OUTPUT_IMG"
+      magick "$INPUT_IMG" -colorspace gray +level-colors "#282828,#ebdbb2" "$OUTPUT_IMG"
 
       echo "Converted image saved to $OUTPUT_IMG"
     '';
