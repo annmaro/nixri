@@ -28,11 +28,11 @@
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
     };
-    "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+    "keepassxc-browser@keepassxc.org" = {
       private_browsing = true;
       default_area = "navbar";
       installation_mode = "force_installed";
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/keepassxc-browser/latest.xpi";
     };
     "vpn@proton.ch" = {
       private_browsing = true;
@@ -99,7 +99,7 @@
         userSettings = rec {
           uiTheme = "dark";
           uiAccentCustom = true;
-          uiAccentCustom0 = "#cba6f7"; # Catppuccin Mauve
+          uiAccentCustom0 = "#${config.lib.stylix.colors.base0A}"; # Gruvbox yellow
           cloudStorageEnabled = lib.mkForce false;
           advancedUserEnabled = true;
           userFiltersTrusted = true;
