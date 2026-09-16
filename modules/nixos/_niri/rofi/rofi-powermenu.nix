@@ -1,154 +1,131 @@
 {
   config,
   pkgs,
-  systemSettings,
   ...
 }:
 
 let
-  wallpaperImg = "/home/${systemSettings.username}/Pictures/Wallpapers/cranerofi.jpg";
-
   stylixColors = config.lib.stylix.colors or { };
 
-  bg = "#${stylixColors.base00 or "1e1e2e"}";
-  bgAlt = "#${stylixColors.base01 or "181825"}";
-  fg = "#${stylixColors.base05 or "cdd6f4"}";
+  bg = "#${stylixColors.base00 or "282828"}";
+  bgAlt = "#${stylixColors.base01 or "3c3836"}";
+  yellow = "#${stylixColors.base0A or "d79921"}";
 
-  accent = "#${stylixColors.base0E or "cba6f7"}";
-  active = "#${stylixColors.base0B or "a6e3a1"}";
-  urgent = "#${stylixColors.base08 or "f38ba8"}";
-
-  powermenuTheme = pkgs.writeText "style-2.rasi" ''
+  powermenuTheme = pkgs.writeText "style-1.rasi" ''
     configuration {
         show-icons:                 false;
     }
 
     * {
-        font:                        "${
-          config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"
-        } 10";
-        background:                  ${bg};
-        background-alt:              ${bgAlt};
-        foreground:                  ${fg};
-        selected:                    ${accent};
-        active:                      ${active};
-        urgent:                      ${urgent};
+        mainbox-spacing:            100px;
+        mainbox-margin:             100px 300px;
+        message-margin:             0px 400px;
+        message-padding:            15px;
+        message-border-radius:      100%;
+        listview-spacing:           50px;
+        element-padding:            55px 60px;
+        element-border-radius:      100%;
+
+        prompt-font:                "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font Bold Italic"} 64";
+        textbox-font:               "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"} 16";
+        element-text-font:          "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"} 64";
+
+        background-window:          ${bg};
+        background-normal:          ${bgAlt};
+        background-selected:        ${bgAlt};
+        foreground-normal:          ${yellow};
+        foreground-selected:        ${yellow};
     }
 
     window {
-        transparency:                "real";
-        location:                    center;
-        anchor:                      center;
-        fullscreen:                  false;
-        width:                       1000px;
-        x-offset:                    0px;
-        y-offset:                    0px;
-
-        padding:                     0px;
-        border:                      2px solid;
-        border-radius:               24px;
-        border-color:                @selected;
+        transparency:               "real";
+        location:                   center;
+        anchor:                     center;
+        fullscreen:                 true;
         cursor:                      "default";
-        background-color:            @background;
+        background-color:           var(background-window);
     }
 
     mainbox {
-        background-color:            transparent;
-        orientation:                 horizontal;
-        children:                    [ "imagebox", "listview" ];
-    }
-
-    imagebox {
-        spacing:                     20px;
-        padding:                     20px;
-        background-color:            transparent;
-        background-image:            url("${wallpaperImg}", height);
-        children:                    [ "inputbar", "dummy", "message" ];
-    }
-
-    userimage {
-        margin:                      0px 0px;
-        border:                      10px;
-        border-radius:               10px;
-        border-color:                @background-alt;
-        background-color:            transparent;
-    }
-
-    inputbar {
-        padding:                     15px;
-        border-radius:               100%;
-        background-color:            @background-alt;
-        text-color:                  @selected;
-        border:                      1px solid;
-        border-color:                @selected;
-        children:                    [ "dummy", "prompt", "dummy"];
+        enabled:                    true;
+        spacing:                    var(mainbox-spacing);
+        margin:                     var(mainbox-margin);
+        background-color:           transparent;
+        children:                   [ "dummy", "inputbar", "listview", "message", "dummy" ];
     }
 
     dummy {
-        background-color:            transparent;
+        background-color:           transparent;
+    }
+
+    inputbar {
+        enabled:                    true;
+        background-color:           transparent;
+        children:                   [ "dummy", "prompt", "dummy" ];
     }
 
     prompt {
-        background-color:            inherit;
-        text-color:                  inherit;
+        enabled:                    true;
+        font:                       var(prompt-font);
+        background-color:           transparent;
+        text-color:                 var(foreground-normal);
     }
 
     message {
-        enabled:                     true;
-        margin:                      0px;
-        padding:                     15px;
-        border-radius:               100%;
-        background-color:            @background-alt;
-        text-color:                  @foreground;
-        border:                      1px solid;
-        border-color:                @active;
+        enabled:                    true;
+        margin:                     var(message-margin);
+        padding:                    var(message-padding);
+        border-radius:              var(message-border-radius);
+        background-color:           var(background-normal);
+        text-color:                 var(foreground-normal);
     }
+
     textbox {
-        background-color:            inherit;
-        text-color:                  inherit;
-        vertical-align:              0.5;
-        horizontal-align:            0.5;
+        font:                       var(textbox-font);
+        background-color:           transparent;
+        text-color:                 var(foreground-normal);
+        vertical-align:             0.5;
+        horizontal-align:           0.5;
     }
 
     listview {
-        enabled:                     true;
-        columns:                     3;
-        lines:                       2;
-        cycle:                       true;
-        dynamic:                     true;
-        scrollbar:                   false;
-        layout:                      vertical;
-        reverse:                     false;
-        fixed-height:                true;
-        fixed-columns:               true;
-        
-        spacing:                     20px;
-        margin:                      20px;
-        background-color:            transparent;
-        cursor:                      "default";
+        enabled:                    true;
+        expand:                     false;
+        columns:                    5;
+        lines:                      1;
+        cycle:                      true;
+        dynamic:                    true;
+        scrollbar:                  false;
+        layout:                     vertical;
+        reverse:                    false;
+        fixed-height:               true;
+        fixed-columns:              true;
+        spacing:                    var(listview-spacing);
+        background-color:           transparent;
+        cursor:                     "default";
     }
 
     element {
-        enabled:                     true;
-        padding:                     40px 10px;
-        border-radius:               100%;
-        background-color:            @background-alt;
-        text-color:                  @foreground;
-        cursor:                      pointer;
+        enabled:                    true;
+        padding:                    var(element-padding);
+        border-radius:              var(element-border-radius);
+        background-color:           var(background-normal);
+        text-color:                 var(foreground-normal);
+        cursor:                     pointer;
     }
+
     element-text {
-        font:                        "${
-          config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font Bold"
-        } 32";
-        background-color:            transparent;
-        text-color:                  inherit;
-        cursor:                      inherit;
-        vertical-align:              0.5;
-        horizontal-align:              0.5;
+        font:                       var(element-text-font);
+        background-color:           transparent;
+        text-color:                 var(foreground-normal);
+        cursor:                     inherit;
+        vertical-align:             0.5;
+        horizontal-align:           0.5;
     }
+
     element selected.normal {
-        background-color:            var(selected);
-        text-color:                  var(background);
+        background-color:           var(background-selected);
+        text-color:                 var(foreground-selected);
     }
   '';
 

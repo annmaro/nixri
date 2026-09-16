@@ -11,11 +11,11 @@
 
         bgColor = "#${stylixColors.base00 or "1e1e2e"}"; # Background
         bgAltColor = "#${stylixColors.base01 or "181825"}"; # Secondary Background
-        fgColor = "#${stylixColors.base05 or "cdd6f4"}"; # Text
+
         accentColor = "#${stylixColors.base0E or "cba6f7"}"; # Selected Focus
         activeColor = "#${stylixColors.base0B or "a6e3a1"}"; # Active States
         urgentColor = "#${stylixColors.base08 or "f38ba8"}"; # Alert States
-        currentWallpaper = "/home/${config.home.username}/Pictures/Wallpapers/cranerofi.jpg";
+        yellowColor = "#${stylixColors.base0A or "d79921"}"; # Gruvbox yellow
       in
       {
         programs.rofi = {
@@ -36,8 +36,8 @@
 
                 background = mkLiteral bgColor;
                 background-alt = mkLiteral bgAltColor;
-                foreground = mkLiteral fgColor;
-                selected = mkLiteral accentColor;
+                foreground = mkLiteral yellowColor;
+                selected = mkLiteral yellowColor;
                 active = mkLiteral activeColor;
                 urgent = mkLiteral urgentColor;
               };
@@ -47,7 +47,7 @@
                 location = mkLiteral "center";
                 anchor = mkLiteral "center";
                 fullscreen = false;
-                width = mkLiteral "1000px";
+                width = mkLiteral "750px";
                 x-offset = mkLiteral "0px";
                 y-offset = mkLiteral "0px";
                 enabled = true;
@@ -58,41 +58,33 @@
 
               "mainbox" = {
                 enabled = true;
-                spacing = mkLiteral "0px";
-                background-color = mkLiteral "transparent";
-                orientation = mkLiteral "vertical";
-                children = map mkLiteral [
-                  "inputbar"
-                  "listbox"
-                ];
-              };
-
-              "listbox" = {
                 spacing = mkLiteral "20px";
                 padding = mkLiteral "20px";
                 background-color = mkLiteral "transparent";
                 orientation = mkLiteral "vertical";
                 children = map mkLiteral [
-                  "message"
+                  "inputbar"
                   "listview"
                 ];
               };
 
+
               "inputbar" = {
                 enabled = true;
                 spacing = mkLiteral "10px";
-                padding = mkLiteral "80px 60px";
-                background-color = mkLiteral "transparent";
-                # Dynamically maps the current wallpaper
-                background-image = mkLiteral ''url("${currentWallpaper}", width)'';
+                padding = mkLiteral "15px";
+                background-color = mkLiteral "@background-alt";
                 text-color = mkLiteral "@foreground";
-                orientation = mkLiteral "horizontal";
                 children = map mkLiteral [
-                  "textbox-prompt-colon"
+                  "prompt"
                   "entry"
-                  "dummy"
-                  "mode-switcher"
                 ];
+              };
+
+              "prompt" = {
+                enabled = true;
+                background-color = mkLiteral "transparent";
+                text-color = mkLiteral "inherit";
               };
 
               "textbox-prompt-colon" = {
@@ -141,7 +133,7 @@
 
               "button selected" = {
                 background-color = mkLiteral "@selected";
-                text-color = mkLiteral "@background";
+                text-color = mkLiteral "@foreground";
               };
 
               "listview" = {
@@ -183,12 +175,12 @@
 
               "element normal.active" = {
                 background-color = mkLiteral "@active";
-                text-color = mkLiteral "@background";
+                text-color = mkLiteral "@foreground";
               };
 
               "element selected.normal" = {
                 background-color = mkLiteral "@selected";
-                text-color = mkLiteral "@background";
+                text-color = mkLiteral "@foreground";
               };
 
               "element selected.urgent" = {
