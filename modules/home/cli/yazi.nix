@@ -61,11 +61,52 @@
       }
     ];
 
-    theme = {
-      manager.border_symbol = " ";
+    # Home Manager's Yazi module supplies defaults for theme fields. Force
+    # this complete theme so the Stylix values do not conflict with them.
+    theme = lib.mkForce {
+      manager = {
+        border_symbol = " ";
+        cwd = { fg = "#${config.lib.stylix.colors.base0D}"; };
+        hovered = {
+          fg = "#${config.lib.stylix.colors.base00}";
+          bg = "#${config.lib.stylix.colors.base0A}";
+        };
+        preview_hovered = {
+          fg = "#${config.lib.stylix.colors.base00}";
+          bg = "#${config.lib.stylix.colors.base0B}";
+        };
+        find_keyword = {
+          fg = "#${config.lib.stylix.colors.base0A}";
+          italic = true;
+        };
+        tab_active = {
+          fg = "#${config.lib.stylix.colors.base00}";
+          bg = "#${config.lib.stylix.colors.base0D}";
+        };
+        tab_inactive = {
+          fg = "#${config.lib.stylix.colors.base04}";
+          bg = "#${config.lib.stylix.colors.base01}";
+        };
+      };
       status = {
         separator_open = "";
         separator_close = "";
+        overall = {
+          fg = "#${config.lib.stylix.colors.base05}";
+          bg = "#${config.lib.stylix.colors.base01}";
+        };
+        progress_label = {
+          fg = "#${config.lib.stylix.colors.base0A}";
+          bold = true;
+        };
+        progress_normal = {
+          fg = "#${config.lib.stylix.colors.base0B}";
+          bg = "#${config.lib.stylix.colors.base03}";
+        };
+        progress_error = {
+          fg = "#${config.lib.stylix.colors.base08}";
+          bg = "#${config.lib.stylix.colors.base03}";
+        };
       };
     };
   };

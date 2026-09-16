@@ -1,5 +1,13 @@
 { config, ... }:
 
+let
+  colors = config.lib.stylix.colors;
+  accent = "#${colors.base0A}";
+  error = "#${colors.base08}";
+  success = "#${colors.base0B}";
+  secondary = "#${colors.base0D}";
+  muted = "#${colors.base04}";
+in
 {
   programs.starship = {
     enable = true;
@@ -10,20 +18,20 @@
       directory = {
         truncate_to_repo = false;
         read_only = " ro";
-        style = "#cba6f7";
+        style = accent;
       };
       character = {
-        success_symbol = "[❯](#cba6f7)";
-        error_symbol = "[❯](#f38ba8)";
-        vimcmd_symbol = "[❮](#a6e3a1)";
+        success_symbol = "[❯](${accent})";
+        error_symbol = "[❯](${error})";
+        vimcmd_symbol = "[❮](${success})";
       };
       git_branch = {
         format = "[$branch]($style)";
         symbol = "git ";
-        style = "#f5c2e7";
+        style = secondary;
       };
       git_status = {
-        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](#cba6f7) ($ahead_behind$stashed)]($style)";
+        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](${accent}) ($ahead_behind$stashed)]($style)";
         style = "#89dceb";
       };
       cmd_duration = {

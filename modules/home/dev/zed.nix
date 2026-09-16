@@ -14,8 +14,7 @@
           "python"
           "cpp"
           "qml"
-          "catppuccin"
-          "catppuccin-icons"
+
         ];
 
         userKeymaps = [
@@ -74,8 +73,8 @@
           vim_mode = true;
           theme = {
             mode = "dark";
-            dark = "Catppuccin Mocha";
-            light = "Catppuccin Latte";
+            dark = "Gruvbox Dark";
+            light = "Gruvbox Light";
           };
 
           buffer_font_size = 24;

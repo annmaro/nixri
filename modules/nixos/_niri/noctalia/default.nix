@@ -33,7 +33,7 @@
           theme = {
             mode = "dark";
             source = lib.mkForce "builtin";
-            builtin = "Catppuccin";
+            builtin = "Gruvbox";
           };
 
           # Date/Time Format Tokens

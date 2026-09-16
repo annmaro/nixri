@@ -9,7 +9,7 @@
       settings = {
         main = {
           font = lib.mkForce "JetBrainsMono Nerd Font:size=14";
-          include = "${pkgs.foot.themes}/share/foot/themes/catppuccin-mocha";
+          include = "${pkgs.foot.themes}/share/foot/themes/gruvbox-dark";
         };
 
         scrollback.lines = 10000;

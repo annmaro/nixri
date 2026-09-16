@@ -52,11 +52,6 @@ in
       package = wrappedNiri;
     };
 
-    home-manager.sharedModules = [
-      ({ ... }: {
-        services.awww.enable = true;
-      })
-    ];
 
     xdg.portal = {
       enable = true;

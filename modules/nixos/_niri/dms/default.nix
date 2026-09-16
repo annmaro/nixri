@@ -27,7 +27,7 @@
           backgroundText = fgColor;
           error = "#${stylixColors.base08 or "f38ba8"}";
           info = "#${stylixColors.base0D or "89b4fa"}";
-          name = "CatppuccinMocha";
+          name = "Gruvbox";
           outline = "#${stylixColors.base04 or "585b70"}";
           primary = accentColor;
           primaryContainer = accentColor;
@@ -44,7 +44,7 @@
           warning = "#${stylixColors.base0A or "f9e2af"}";
         };
 
-        catppuccinMochaTheme = {
+        gruvboxTheme = {
           dark = themePayload;
           light = themePayload;
         };
@@ -87,8 +87,8 @@
         # 🎨 AUTOMATIC THEME GENERATION
         # =====================================================================
         # Nix now dynamically generates the file using your Stylix palette!
-        xdg.configFile."DankMaterialShell/themes/catppuccinMocha/theme.json".text =
-          builtins.toJSON catppuccinMochaTheme;
+                xdg.configFile."DankMaterialShell/themes/gruvbox/theme.json".text =
+          builtins.toJSON gruvboxTheme;
         xdg.configFile."DankMaterialShell/nix.png".source = ./nix.png; # Symlink the local nix.png into the expected path in the home directory for DMS to use as the profile image
 
         # =====================================================================
@@ -119,16 +119,19 @@
           hash = "sha256-/LoehTfSeeqkgIXw46Ll/PrxeEDhg4RZI5BXib6yEnI="; # <-- Replace with the actual hash, or use lib.fakeHash to let Nix tell you the correct one on your first build
         };
 
+        xdg.configFile."DankMaterialShell/plugin_settings.json".text = builtins.toJSON {
+          wallpaperCarousel = {
+            enabled = true;
+            wallpaperDirectory = "${config.home.homeDirectory}/Pictures/Wallpapers";
+          };
+        };
+
         xdg.configFile."DankMaterialShell/settings.json".text = builtins.toJSON {
           configVersion = 18;
           use24HourClock = true;
 
-          wallpaperCarousel = {
-            wallpaperPath = "/home/annmaro/Pictures/Wallpapers";
-          };
-
           screenPreferences = {
-            wallpaper = [ ];
+            wallpaper = [ "all" ];
           };
 
           modules = {
@@ -136,14 +139,14 @@
             notifications = true;
             idle = true;
             lockscreen = true;
-            wallpaper = false; # false to keep it managed by your separate awww/swaybg
+            wallpaper = true; # DMS must manage wallpapers for wallpaperCarousel to work
             launcher = false; # Handled by your native rofi setup
             dock = false;
           };
 
           dynamicTheming = false; # Disable dynamic theming to maintain a consistent look across all widgets, regardless of the current wallpaper or system theme. This ensures that your custom color choices are always applied.
           currentThemeName = "custom"; # Use "custom" to apply your custom theme file specified below
-          customThemeFile = "${config.home.homeDirectory}/.config/DankMaterialShell/themes/catppuccinMocha/theme.json"; # Path to your custom theme file, which is generated dynamically from your Stylix palette. Make sure this path matches where your theme file is generated and stored.
+          customThemeFile = "${config.home.homeDirectory}/.config/DankMaterialShell/themes/gruvbox/theme.json"; # Path to your custom theme file, which is generated dynamically from your Stylix palette. Make sure this path matches where your theme file is generated and stored.
 
           fontFamily = config.stylix.fonts.sansSerif.name;
           monoFontFamily = config.stylix.fonts.monospace.name;
