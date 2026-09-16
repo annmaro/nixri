@@ -214,9 +214,11 @@ in
   outputs."desc:BOE 0x0690" = {
     mode = "1920x1080@60.014";
     scale = 1.0;
-    position = {
-      x = 0;
-      y = 0;
+    position = _: {
+      props = {
+        x = 0;
+        y = 0;
+      };
     };
   };
 
