@@ -349,6 +349,10 @@ in
     {
       matches = [ { namespace = "^rofi$"; } ];
       geometry-corner-radius = 12;
+      background-effect = {
+        blur = true;
+        xray = false;
+      };
     }
     {
       matches = [ { namespace = barNamespace; } ];
@@ -409,7 +413,6 @@ in
         "toggle"
         "session"
       ];
-      "Mod+Shift+C".spawn = "code";
       "Mod+S".spawn-sh = "niri msg action toggle-overview";
     };
 }
