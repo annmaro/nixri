@@ -10,11 +10,12 @@ let
     exec ${pkgs.regreet}/bin/regreet
   '';
   greeterCommand = pkgs.writeShellScript "greetd-session" ''
-    exec ${pkgs.sway}/bin/sway --config ${greeterSwayConfig}
+    exec ${pkgs.dbus}/bin/dbus-run-session ${pkgs.sway}/bin/sway --config ${greeterSwayConfig}
   '';
 in
 {
   services.displayManager.defaultSession = "niri";
+  services.displayManager.regreet.enable = true;
 
   services.greetd = {
     enable = true;
