@@ -14,7 +14,12 @@ pkgs.writeShellApplication {
     CACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/wallpaper"
     LAST_WALL="$CACHE_DIR/last_wallpaper"
     WAYPAPER_CONFIG="''${XDG_CONFIG_HOME:-$HOME/.config}/waypaper/config.ini"
-    VIDEO_WALL="$HOME/Pictures/Wallpapers/output.mp4"
+    # Support multiple possible video wallpaper locations
+    VIDEO_WALL_CANDIDATES=(
+      "$HOME/Pictures/Wallpapers/output.mp4"
+      "$HOME/Pictures/Wallpapers/output_1080p.mp4"
+      "/etc/greetd/wallpaper.mp4"
+    )
     mkdir -p "$CACHE_DIR"
 
     # Clean up hooks from the old Waypaper configuration. That hook decoded the
@@ -29,11 +34,20 @@ pkgs.writeShellApplication {
     elif [ -f "$WAYPAPER_CONFIG" ]; then
       TARGET_WALL="$(sed -n 's/^wallpaper[[:space:]]*=[[:space:]]*//p' "$WAYPAPER_CONFIG" | tail -n 1)"
     else
-      TARGET_WALL="$VIDEO_WALL"
+      # Find first existing video wallpaper candidate
+      TARGET_WALL=""
+      for candidate in "${VIDEO_WALL_CANDIDATES[@]}"; do
+        if [ -f "$candidate" ]; then
+          TARGET_WALL="$candidate"
+          break
+        fi
+      done
+      # Fallback to first candidate even if it doesn't exist yet
+      [ -z "$TARGET_WALL" ] && TARGET_WALL="${VIDEO_WALL_CANDIDATES[0]}"
     fi
 
     if [ -z "$TARGET_WALL" ]; then
-      TARGET_WALL="$VIDEO_WALL"
+      TARGET_WALL="${VIDEO_WALL_CANDIDATES[0]}"
     fi
 
     # Waypaper accepts a tilde in config.ini, but shell variables do not

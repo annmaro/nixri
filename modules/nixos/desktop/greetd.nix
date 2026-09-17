@@ -20,7 +20,7 @@ let
 in
 {
   systemd.services.greetd-wallpaper = {
-    description = "Install the QtGreet video wallpaper and playlist";
+    description = "Install the QtGreet video wallpaper (re-encoded for MPV)";
     wantedBy = [ "greetd.service" ];
     before = [ "greetd.service" ];
     unitConfig.ConditionPathExists = wallpaperPath;
@@ -29,10 +29,17 @@ in
       RemainAfterExit = true;
     };
     script = ''
+      # Re-encode for MPV compatibility: H.264 baseline, yuv420p, no audio, faststart
+      ${pkgs.ffmpeg}/bin/ffmpeg -y -i ${wallpaperPath} \
+        -c:v libx264 -profile:v baseline -level 3.0 -pix_fmt yuv420p \
+        -an -movflags +faststart \
+        /etc/greetd/wallpaper.mp4
+      # Also copy to user's wallpaper directory for desktop session
       ${pkgs.coreutils}/bin/install -Dm0644 \
-        ${wallpaperPath} /etc/greetd/wallpaper.mp4
-      # Create an M3U playlist that loops the video infinitely
-      printf '#EXTM3U\n#EXT-X-REPEAT\n/etc/greetd/wallpaper.mp4\n' \
+        /etc/greetd/wallpaper.mp4 \
+        ${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output.mp4
+      # Create M3U playlist with loop directive (MPV respects --loop-playlist)
+      printf '#EXTM3U\n#EXTINF:-1,loop\n/etc/greetd/wallpaper.mp4\n' \
         > /etc/greetd/wallpaper.m3u
     '';
   };
@@ -87,5 +94,6 @@ in
   environment.systemPackages = with pkgs; [
     qtgreet
     sway
+    ffmpeg
   ];
 }
