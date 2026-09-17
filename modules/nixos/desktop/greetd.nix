@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  wallpaper = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output.mp4";
+  wallpaper = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output_1080p.mp4";
   greeterSwayConfig = pkgs.writeText "greetd-sway.conf" ''
     default_border none
     default_floating_border none
@@ -15,7 +15,18 @@ let
 in
 {
   services.displayManager.defaultSession = "niri";
-  services.displayManager.regreet.enable = true;
+  services.displayManager.regreet = {
+    enable = true;
+    settings.skip_selection = true;
+    extraCss = ''
+      /* ReGreet's main login frame is the second child of the overlay,
+         after the background picture. */
+      overlay > frame.background:nth-child(2) {
+        margin-left: 8%;
+        margin-right: 58%;
+      }
+    '';
+  };
 
   services.greetd = {
     enable = true;
