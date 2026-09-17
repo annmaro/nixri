@@ -64,6 +64,7 @@
           enable = true;
           setupOpts = {
             provider = "gemini";
+            auto_suggestions_provider = "gemini";
             providers = {
               gemini = {
                 __inherited_from = "openai";
