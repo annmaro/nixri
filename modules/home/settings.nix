@@ -36,11 +36,11 @@ in
 
         editor = mkOption {
           type = types.enum [
-            "hx"
+            "neovim"
             "zed"
             "antigravity"
           ];
-          default = "hx";
+          default = "neovim";
           description = "Default editor for this user.";
         };
 
@@ -97,7 +97,7 @@ in
     let
       editor =
         {
-          hx = "hx";
+          neovim = "nvim";
           zed = "zeditor";
           antigravity = "antigravity";
         }

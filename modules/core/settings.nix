@@ -39,11 +39,11 @@ in
 
     editor = mkOption {
       type = types.enum [
-        "hx"
+        "neovim"
         "zed"
         "antigravity"
       ];
-      default = "hx";
+      default = "neovim";
       description = "Default text editor executable.";
     };
 
