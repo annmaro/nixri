@@ -123,13 +123,15 @@
           configVersion = 18;
           use24HourClock = true;
 
-
+          screenPreferences = {
+            wallpaper = [ "all" ];
+          };
 
           modules = {
             bar = true;
             notifications = true;
-            idle = true;
-            lockscreen = true;
+            idle = false;
+            lockscreen = false;
             wallpaper = false; # The shared Waypaper/mpvpaper switcher owns the backdrop
             launcher = false; # Handled by your native rofi setup
             dock = false;
