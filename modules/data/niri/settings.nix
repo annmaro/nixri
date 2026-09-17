@@ -53,7 +53,7 @@ let
     {
       matches = [
         {
-          app-id = "^(Emacs|obsidian|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|VSCodium|code|thunar)$";
+          app-id = "^(Emacs|obsidian|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
         }
       ];
       opacity = 0.85;
