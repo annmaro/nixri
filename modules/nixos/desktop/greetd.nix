@@ -14,12 +14,13 @@ let
   '';
   greeterCommand = pkgs.writeShellScript "greetd-session" ''
     exec ${pkgs.dbus}/bin/dbus-run-session \
+      env QTGREET_THEME_DIRS=${pkgs.qtgreet}/share/qtgreet/themes \
       ${pkgs.sway}/bin/sway --config ${greeterSwayConfig}
   '';
 in
 {
   systemd.services.greetd-wallpaper = {
-    description = "Install the QtGreet video wallpaper";
+    description = "Install the QtGreet video wallpaper and playlist";
     wantedBy = [ "greetd.service" ];
     before = [ "greetd.service" ];
     unitConfig.ConditionPathExists = wallpaperPath;
@@ -30,6 +31,9 @@ in
     script = ''
       ${pkgs.coreutils}/bin/install -Dm0644 \
         ${wallpaperPath} /etc/greetd/wallpaper.mp4
+      # Create an M3U playlist that loops the video infinitely
+      printf '#EXTM3U\n#EXT-X-REPEAT\n/etc/greetd/wallpaper.mp4\n' \
+        > /etc/greetd/wallpaper.m3u
     '';
   };
 
@@ -52,7 +56,7 @@ in
     FontFamily = Theme
 
     [videobg]
-    File = /etc/greetd/wallpaper.mp4
+    Playlist = /etc/greetd/wallpaper.m3u
 
     [Environment]
 
