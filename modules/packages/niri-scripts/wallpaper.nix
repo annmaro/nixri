@@ -36,18 +36,18 @@ pkgs.writeShellApplication {
     else
       # Find first existing video wallpaper candidate
       TARGET_WALL=""
-      for candidate in "${VIDEO_WALL_CANDIDATES[@]}"; do
+      for candidate in "''${VIDEO_WALL_CANDIDATES[@]}"; do
         if [ -f "$candidate" ]; then
           TARGET_WALL="$candidate"
           break
         fi
       done
       # Fallback to first candidate even if it doesn't exist yet
-      [ -z "$TARGET_WALL" ] && TARGET_WALL="${VIDEO_WALL_CANDIDATES[0]}"
+      [ -z "$TARGET_WALL" ] && TARGET_WALL="''${VIDEO_WALL_CANDIDATES[0]}"
     fi
 
     if [ -z "$TARGET_WALL" ]; then
-      TARGET_WALL="${VIDEO_WALL_CANDIDATES[0]}"
+      TARGET_WALL="''${VIDEO_WALL_CANDIDATES[0]}"
     fi
 
     # Waypaper accepts a tilde in config.ini, but shell variables do not
