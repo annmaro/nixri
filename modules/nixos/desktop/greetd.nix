@@ -7,8 +7,10 @@ let
   gSlapperPkg = inputs.gslapper.packages.${pkgs.system}.gslapper;
 
   greeterCommand = pkgs.writeShellScript "greetd-session" ''
+    mkdir -p /tmp/greetd-niri
+    sed 's|${syscGreetPkg}/bin/sysc-greet|${syscGreetPkg}/bin/sysc-greet --cmd niri-session|g' ${syscGreetPkg}/etc/greetd/niri-greeter-config.kdl > /tmp/greetd-niri/niri-greeter-config.kdl
     exec ${pkgs.dbus}/bin/dbus-run-session \
-      ${pkgs.niri}/bin/niri --config ${syscGreetPkg}/etc/greetd/niri-greeter-config.kdl
+      ${pkgs.niri}/bin/niri --config /tmp/greetd-niri/niri-greeter-config.kdl
   '';
 in
 {
@@ -38,6 +40,15 @@ in
     requires = [ "greetd-wallpaper.service" ];
     after = [ "greetd-wallpaper.service" ];
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/greeter 0755 greeter greeter - -"
+    "d /var/lib/greeter/.cache 0755 greeter greeter - -"
+    "d /var/lib/greeter/.cache/sysc-greet 0755 greeter greeter - -"
+    "f /var/lib/greeter/.cache/sysc-greet/session 0644 greeter greeter - {\"Name\":\"niri\",\"Exec\":\"niri-session\",\"Type\":\"Wayland\"}"
+    "f /var/lib/greeter/.cache/sysc-greet/preferences 0644 greeter greeter - {\"Username\":\"${config.systemSettings.username}\"}"
+    "d /var/cache/sysc-greet 0755 greeter greeter - -"
+  ];
 
   services.displayManager.defaultSession = "niri";
 
