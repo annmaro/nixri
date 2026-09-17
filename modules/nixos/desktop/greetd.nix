@@ -2,11 +2,12 @@
 
 let
   wallpaper = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output_1080p.mp4";
+  greeterWallpaper = "/etc/greetd/wallpaper.mp4";
   greeterSwayConfig = pkgs.writeText "greetd-sway.conf" ''
     default_border none
     default_floating_border none
     output * bg #000000 solid_color
-    exec ${pkgs.mpvpaper}/bin/mpvpaper -o "no-audio --loop-file=inf --cache=no --demuxer-readahead-secs=1 --hwdec=auto" '*' '${wallpaper}'
+    exec ${pkgs.mpvpaper}/bin/mpvpaper -o "no-audio --loop-file=inf --cache=no --demuxer-readahead-secs=1 --hwdec=auto" '*' '${greeterWallpaper}'
     exec ${pkgs.regreet}/bin/regreet
   '';
   greeterCommand = pkgs.writeShellScript "greetd-session" ''
@@ -14,22 +15,25 @@ let
   '';
 in
 {
+  environment.etc."greetd/wallpaper.mp4".source = wallpaper;
+
   services.displayManager.defaultSession = "niri";
   services.displayManager.regreet = {
     enable = true;
     settings.skip_selection = true;
     extraCss = ''
-      /* ReGreet's main login frame is the second child of the overlay,
-         after the background picture. */
-      overlay > frame.background:nth-child(2) {
-        margin-left: 8%;
-        margin-right: 58%;
+      /* The centered frame is the login panel; the clock frame also has
+         the background class but is marked as a top overlay. */
+      overlay > frame.background:not(.top) {
+        margin-left: 40px;
+        margin-right: 540px;
       }
     '';
   };
 
   services.greetd = {
     enable = true;
+    restart = true;
     settings.default_session = {
       command = greeterCommand;
       user = "greeter";
