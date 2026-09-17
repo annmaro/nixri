@@ -125,8 +125,8 @@
             google = {
               available_models = [
                 {
-                  name = "gemini-3.1-preview";
-                  display_name = "Gemini 3.1 Preview";
+                  name = "gemini-3.1-pro-preview";
+                  display_name = "Gemini 3.1 Pro Preview";
                   max_tokens = 1000000;
                 }
                 {
@@ -162,7 +162,7 @@
           agent = {
             default_model = {
               provider = "google";
-              model = "gemini-2.5-flash";
+              model = "gemini-3.1-pro-preview";
             };
             version = "2";
           };
