@@ -1,7 +1,14 @@
 { config, pkgs, ... }:
 
 let
-  wallpaper = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output_1080p.mp4";
+  wallpaperPath = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output_1080p.mp4";
+  wallpaperSource = builtins.path {
+    path = wallpaperPath;
+    name = "greetd-wallpaper-source.mp4";
+  };
+  wallpaper = pkgs.runCommandLocal "greetd-wallpaper.mp4" { } ''
+    install -Dm0644 ${wallpaperSource} "$out"
+  '';
 
   sessionDesktops = "${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
   greeterSwayConfig = pkgs.writeText "qtgreet-sway.conf" ''
@@ -18,7 +25,10 @@ let
   '';
 in
 {
-  environment.etc."greetd/wallpaper.mp4".source = wallpaper;
+  environment.etc."greetd/wallpaper.mp4" = {
+    source = wallpaper;
+    mode = "0644";
+  };
 
   environment.etc."qtgreet/config.ini".text = ''
     [General]
