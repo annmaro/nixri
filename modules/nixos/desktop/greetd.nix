@@ -2,13 +2,6 @@
 
 let
   wallpaperPath = "${config.users.users.${config.systemSettings.username}.home}/Pictures/Wallpapers/output_1080p.mp4";
-  wallpaperSource = builtins.path {
-    path = wallpaperPath;
-    name = "greetd-wallpaper-source.mp4";
-  };
-  wallpaper = pkgs.runCommandLocal "greetd-wallpaper.mp4" { } ''
-    install -Dm0644 ${wallpaperSource} "$out"
-  '';
 
   sessionDesktops = "${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
   greeterSwayConfig = pkgs.writeText "qtgreet-sway.conf" ''
@@ -25,9 +18,24 @@ let
   '';
 in
 {
-  environment.etc."greetd/wallpaper.mp4" = {
-    source = wallpaper;
-    mode = "0644";
+  systemd.services.greetd-wallpaper = {
+    description = "Install the QtGreet video wallpaper";
+    wantedBy = [ "greetd.service" ];
+    before = [ "greetd.service" ];
+    unitConfig.ConditionPathExists = wallpaperPath;
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      ${pkgs.coreutils}/bin/install -Dm0644 \
+        ${wallpaperPath} /etc/greetd/wallpaper.mp4
+    '';
+  };
+
+  systemd.services.greetd = {
+    requires = [ "greetd-wallpaper.service" ];
+    after = [ "greetd-wallpaper.service" ];
   };
 
   environment.etc."qtgreet/config.ini".text = ''
