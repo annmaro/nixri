@@ -53,7 +53,7 @@
                 enabled = true;
                 border-radius = mkLiteral "20px";
                 cursor = "default";
-                background-color = mkLiteral "black / 10%";
+                background-color = mkLiteral "${bgColor}80";
               };
 
               "mainbox" = {

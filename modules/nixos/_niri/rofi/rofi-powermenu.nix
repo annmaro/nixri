@@ -27,11 +27,11 @@ let
         element-padding:            55px 60px;
         element-border-radius:      100%;
 
-        prompt-font:                "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font Bold Italic"} 64";
+        prompt-font:                "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font Bold Italic"} 48";
         textbox-font:               "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"} 16";
-        element-text-font:          "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"} 64";
+        element-text-font:          "${config.stylix.fonts.monospace.name or "JetBrains Mono Nerd Font"} 48";
 
-        background-window:          ${bg};
+        background-window:          ${bg}80;
         background-normal:          ${bgAlt};
         background-selected:        ${bgSelected};
         foreground-normal:          ${yellow};
@@ -147,7 +147,7 @@ let
 
     rofi_cmd() {
     	${pkgs.rofi}/bin/rofi -dmenu \
-    		-p "󰀉 $USER@''$(hostname)" \
+    		-p "󰀉 See you soon, $USER" \
     		-mesg "󱎫 Uptime: $cleaned_uptime" \
     		-theme ${powermenuTheme}
     }
