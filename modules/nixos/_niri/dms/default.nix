@@ -124,7 +124,7 @@
           use24HourClock = true;
 
           screenPreferences = {
-            wallpaper = [ "all" ];
+            wallpaper = [ ];
           };
 
           modules = {
