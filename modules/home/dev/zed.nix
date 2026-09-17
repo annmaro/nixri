@@ -125,8 +125,8 @@
             google = {
               available_models = [
                 {
-                  name = "gemini-2.5-flash";
-                  display_name = "Gemini 2.5 Flash";
+                  name = "gemini-3.1-preview";
+                  display_name = "Gemini 3.1 Preview";
                   max_tokens = 1000000;
                 }
                 {
