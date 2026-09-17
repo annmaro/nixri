@@ -70,6 +70,8 @@ in
     "d /var/lib/qtgreet 0755 greeter greeter - -"
   ];
 
+  systemd.services.greetd.environment.QTGREET_THEME_DIRS = "/etc/qtgreet/themes";
+
   services.displayManager.defaultSession = "niri";
 
   services.greetd = {
