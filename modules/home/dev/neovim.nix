@@ -69,7 +69,7 @@
               gemini = {
                 __inherited_from = "openai";
                 endpoint = "https://generativelanguage.googleapis.com/v1beta/openai/";
-                model = "gemini-2.5-flash";
+                model = "gemini-3.1-pro-preview";
                 api_key_name = "GEMINI_API_KEY";
                 timeout = 30000;
               };
