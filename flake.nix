@@ -9,13 +9,8 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
 
-    sysc-greet = {
-      url = "github:Nomadcxx/sysc-greet";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    gslapper = {
-      url = "github:Nomadcxx/gSlapper";
+    silentSDDM = {
+      url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -86,6 +81,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    helium = {
+      url = "github:schembriaiden/helium-browser-nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     betterfox = {
       url = "github:yokoffing/Betterfox";
@@ -96,7 +95,6 @@
       url = "github:catppuccin/thunderbird";
       flake = false;
     };
-
 
     nvchad4nix = {
       url = "github:nix-community/nix4nvchad";

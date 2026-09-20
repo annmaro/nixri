@@ -22,7 +22,7 @@ in
     backend = mpvpaper
     fill = fill
     sort = name
-    post_command = ${wallpaper}/bin/wallpaper
+    post_command = ${wallpaper}/bin/niri-wallpaper "$wallpaper"
   '';
   };
 }

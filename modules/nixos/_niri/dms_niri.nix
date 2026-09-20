@@ -15,7 +15,6 @@ in
 {
   imports = [
     ./dms
-    ./rofi
     ./stylix
     ./swaylock
   ];

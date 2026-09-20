@@ -144,7 +144,7 @@
           fontFamily = config.stylix.fonts.sansSerif.name;
           monoFontFamily = config.stylix.fonts.monospace.name;
 
-          profileImage = "${config.home.homeDirectory}/.config/DankMaterialShell/nix.png"; # Set the path to your profile image for display in the overview and other DMS components. Make sure the image exists at this location and is in a supported format (e.g., PNG, JPEG).
+          profileImage = "file://${config.home.homeDirectory}/.config/DankMaterialShell/nix.png"; # Set the path to your profile image for display in the overview and other DMS components. Make sure the image exists at this location and is in a supported format (e.g., PNG, JPEG).
           launcherLogoMode = "os"; # Set to "os" to display your custom NixOS system logo (SystemLogo.qml) inside the launcher button
 
           widgetBackgroundColor = "s"; # Use DMS's color tokens for consistent theming

@@ -3,7 +3,6 @@
   lib,
   pkgs,
   wallpaper,
-  keybindsRofi,
   screenRecorder,
   bar,
 }:
@@ -17,6 +16,7 @@ let
   barNamespace = if isDms then "^dms:.*" else "^noctalia:.*";
   restartBar = if isDms then "dms" else "noctalia";
   screenshot = ''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.satty}/bin/satty -f - -o ~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png'';
+  launcherConfig = "/home/${config.systemSettings.username}/.config/qml-launcher";
   appOpacityRules = [
     {
       matches = [
@@ -53,7 +53,7 @@ let
     {
       matches = [
         {
-          app-id = "^(Emacs|obsidian|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
+          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
         }
       ];
       opacity = 0.85;
@@ -99,19 +99,8 @@ let
     "Mod+C".spawn = "editor";
     "Mod+F".spawn = "firefox";
     "Mod+A".spawn = "antigravity";
-    "Mod+Space".spawn = [
-      "rofi"
-      "-show"
-      "drun"
-    ];
-    "Mod+V".spawn = [
-      "rofi"
-      "-show"
-      "clipboard"
-    ];
     "Mod+O".toggle-overview = _: { };
 
-    "Ctrl+Shift+K".spawn = getExe keybindsRofi;
     "Mod+G".spawn = [
       "launcher"
       "games"
@@ -142,7 +131,6 @@ let
     ];
     "Mod+Backspace".spawn-sh = "pkill -x wlogout || wlogout -b 4";
     "Mod+Shift+S".spawn = "spotify";
-    "Mod+Shift+P".spawn = "rofi-powermenu";
     "Mod+Shift+Y".spawn = "youtube-music";
     "Ctrl+Alt+Delete".spawn = [
       "ghostty"
@@ -269,15 +257,10 @@ in
 
   spawn-sh-at-startup = [
     "sleep 1 && wlsunset -T 3800 -t 3799"
-  ];
-
-  spawn-at-startup = [
-    [
-      "sh"
-      "-c"
-      "sleep 2 && thunar --daemon"
-    ]
-    [ (getExe wallpaper) ]
+    # Start after Niri has created its outputs. Using the shell startup hook
+    # keeps the launcher alive independently of Niri's exec argument parsing.
+    "sleep 1 && ${getExe wallpaper}"
+    "sleep 2 && thunar --daemon"
   ];
 
   input = {
@@ -294,6 +277,11 @@ in
     mouse = {
       accel-profile = "flat";
       accel-speed = 0.0;
+    };
+    focus-follows-mouse = _: {
+      props = {
+        max-scroll-amount = "0%";
+      };
     };
     warp-mouse-to-focus = _: { };
   };
@@ -340,6 +328,10 @@ in
 
   layer-rules = [
     {
+      matches = [ { namespace = barNamespace; } ];
+      background-effect.xray = false;
+    }
+    {
       matches = [
         { namespace = "^awww-daemon$"; }
         { namespace = "^mpvpaper$"; }
@@ -347,16 +339,10 @@ in
       place-within-backdrop = true;
     }
     {
-      matches = [ { namespace = "^rofi$"; } ];
-      geometry-corner-radius = 12;
+      matches = [ { namespace = "^qml-launcher$"; } ];
       background-effect = {
-        blur = true;
         xray = false;
       };
-    }
-    {
-      matches = [ { namespace = barNamespace; } ];
-      background-effect.xray = false;
     }
   ];
 
@@ -373,18 +359,20 @@ in
   binds =
     commonBinds
     // lib.optionalAttrs isDms {
+      "Mod+Q".spawn = [
+        "env"
+        "QML_XHR_ALLOW_FILE_READ=1"
+        "${pkgs.quickshell}/bin/quickshell"
+        "--no-duplicate"
+        "-p"
+        launcherConfig
+      ];
       "Mod+N".spawn = [
         "dms"
         "ipc"
         "call"
         "notifications"
         "toggle"
-      ];
-      "Mod+D".spawn = [
-        "eww"
-        "open"
-        "--toggle"
-        "dashboard"
       ];
       "Mod+Shift+E".spawn = [
         "dms"
@@ -398,15 +386,15 @@ in
       "Mod+S".switch-focus-between-floating-and-tiling = _: { };
     }
     // lib.optionalAttrs (!isDms) {
+      "Mod+Space".spawn = [
+        "noctalia"
+        "toggle"
+        "launcher"
+      ];
       "Mod+N".spawn = [
         "noctalia"
         "toggle"
         "notifications"
-      ];
-      "Mod+D".spawn = [
-        "noctalia"
-        "toggle"
-        "dashboard"
       ];
       "Mod+Shift+E".spawn = [
         "noctalia"

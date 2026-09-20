@@ -13,11 +13,13 @@
   };
 
   environment.systemPackages = with pkgs; [
-    appimage-run
+    pandoc
     killall
     lm_sensors
+    helium
     gnome-disk-utility
     jq
+    forkstat
     libsecret
     seahorse
     fzf
@@ -26,6 +28,7 @@
     libinput
     libjxl
     microfetch
+    novelwriter
     nix-prefetch-scripts
     ripgrep
     tldr
@@ -34,13 +37,11 @@
     unzip
     peazip
     calibre
-    vivaldi
     pdf4qt
     nicotine-plus
     nix-tree
     imagemagickBig
     nomacs
-    epiphany
     kid3-qt
     bc
     sox

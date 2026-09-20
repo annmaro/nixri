@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 pkgs.writeShellApplication {
-  name = "wallpaper";
+  name = "niri-wallpaper";
 
   runtimeInputs = with pkgs; [
     coreutils
@@ -18,7 +18,6 @@ pkgs.writeShellApplication {
     VIDEO_WALL_CANDIDATES=(
       "$HOME/Pictures/Wallpapers/output.mp4"
       "$HOME/Pictures/Wallpapers/output_1080p.mp4"
-      "/etc/greetd/wallpaper.mp4"
     )
     mkdir -p "$CACHE_DIR"
 
@@ -29,8 +28,10 @@ pkgs.writeShellApplication {
 
     # Waypaper runs this as its post-command. Its current selection is written
     # to config.ini, so the same command also works when called by Niri startup.
-    if [ "$#" -ge 1 ] && [ -n "$1" ]; then
+    if [ "$#" -ge 1 ] && [ -n "$1" ] && [ "$1" != "\$wallpaper" ]; then
       TARGET_WALL="$1"
+    elif [ -f "$LAST_WALL" ]; then
+      TARGET_WALL="$(cat "$LAST_WALL")"
     elif [ -f "$WAYPAPER_CONFIG" ]; then
       TARGET_WALL="$(sed -n 's/^wallpaper[[:space:]]*=[[:space:]]*//p' "$WAYPAPER_CONFIG" | tail -n 1)"
     else
@@ -64,9 +65,14 @@ pkgs.writeShellApplication {
         fi
         pkill -x awww-daemon 2>/dev/null || true
         pkill -x mpvpaper 2>/dev/null || true
-        nohup mpvpaper \
+        printf '%s\n' "$TARGET_WALL" > "$LAST_WALL"
+        # Keep mpvpaper on the normal background layer. Niri's layer rule
+        # places that surface behind windows and inside the overview backdrop.
+        mpvpaper \
+          --fork \
+          --layer background \
           -o 'no-audio --loop-file=inf --cache=no --demuxer-readahead-secs=1 --hwdec=auto' \
-          '*' "$TARGET_WALL" >/dev/null 2>&1 &
+          ALL "$TARGET_WALL" >"$CACHE_DIR/mpvpaper.log" 2>&1
         ;;
       *)
         if [ ! -f "$TARGET_WALL" ]; then
@@ -74,12 +80,19 @@ pkgs.writeShellApplication {
           exit 1
         fi
         pkill -x mpvpaper 2>/dev/null || true
+        if pgrep -x awww-daemon >/dev/null 2>&1; then
+          # Check if daemon is responding (might be from an old session)
+          if ! awww query >/dev/null 2>&1; then
+            pkill -x awww-daemon 2>/dev/null || true
+            sleep 0.2
+          fi
+        fi
         if ! pgrep -x awww-daemon >/dev/null 2>&1; then
-          awww-daemon >/dev/null 2>&1 &
+          awww-daemon >"$CACHE_DIR/awww-daemon.log" 2>&1 &
           sleep 0.5
         fi
         printf '%s\n' "$TARGET_WALL" > "$LAST_WALL"
-        awww load "$TARGET_WALL" \
+        awww img "$TARGET_WALL" \
           --transition-type grow \
           --transition-pos center \
           --transition-duration 1.2 \

@@ -14,7 +14,8 @@
           "python"
           "cpp"
           "qml"
-
+          "gruvbox-material"
+          "material-icon-theme"
         ];
 
         userKeymaps = [
@@ -49,22 +50,37 @@
 
               # Project drawer / sidebar toggle
               "ctrl-n" = "project_panel::ToggleFocus";
+
+              # AI / Agent Chat History
+              "space a h" = "agents_sidebar::ToggleThreadHistory";
+              "space a s" = "agents_sidebar::ToggleThreadSwitcher";
             };
           }
           {
             context = "Editor && vim_mode == insert";
             bindings = {
               "k j" = "vim::NormalBefore";
+              "ctrl-shift-v" = "editor::Paste";
             };
           }
           {
             context = "Editor && vim_mode == visual";
             bindings = {
+              # Terminal-style Copy
+              "ctrl-shift-c" = "editor::Copy";
+
               "<" = "editor::Outdent";
               ">" = "editor::Indent";
               "shift-j" = "editor::MoveLineDown";
               "shift-k" = "editor::MoveLineUp";
               "space c" = "editor::ToggleComments";
+            };
+          }
+          {
+            # Global fallback for Copy / Chat History anywhere in the workspace
+            context = "Workspace";
+            bindings = {
+              "ctrl-alt-h" = "agents_sidebar::ToggleThreadHistory";
             };
           }
         ];
@@ -73,9 +89,10 @@
           vim_mode = true;
           theme = {
             mode = "dark";
-            dark = "Gruvbox Dark";
-            light = "Gruvbox Light";
+            dark = "Gruvbox Material";
+            light = "Gruvbox Material";
           };
+          icon_theme = "Material Icon Theme";
 
           buffer_font_size = 24;
           relative_line_numbers = true;

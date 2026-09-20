@@ -9,10 +9,10 @@
       "com.github.tchx84.Flatseal"
       "io.github.flattool.Warehouse"
       "app.opencomic.OpenComic"
-      "org.sabnzbd.sabnzbd"
-      "org.freefilesync.FreeFileSync"
+      "com.logseq.Logseq"
       "io.github.giantpinkrobots.varia"
       "com.bilingify.readest"
+      "net.waterfox.waterfox"
     ];
     update.onActivation = true;
   };

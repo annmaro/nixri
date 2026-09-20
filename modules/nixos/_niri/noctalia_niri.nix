@@ -15,7 +15,6 @@ in
 {
   imports = [
     ./noctalia
-    ./rofi
     ./stylix
     ./swaylock
   ];

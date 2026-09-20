@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   ...
 }:
@@ -20,165 +18,161 @@ let
   };
 in
 {
-  config = lib.mkMerge [
-    # Keep Vimb available as an alternate browser.
-    {
-      home.packages = with pkgs; [
-        vimbWrapped
-        pinentry-gnome3
-        gst_all_1.gstreamer
-        gst_all_1.gst-plugins-base
-        gst_all_1.gst-plugins-good
-        gst_all_1.gst-plugins-bad
-        gst_all_1.gst-plugins-ugly
-        gst_all_1.gst-libav
-      ];
-    }
-    (lib.mkIf (config.homeSettings.browser == "vimb") {
-      xdg.configFile."vimb/scripts.js".text = ''
-        // Vimb Cosmetic Layout Cleaner
-        (function() {
-            'use strict';
-            if (window !== window.top) return;
+  config = {
+    home.packages = with pkgs; [
+      vimbWrapped
+      pinentry-gnome3
+      gst_all_1.gstreamer
+      gst_all_1.gst-plugins-base
+      gst_all_1.gst-plugins-good
+      gst_all_1.gst-plugins-bad
+      gst_all_1.gst-plugins-ugly
+      gst_all_1.gst-libav
+    ];
 
-            const adSelectors = [
-                '.adsbox', '.ad-banner', '.adsbygoogle', 'amp-ad',
-                'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads',
-                '.css-1q97669'
-            ];
+    xdg.configFile."vimb/scripts.js".text = ''
+      // Vimb Cosmetic Layout Cleaner
+      (function() {
+          'use strict';
+          if (window !== window.top) return;
 
-            const style = document.createElement('style');
-            style.innerHTML = adSelectors.join(', ') + ' { display: none !important; height: 0 !important; visibility: hidden !important; }';
+          const adSelectors = [
+              '.adsbox', '.ad-banner', '.adsbygoogle', 'amp-ad',
+              'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads',
+              '.css-1q97669'
+          ];
 
-            const addStyle = () => {
-                if (document.head) document.head.appendChild(style);
-                else if (document.documentElement) document.documentElement.appendChild(style);
-            };
+          const style = document.createElement('style');
+          style.innerHTML = adSelectors.join(', ') + ' { display: none !important; height: 0 !important; visibility: hidden !important; }';
 
-            if (document.readyState === "loading") {
-                document.addEventListener('DOMContentLoaded', addStyle);
-            } else {
-                addStyle();
-            }
-        })();
+          const addStyle = () => {
+              if (document.head) document.head.appendChild(style);
+              else if (document.documentElement) document.documentElement.appendChild(style);
+          };
 
-        // Anti-Adblock Defuser Scriptlet
-        (function() {
-            'use strict';
-            if (window !== window.top) return;
+          if (document.readyState === "loading") {
+              document.addEventListener('DOMContentLoaded', addStyle);
+          } else {
+              addStyle();
+          }
+      })();
 
-        // Defuse standard variable checks
-          window.canRunAds = true;
-          window.isAdBlockActive = false;
-          window.adsAreWithUs = true;
+      // Anti-Adblock Defuser Scriptlet
+      (function() {
+          'use strict';
+          if (window !== window.top) return;
 
-        // Mock common Google / general ad objects to trick detection scripts
-          if (!window.ga) { window.ga = function() {}; }
+      // Defuse standard variable checks
+        window.canRunAds = true;
+        window.isAdBlockActive = false;
+        window.adsAreWithUs = true;
 
-        // Prevent common anti-adblock scripts from redefining or crashing on these
-          Object.defineProperty(window, 'AdBlock', { value: false, writable: false });
-          Object.defineProperty(window, 'snack', { value: { isAdBlockerPresent: function() { return false; } }, writable: false });
-        })();
+      // Mock common Google / general ad objects to trick detection scripts
+        if (!window.ga) { window.ga = function() {}; }
 
-        // YouTube Player Ad Skipper
-        (function() {
-            'use strict';
-            if (window !== window.top) return;
+      // Prevent common anti-adblock scripts from redefining or crashing on these
+        Object.defineProperty(window, 'AdBlock', { value: false, writable: false });
+        Object.defineProperty(window, 'snack', { value: { isAdBlockerPresent: function() { return false; } }, writable: false });
+      })();
 
-            if (!window.location.hostname.includes("youtube.com")) return;
+      // YouTube Player Ad Skipper
+      (function() {
+          'use strict';
+          if (window !== window.top) return;
 
-            function checkAndSkipAds() {
-                const skipButtons = [
-                    '.ytp-ad-skip-button-modern',
-                    '.ytp-skip-ad-button',
-                    '.ytp-ad-skip-button',
-                    'button[aria-label^="Skip ad"]'
-                ];
+          if (!window.location.hostname.includes("youtube.com")) return;
 
-                for (const selector of skipButtons) {
-                    const button = document.querySelector(selector);
-                    if (button && button.offsetParent !== null) {
-                        button.click();
-                    }
-                }
+          function checkAndSkipAds() {
+              const skipButtons = [
+                  '.ytp-ad-skip-button-modern',
+                  '.ytp-skip-ad-button',
+                  '.ytp-ad-skip-button',
+                  'button[aria-label^="Skip ad"]'
+              ];
 
-                const video = document.querySelector('video');
-                if (video && document.querySelector('.ad-showing, .ad-interrupting')) {
-                    if (video.duration && video.currentTime < video.duration - 0.5) {
-                        video.currentTime = video.duration - 0.1;
-                    }
-                }
-            }
+              for (const selector of skipButtons) {
+                  const button = document.querySelector(selector);
+                  if (button && button.offsetParent !== null) {
+                      button.click();
+                  }
+              }
 
-            setInterval(checkAndSkipAds, 1000);
-        })();
+              const video = document.querySelector('video');
+              if (video && document.querySelector('.ad-showing, .ad-interrupting')) {
+                  if (video.duration && video.currentTime < video.duration - 0.5) {
+                      video.currentTime = video.duration - 0.1;
+                  }
+              }
+          }
 
-        // Vimb Clickjack & Popup Blocker
-        (function() {
-            'use strict';
-            // Hook into window.open to stop automated tab hijacking
-            const originalWindowOpen = window.open;
-            window.open = function(url, name, specs, replace) {
-                console.log("Vimb blocked an attempted popup to: " + url);
-                // Return a dummy object so the website's script doesn't crash
-                return {
-                    focus: function() {},
-                    blur: function() {},
-                    close: function() {},
-                    closed: true
-                };
-            };
-        })();
+          setInterval(checkAndSkipAds, 1000);
+      })();
 
-      '';
+      // Vimb Clickjack & Popup Blocker
+      (function() {
+          'use strict';
+          // Hook into window.open to stop automated tab hijacking
+          const originalWindowOpen = window.open;
+          window.open = function(url, name, specs, replace) {
+              console.log("Vimb blocked an attempted popup to: " + url);
+              // Return a dummy object so the website's script doesn't crash
+              return {
+                  focus: function() {},
+                  blur: function() {},
+                  close: function() {},
+                  closed: true
+              };
+          };
+      })();
 
-      # Define the global style.css stylesheet for dark mode
-      xdg.configFile."vimb/style.css".text = ''
-        *,div,pre,textarea,body,input,td,tr,p {
-            background-color: #131212 !important;
-            background-image: none !important;
-            color: #bbbbbb !important;
-        }
-        h1,h2,h3,h4 {
-            background-color: #303030 !important;
-            color: #b8ddea !important;
-        }
-        a {
-            color: #70e070 !important;
-        }
-        a:hover,a:focus {
-            color: #7070e0 !important;
-        }
-        a:visited {
-            color: #e07070 !important;
-        }
-        img {
-            opacity: .5;
-        }
-      '';
+    '';
 
-      # Vimb settings
-      xdg.configFile."vimb/config".text = ''
-        set home-page=https://google.com
-        set download-path=~/Downloads/
+    # Define the global style.css stylesheet for dark mode
+    xdg.configFile."vimb/style.css".text = ''
+      *,div,pre,textarea,body,input,td,tr,p {
+          background-color: #131212 !important;
+          background-image: none !important;
+          color: #bbbbbb !important;
+      }
+      h1,h2,h3,h4 {
+          background-color: #303030 !important;
+          color: #b8ddea !important;
+      }
+      a {
+          color: #70e070 !important;
+      }
+      a:hover,a:focus {
+          color: #7070e0 !important;
+      }
+      a:visited {
+          color: #e07070 !important;
+      }
+      img {
+          opacity: .5;
+      }
+    '';
 
-        # Default Full-Content zoom level in percent. Default is 100.
-        set default-zoom=150
+    # Vimb settings
+    xdg.configFile."vimb/config".text = ''
+      set home-page=https://google.com
+      set download-path=~/Downloads/
 
-        shortcut-default duck
-        shortcut-add duck=https://duckduckgo.com/?q=$0
-        shortcut-add y=http://www.youtube.com/results?search_query=$0
+      # Default Full-Content zoom level in percent. Default is 100.
+      set default-zoom=150
 
-        shortcut-add rc=https://readallcomics.com
-        shortcut-add marvel=https://comicbookreadingorders.com/marvel/marvel-master-reading-order-part-1
-        shortcut-add cbh=https://www.comicbookherald.com/the-complete-marvel-reading-order-guide
-        shortcut-add cmro=https://marvelreading.com/reading-order/main-616
+      shortcut-default duck
+      shortcut-add duck=https://duckduckgo.com/?q=$0
+      shortcut-add y=http://www.youtube.com/results?search_query=$0
 
-        autocmd LoadStarted *readallcomics.com set scripts=off
+      shortcut-add rc=https://readallcomics.com
+      shortcut-add marvel=https://comicbookreadingorders.com/marvel/marvel-master-reading-order-part-1
+      shortcut-add cbh=https://www.comicbookherald.com/the-complete-marvel-reading-order-guide
+      shortcut-add cmro=https://marvelreading.com/reading-order/main-616
 
-        nmap ,b :open https://raindrop.io/add?link=%
-        nmap ,s :set scripts!<CR>
-      '';
-    })
-  ];
+      autocmd LoadStarted *readallcomics.com set scripts=off
+
+      nmap ,b :open https://raindrop.io/add?link=%
+      nmap ,s :set scripts!<CR>
+    '';
+  };
 }

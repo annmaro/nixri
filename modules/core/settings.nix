@@ -52,8 +52,9 @@ in
         "firefox"
         "qutebrowser"
         "vimb"
+        "helium"
       ];
-      default = "firefox";
+      default = "helium";
       description = "Primary web browser.";
     };
 
