@@ -129,7 +129,6 @@ let
       "-x"
       "wf-recorder"
     ];
-    "Mod+Backspace".spawn-sh = "pkill -x wlogout || wlogout -b 4";
     "Mod+Shift+S".spawn = "spotify";
     "Mod+Shift+Y".spawn = "youtube-music";
     "Ctrl+Alt+Delete".spawn = [
@@ -151,8 +150,6 @@ let
     "Mod+L".focus-column-right = _: { };
     "Mod+Ctrl+Left".move-column-left = _: { };
     "Mod+Ctrl+Right".move-column-right = _: { };
-    "Mod+K".focus-window-up = _: { };
-    "Mod+J".focus-window-down = _: { };
     "Mod+Ctrl+K".move-column-to-workspace-up = _: { };
     "Mod+Ctrl+J".move-column-to-workspace-down = _: { };
     "Mod+WheelScrollDown".focus-workspace-down = _: { };
@@ -339,7 +336,11 @@ in
       place-within-backdrop = true;
     }
     {
-      matches = [ { namespace = "^qml-launcher$"; } ];
+      matches = [
+        { namespace = "^qml-launcher$"; }
+        { namespace = "^qml-keybinds$"; }
+      ];
+
       background-effect = {
         xray = false;
       };
@@ -366,6 +367,12 @@ in
         "--no-duplicate"
         "-p"
         launcherConfig
+      ];
+      "Mod+K".spawn = [
+        "${pkgs.quickshell}/bin/quickshell"
+        "--no-duplicate"
+        "-p"
+        "/home/${config.systemSettings.username}/.config/qml-keybinds"
       ];
       "Mod+N".spawn = [
         "dms"

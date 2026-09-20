@@ -25,6 +25,7 @@ let
     ncb = "sudo nix-collect-garbage -d";
     nhb = "nh os boot --hostname laptop";
     nhu = "nh os switch --hostname laptop";
+    list-gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
     dots = "cd /home/annmaro/nixri";
   };
 in
