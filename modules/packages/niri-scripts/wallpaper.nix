@@ -63,7 +63,7 @@ pkgs.writeShellApplication {
           echo "Error: video wallpaper '$TARGET_WALL' does not exist." >&2
           exit 1
         fi
-        pkill -x awww-daemon 2>/dev/null || true
+        awww kill 2>/dev/null || pkill -x awww-daemon 2>/dev/null || true
         pkill -x mpvpaper 2>/dev/null || true
         printf '%s\n' "$TARGET_WALL" > "$LAST_WALL"
         # Keep mpvpaper on the normal background layer. Niri's layer rule
@@ -81,13 +81,19 @@ pkgs.writeShellApplication {
         fi
         pkill -x mpvpaper 2>/dev/null || true
         if pgrep -x awww-daemon >/dev/null 2>&1; then
-          # Check if daemon is responding (might be from an old session)
+          # Check if daemon is responding (might be from an old session or shutting down)
           if ! awww query >/dev/null 2>&1; then
-            pkill -x awww-daemon 2>/dev/null || true
-            sleep 0.2
+            awww kill 2>/dev/null || pkill -x awww-daemon 2>/dev/null || true
+            for _ in {1..10}; do
+              ! pgrep -x awww-daemon >/dev/null 2>&1 && break
+              sleep 0.1
+            done
+            pkill -9 -x awww-daemon 2>/dev/null || true
           fi
         fi
         if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+          # Clean up any leftover sockets in case of crash or ungraceful shutdown
+          rm -f "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/awww.socket" "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swww.socket"
           awww-daemon >"$CACHE_DIR/awww-daemon.log" 2>&1 &
           sleep 0.5
         fi
