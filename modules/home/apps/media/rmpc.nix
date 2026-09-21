@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  # 1. Matugen RON template with Material Design 3 color tokens
+  # 1. Matugen RON template for rmpc
   rmpc-matugen-template = pkgs.writeText "rmpc-theme-template.ron" ''
     #![enable(implicit_some)]
     #![enable(unwrap_newtypes)]
@@ -116,7 +116,17 @@ let
     )
   '';
 
-  # 2. Theme switcher script triggered on song change
+  # 2. Dedicated Matugen configuration pointing to the template and output path
+  matugen-rmpc-config = pkgs.writeText "matugen-rmpc.toml" ''
+    [config]
+    reload_apps = false
+
+    [templates.rmpc]
+    input_path = "${rmpc-matugen-template}"
+    output_path = "${config.home.homeDirectory}/.config/rmpc/themes/current.ron"
+  '';
+
+  # 3. Dynamic theme switcher script
   rmpc-theme-switcher = pkgs.writeShellApplication {
     name = "rmpc-theme-switcher";
     runtimeInputs = [
@@ -126,20 +136,14 @@ let
     ];
     text = ''
       ART_PATH="/tmp/rmpc_current_cover.jpg"
-      THEME_DIR="$HOME/.local/state/rmpc/themes"
-      THEME_FILE="$THEME_DIR/current.ron"
+      mkdir -p "$HOME/.config/rmpc/themes"
 
-      mkdir -p "$THEME_DIR"
-
-      # Extract current cover image
+      # Extract album cover
       rmpc albumart "$ART_PATH" 2>/dev/null || rmpc albumart --output "$ART_PATH" 2>/dev/null || exit 0
       [ -f "$ART_PATH" ] || exit 0
 
-      # Render Matugen dark theme to state directory
-      matugen image "$ART_PATH" \
-        -m dark \
-        --template "${rmpc-matugen-template}" \
-        --output-file "$THEME_FILE"
+      # Generate theme using the dedicated matugen config
+      matugen -c "${matugen-rmpc-config}" image "$ART_PATH" -m dark
     '';
   };
 in
@@ -151,25 +155,22 @@ in
     rmpc-theme-switcher
   ];
 
-  # 3. Bootstrap initial fallback theme so rmpc never loads a missing file
+  # 4. Bootstrap initial fallback theme so rmpc never opens with a missing theme
   home.activation.initRmpcTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "$HOME/.local/state/rmpc/themes"
-    if [ ! -f "$HOME/.local/state/rmpc/themes/current.ron" ]; then
-      ${pkgs.matugen}/bin/matugen color hex "fabd2f" \
-        -m dark \
-        --template "${rmpc-matugen-template}" \
-        --output-file "$HOME/.local/state/rmpc/themes/current.ron" 2>/dev/null || true
+    mkdir -p "$HOME/.config/rmpc/themes"
+    if [ ! -f "$HOME/.config/rmpc/themes/current.ron" ]; then
+      ${pkgs.matugen}/bin/matugen -c "${matugen-rmpc-config}" color hex "#fabd2f" -m dark || true
     fi
   '';
 
-  # 4. Main rmpc configuration
+  # 5. Main rmpc configuration
   xdg.configFile."rmpc/config.ron".text = ''
     #![enable(implicit_some)]
     #![enable(unwrap_newtypes)]
     #![enable(unwrap_variant_newtypes)]
     (
       address: "127.0.0.1:6600",
-      theme: "${config.home.homeDirectory}/.local/state/rmpc/themes/current.ron",
+      theme: "current",
       enable_config_hot_reload: true,
       on_song_change: ["${rmpc-theme-switcher}/bin/rmpc-theme-switcher"],
       enable_mouse: true,
