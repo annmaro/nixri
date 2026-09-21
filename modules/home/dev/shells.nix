@@ -27,6 +27,7 @@ let
     nhu = "nh os switch --hostname laptop";
     list-gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
     dots = "cd /home/annmaro/nixri";
+    age = "agenix -i ~/.config/agenix/keys.txt";
   };
 in
 {
