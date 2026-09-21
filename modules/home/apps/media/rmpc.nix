@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.rmpc ];
+  home.packages = [ pkgs.rmpc pkgs.cava ];
 
   xdg.configFile."rmpc/config.ron".text = ''
     #![enable(implicit_some)]
@@ -75,12 +75,12 @@
                         direction: Horizontal,
                         panes: [
                             (
-                                size: "60%",
+                                size: "50%",
                                 background_color: "#282828",
                                 pane: Pane(Tabs),
                             ),
                             (
-                                size: "40%",
+                                size: "50%",
                                 background_color: "#282828",
                                 pane: Pane(Cava),
                             ),

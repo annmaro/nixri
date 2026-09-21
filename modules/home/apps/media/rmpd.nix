@@ -13,7 +13,7 @@ in
 
     [network]
     port = 6600
-    mpris = true
+    mpris = false
 
     [audio]
     default_output = "pipewire"
@@ -37,5 +37,9 @@ in
     };
 
     Install.WantedBy = [ "default.target" ];
+  };
+
+  services.mpdris2 = {
+    enable = true;
   };
 }

@@ -11,6 +11,11 @@
         autosens = 1;
       };
 
+      input = {
+        method = "pulse";
+        source = "auto";
+      };
+
       color = {
         gradient = 1;
         gradient_color_1 = "'#${config.lib.stylix.colors.base0B}'";
