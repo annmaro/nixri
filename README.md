@@ -27,11 +27,11 @@
 - ## Screenshots
   
   <p align="center">
-  <img src="img/preview1.png" width="600" alt="NixOS configuration preview 1" />
+  <img src="assets/preview1.png" width="600" alt="NixOS configuration preview 1" />
   </p>
   
-  <p align="center">
-  <img src="img/preview2.png" width="600" alt="NixOS configuration preview 2" />
+  <p align="center"> 
+  <img src="assets/preview2.png" width="600" alt="NixOS configuration preview 2" />
   </p>
   
   
@@ -39,12 +39,12 @@
   <summary>More screenshots</summary>
   
   <p align="center">
-  <img src="img/preview4.png" width="600" alt="NixOS configuration preview 4" />
+  <img src="assets/preview4.png" width="600" alt="NixOS configuration preview 4" />
   </p>
   
   
   <p align="center">
-  <img src="img/preview6.png" width="600" alt="NixOS configuration preview 6" />
+  <img src="assets/preview6.png" width="600" alt="NixOS configuration preview 6" />
   </p>
   
   
