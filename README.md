@@ -26,8 +26,8 @@
   The configuration is designed to keep system modules, user modules, package helpers, data files, and host-specific hardware clearly separated while remaining reusable for additional hosts and users.
 - ## Screenshots
   
+  [![NixOS configuration preview 1](assets/preview8.png)](assets/preview8.png)
   [![NixOS configuration preview 1](assets/preview1.png)](assets/preview1.png)
-
   [![NixOS configuration preview 2](assets/preview2.png)](assets/preview2.png)
 
   <details>
