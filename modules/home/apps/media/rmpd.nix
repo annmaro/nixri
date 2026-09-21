@@ -13,7 +13,7 @@ in
 
     [network]
     port = 6600
-    mpris = false
+    mpris = true
 
     [audio]
     default_output = "pipewire"
@@ -39,8 +39,6 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  services.mpdris2 = {
-    enable = true;
-    mpd.musicDirectory = "${config.home.homeDirectory}/Music";
-  };
+  # Disabled: rmpd now handles MPRIS and album art natively
+  services.mpdris2.enable = false;
 }

@@ -11,9 +11,22 @@
       address: "127.0.0.1:6600",
       theme: Some("gruvbox"),
       enable_mouse: true,
+      cava: (
+        framerate: 60,
+        autosens: true,
+        sensitivity: 100,
+        input: (
+          method: Pulse,
+          source: "auto",
+        ),
+      ),
       keybinds: (
         global: {
           "<Space>": TogglePause,
+          "z": ToggleRepeat,
+          "x": ToggleRandom,
+          "c": ToggleConsume,
+          "v": ToggleSingle,
         },
       ),
       tabs: [
@@ -71,26 +84,18 @@
                 ),
                 (
                     size: "3",
-                    pane: Split(
-                        direction: Horizontal,
-                        panes: [
-                            (
-                                size: "50%",
-                                background_color: "#282828",
-                                pane: Pane(Tabs),
-                            ),
-                            (
-                                size: "50%",
-                                background_color: "#282828",
-                                pane: Pane(Cava),
-                            ),
-                        ]
-                    ),
+                    background_color: "#282828",
+                    pane: Pane(Tabs),
                 ),
                 (
                     size: "100%",
                     borders: "ALL",
                     pane: Pane(TabContent),
+                ),
+                (
+                    size: "6",
+                    borders: "ALL",
+                    pane: Pane(Cava),
                 ),
                 (
                     size: "3",
@@ -134,7 +139,7 @@
                 alignment: Center,
             ),
             (
-                prop: (kind: Property(Title), style: (fg: "#8ec07c"), default: (kind: Text("Unknown"))),
+                prop: (kind: Property(Title), style: (fg: "#fabd2f"), default: (kind: Text("Unknown"))),
                 width: "50%",
             ),
         ],
@@ -147,7 +152,7 @@
                         (kind: Text("]"), style: (fg: "#fabd2f", modifiers: "Bold"))
                     ],
                     center: [
-                        (kind: Property(Song(Title)), style: (fg: "#ebdbb2", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#ebdbb2", modifiers: "Bold")))
+                        (kind: Property(Song(Title)), style: (fg: "#fabd2f", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#fabd2f", modifiers: "Bold")))
                     ],
                     right: [
                         (kind: Property(Widget(Volume)), style: (fg: "#fabd2f"))
@@ -168,7 +173,7 @@
                         (kind: Property(Song(Album)), style: (fg: "#ebdbb2"), default: (kind: Text("Unknown Album"), style: (fg: "#ebdbb2")))
                     ],
                     right: [
-                        (kind: Property(Widget(States(active_style: (fg: "#ebdbb2", modifiers: "Bold"), separator_style: (fg: "#665c54")))))
+                        (kind: Property(Widget(States(active_style: (fg: "#fabd2f", modifiers: "Bold"), separator_style: (fg: "#665c54")))))
                     ]
                 )
             ],
