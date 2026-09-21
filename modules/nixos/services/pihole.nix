@@ -5,7 +5,7 @@
     inputs.agenix.nixosModules.default
   ];
 
-  age.secrets.pihole_env.file = ../../../../secrets/pihole_env.age;
+  age.secrets.pihole_env.file = ../../../secrets/pihole_env.age;
 
   virtualisation.oci-containers = {
     backend = "docker";
