@@ -1,4 +1,4 @@
-- <img src="https://cdn.simpleicons.org/nixos/5277C3" alt="NixOS Logo" width="32" height="32" />
+- <img src="https://cdn.simpleicons.org/nixos/5277C3" alt="NixOS Logo" width="102" height="102" />
   
   
   A modular NixOS configuration built around **flake-parts**, **import-tree**, **Home Manager**, and the **Niri** Wayland compositor.
