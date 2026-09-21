@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   home.packages = [ pkgs.quickshell ];
@@ -126,6 +126,7 @@ PanelWindow {
             let name = ""
             let exec = ""
             let hidden = false
+            let terminal = false
             const lines = request.responseText.split(/\r?\n/)
 
             for (let line of lines) {
@@ -133,6 +134,8 @@ PanelWindow {
                 if (line === "Hidden=true" || line === "NoDisplay=true") {
                     hidden = true
                     break
+                } else if (line === "Terminal=true") {
+                    terminal = true
                 } else if (line.startsWith("Name=") && name === "") {
                     name = line.substring(5)
                 } else if (line.startsWith("Exec=") && exec === "") {
@@ -142,6 +145,10 @@ PanelWindow {
                                .replace(/^\/usr\/bin\/flatpak/, "flatpak")
                                .trim()
                 }
+            }
+
+            if (terminal) {
+                exec = "${config.homeSettings.terminal} -e " + exec
             }
 
             if (!hidden && name !== "" && exec !== "" && !hasApplication(name, exec)) {
