@@ -109,13 +109,7 @@
         # =====================================================================
         # 🧩 THIRD-PARTY PLUGINS
         # =====================================================================
-        # Declaratively install the wallpaperCarousel plugin.
-        # Home Manager will automatically symlink this to ~/.config/DankMaterialShell/plugins/wallpaperCarousel
 
-
-        home.activation.removeDmsWallpaperCarousel = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-          rm -rf "$HOME/.config/DankMaterialShell/plugins/wallpaperCarousel"
-        '';
 
         xdg.configFile."DankMaterialShell/settings.json" = {
           force = true;
