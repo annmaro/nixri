@@ -219,7 +219,7 @@ in
             (size: "35%", borders: "NONE", border_symbols: Rounded, pane: Split(direction: Vertical, panes: [
                 (size: "0.47r", borders: "TOP | RIGHT | LEFT", border_symbols: Rounded, pane: Pane(AlbumArt)),
                 (size: "100%", borders: "ALL",
-                    border_symbols: Library("rounded_collapsed_top"),
+                    border_symbols: Rounded,
                     border_title: [
                         (kind: Text("┐")),
                         (kind: Text("Lyrics")),
@@ -257,7 +257,7 @@ in
         ])),
         (name: "Queue", pane: Split(direction: Vertical, panes: [
             (size: "2", borders: "TOP | RIGHT | LEFT", border_symbols: Rounded, pane: Pane(QueueHeader())),
-            (size: "100%", borders: "ALL", border_symbols: Library("rounded_collapsed_top"),
+            (size: "100%", borders: "ALL", border_symbols: Rounded,
                 border_title: [
                     (kind: Text("● ")),
                     (kind: Property(Song(File))),
