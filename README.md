@@ -49,6 +49,22 @@
   
   
   </details>
+
+- ## Table of Contents
+
+- [Features](#features)
+- [Repository Structure](#repository-structure) 
+  - [Import Boundaries](#import-booundaries)
+  - [Overlays](#ovrelays)
+  - [Niri Configuration](#niri-configuration)
+  - [Settings](#settings)
+- [Installation](#installation)
+- [Secrets](#secrets)
+- [Validation](#validation)
+- [Rollbacks](#rollbacks)
+- [Keybindings](#keybindings)
+
+
 - ## Features
 - NixOS unstable with a locked flake input set.
 - `flake-parts` for composing flake-level modules.
@@ -130,9 +146,8 @@
   pkgs.stable
   ```
   
-  The overlay imports `nixpkgs-stable` with unfree packages enabled and is applied to both host configurations through `hosts/common.nix`. It is intended for packages that need to remain on the stable channel while the rest of the system follows NixOS unstable.
+  It's the place for all of your overlays. Overlays are applied to both host configurations through `hosts/common.nix`.
   
-  The old NUR overlay, VS Code overlay, and MComix wrapper overlay are not part of the new configuration. NUR was removed because no current module uses it.
 - ## Niri configuration
   
   Niri is configured entirely through Nix. The repository does not contain a hand-written `config.kdl` or raw `programs.niri.config` string.
