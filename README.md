@@ -2,6 +2,21 @@
   <img src="https://cdn.simpleicons.org/nixos/5277C3" alt="NixOS Logo" width="102" height="102" />
   </p>
 
+    <p align="center">
+    <a href="https://github.com/YaLTeR/niri">
+      <img src="https://img.shields.io/badge/WM-Niri-f4b8e4?style=for-the-badge&labelColor=363a4f&logo=niri&logoColor=f4b8e4" alt="Niri" />
+    </a>
+    <a href="https://github.com/AvengeMedia/DankMaterialShell">
+      <img src="/assets/dms.svg" alt="DMS" />
+    </a>
+    <a href="https://nixos.org">
+      <img src="https://img.shields.io/badge/NIXOS-UNSTABLE-81c8be?style=for-the-badge&labelColor=363a4f&logo=nixos&logoColor=81c8be" alt="NixOS" />
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/badge/LICENSE-MIT-ef9f76?style=for-the-badge&labelColor=363a4f&logo=opensourceinitiative&logoColor=ef9f76" alt="License" />
+    </a>
+  </p>
+
   
   A modular NixOS configuration built around **flake-parts**, **import-tree**, **Home Manager**, and the **Niri** Wayland compositor.
   
