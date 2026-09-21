@@ -29,14 +29,14 @@
 
 <p align="center">
     <a href="assets/preview8.png" target="_blank">
-      <img src="assets/preview8.png" width="600" alt="NixOS configuration preview 1" />
+      <img src="assets/preview8.png" width="800" alt="NixOS configuration preview 1" />
     </a>
   </p>
 
   
   <p align="center"> 
     <a href="assets/preview2.png" target="_blank">
-      <img src="assets/preview2.png" width="600" alt="NixOS configuration preview 2" />
+      <img src="assets/preview2.png" width="800" alt="NixOS configuration preview 2" />
     </a>
   </p>
   
@@ -45,13 +45,13 @@
   
   <p align="center">
     <a href="assets/preview4.png" target="_blank">
-      <img src="assets/preview4.png" width="600" alt="NixOS configuration preview 4" />
+      <img src="assets/preview4.png" width="800" alt="NixOS configuration preview 4" />
     </a>
   </p>
   
   <p align="center">
     <a href="assets/preview6.png" target="_blank">
-      <img src="assets/preview6.png" width="600" alt="NixOS configuration preview 6" />
+      <img src="assets/preview6.png" width="800" alt="NixOS configuration preview 6" />
     </a>
   </p>
 
