@@ -10,4 +10,5 @@ in
   "git_email.age".publicKeys = [ user1 ] ++ systems;
   "git_key_id.age".publicKeys = [ user1 ] ++ systems;
   "gemini_api_key.age".publicKeys = [ user1 ] ++ systems;
+  "pihole_env.age".publicKeys = [ user1 ] ++ systems;
 }

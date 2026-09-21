@@ -3,7 +3,7 @@
 {
   imports = [
     inputs.stevenblack-hosts.nixosModule
-    ./privoxy.nix
+    ./pihole.nix
   ];
 
   networking.stevenBlackHosts = {
