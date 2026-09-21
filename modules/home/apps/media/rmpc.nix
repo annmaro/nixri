@@ -71,8 +71,21 @@
                 ),
                 (
                     size: "3",
-                    background_color: "#282828",
-                    pane: Pane(Tabs),
+                    pane: Split(
+                        direction: Horizontal,
+                        panes: [
+                            (
+                                size: "60%",
+                                background_color: "#282828",
+                                pane: Pane(Tabs),
+                            ),
+                            (
+                                size: "40%",
+                                background_color: "#282828",
+                                pane: Pane(Cava),
+                            ),
+                        ]
+                    ),
                 ),
                 (
                     size: "100%",
@@ -129,15 +142,15 @@
             rows: [
                 (
                     left: [
-                        (kind: Text("["), style: (fg: "#fe8019", modifiers: "Bold")),
-                        (kind: Property(Status(State)), style: (fg: "#fe8019", modifiers: "Bold")),
-                        (kind: Text("]"), style: (fg: "#fe8019", modifiers: "Bold"))
+                        (kind: Text("["), style: (fg: "#fabd2f", modifiers: "Bold")),
+                        (kind: Property(Status(State)), style: (fg: "#fabd2f", modifiers: "Bold")),
+                        (kind: Text("]"), style: (fg: "#fabd2f", modifiers: "Bold"))
                     ],
                     center: [
                         (kind: Property(Song(Title)), style: (fg: "#ebdbb2", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#ebdbb2", modifiers: "Bold")))
                     ],
                     right: [
-                        (kind: Property(Widget(Volume)), style: (fg: "#83a598"))
+                        (kind: Property(Widget(Volume)), style: (fg: "#fabd2f"))
                     ]
                 ),
                 (
@@ -150,7 +163,7 @@
                         (kind: Text(" kbps)"), style: (fg: "#ebdbb2"))
                     ],
                     center: [
-                        (kind: Property(Song(Artist)), style: (fg: "#fe8019", modifiers: "Bold"), default: (kind: Text("Unknown"), style: (fg: "#fe8019", modifiers: "Bold"))),
+                        (kind: Property(Song(Artist)), style: (fg: "#fabd2f", modifiers: "Bold"), default: (kind: Text("Unknown"), style: (fg: "#fabd2f", modifiers: "Bold"))),
                         (kind: Text(" - "), style: (fg: "#ebdbb2")),
                         (kind: Property(Song(Album)), style: (fg: "#ebdbb2"), default: (kind: Text("Unknown Album"), style: (fg: "#ebdbb2")))
                     ],

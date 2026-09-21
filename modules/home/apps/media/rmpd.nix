@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   rmpd = pkgs.callPackage ../../../packages/rmpd.nix { };
@@ -8,7 +8,7 @@ in
 
   xdg.configFile."rmpd/rmpd.toml".text = ''
     [general]
-    music_directory = "~/Music"
+    music_directory = "${config.home.homeDirectory}/Music"
     log_level = "info"
 
     [network]
