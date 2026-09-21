@@ -6,8 +6,8 @@
     <a href="https://github.com/YaLTeR/niri">
       <img src="https://img.shields.io/badge/WM-Niri-f4b8e4?style=for-the-badge&labelColor=363a4f&logo=niri&logoColor=f4b8e4" alt="Niri" />
     </a>
-    <a href="https://github.com/AvengeMedia/DankMaterialShell">
-      <img src="/assets/dms.svg" alt="DMS" />
+    <a href="https://github.com/Dank-Baggins/material-shell">
+      <img src="https://img.shields.io/badge/SHELL-DMS-babbf1?style=for-the-badge&labelColor=363a4f&logo=materialdesign&logoColor=babbf1" alt="DMS" />
     </a>
     <a href="https://nixos.org">
       <img src="https://img.shields.io/badge/NIXOS-UNSTABLE-81c8be?style=for-the-badge&labelColor=363a4f&logo=nixos&logoColor=81c8be" alt="NixOS" />
