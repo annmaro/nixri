@@ -281,4 +281,7 @@
   ```
   
   They are serialized into the generated Niri configuration by the wrapper. Press `Super+K` to display the available keybindings.
--
+
+- ## LICENSE
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for details.
