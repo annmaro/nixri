@@ -28,7 +28,7 @@ let
     }
     {
       matches = [
-        { app-id = "^(footclient|neovim|yazi|com.mitchellh.ghostty|Alacritty|org.wezfurlong.wezterm)$"; }
+        { app-id = "^(footclient|foot|yazi|com.mitchellh.ghostty|Alacritty|org.wezfurlong.wezterm)$"; }
       ];
       opacity = 0.80;
       draw-border-with-background = false;
@@ -53,7 +53,7 @@ let
     {
       matches = [
         {
-          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
+          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim|antigravity|dev.zed.Zed|code|thunar)$";
         }
       ];
       opacity = 0.85;
