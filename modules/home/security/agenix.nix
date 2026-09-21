@@ -30,6 +30,11 @@
       rclone_gdrive_env.file = ../../../secrets/rclone_gdrive_env.age;
       git_key_id.file = ../../../secrets/git_key_id.age;
       gemini_api_key.file = ../../../secrets/gemini_api_key.age;
+      pihole_env = {
+        file = ../../../secrets/pihole_env.age;
+        path = "${config.home.homeDirectory}/.config/agenix/pihole_env";
+        mode = "0600";
+      };
       openrouter_api_key.file = ../../../secrets/openrouter_api_key.age;
     };
   };
