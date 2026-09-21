@@ -9,6 +9,9 @@
     <a href="https://github.com/Dank-Baggins/material-shell">
       <img src="https://img.shields.io/badge/SHELL-DMS-babbf1?style=for-the-badge&labelColor=363a4f&logo=materialdesign&logoColor=babbf1" alt="DMS" />
     </a>
+    <a href="https://github.com/noctalia-dev/noctalia">
+        <img src="https://raw.githubusercontent.com/noctalia-dev/noctalia/main/assets/logo.svg" alt="Noctalia" height="28" />
+    </a>
     <a href="https://nixos.org">
       <img src="https://img.shields.io/badge/NIXOS-UNSTABLE-81c8be?style=for-the-badge&labelColor=363a4f&logo=nixos&logoColor=81c8be" alt="NixOS" />
     </a>
