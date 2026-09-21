@@ -2,7 +2,7 @@
   <img src="https://cdn.simpleicons.org/nixos/5277C3" alt="NixOS Logo" width="102" height="102" />
   </p>
 
-    <p align="center">
+  <p align="center">
     <a href="https://github.com/YaLTeR/niri">
       <img src="https://img.shields.io/badge/WM-Niri-f4b8e4?style=for-the-badge&labelColor=363a4f&logo=niri&logoColor=f4b8e4" alt="Niri" />
     </a>
