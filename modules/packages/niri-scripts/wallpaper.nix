@@ -93,7 +93,7 @@ pkgs.writeShellApplication {
         fi
         if ! pgrep -x awww-daemon >/dev/null 2>&1; then
           # Clean up any leftover sockets in case of crash or ungraceful shutdown
-          rm -f "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/awww.socket" "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swww.socket"
+          rm -f "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/awww.socket" "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swww.socket"
           awww-daemon >"$CACHE_DIR/awww-daemon.log" 2>&1 &
           sleep 0.5
         fi
