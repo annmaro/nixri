@@ -41,5 +41,6 @@ in
 
   services.mpdris2 = {
     enable = true;
+    mpd.musicDirectory = "${config.home.homeDirectory}/Music";
   };
 }
