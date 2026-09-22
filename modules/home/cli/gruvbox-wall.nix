@@ -26,9 +26,12 @@ let
       OUTPUT_IMG="$CACHE_DIR/gruvbox_$(basename "$INPUT_IMG")"
       mkdir -p "$CACHE_DIR"
 
-      # Preserve the image's grayscale detail while applying a subtle Gruvbox
-      # Material tint instead of a full high-contrast duotone conversion.
-      magick "$INPUT_IMG" -colorspace gray -fill "#d8a657" -colorize 20% "$OUTPUT_IMG"
+      # Keep the source colors while applying a restrained Gruvbox Material
+      # grade: a subtle warm-dark tint with slightly muted brightness and color.
+      magick "$INPUT_IMG" \
+        -fill "#3c3836" -colorize 14% \
+        -modulate 96,90,100 \
+        "$OUTPUT_IMG"
 
       echo "Converted image saved to $OUTPUT_IMG"
     '';
