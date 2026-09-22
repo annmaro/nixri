@@ -9,6 +9,7 @@ in
   xdg.configFile."rmpd/rmpd.toml".text = ''
     [general]
     music_directory = "${config.home.homeDirectory}/Music"
+    state_file = "${config.home.homeDirectory}/.local/state/rmpd/state"
     log_level = "info"
 
     [network]
@@ -34,6 +35,7 @@ in
     Service = {
       ExecStart = "${rmpd}/bin/rmpd";
       Restart = "always";
+      StateDirectory = "rmpd";
     };
 
     Install.WantedBy = [ "default.target" ];
