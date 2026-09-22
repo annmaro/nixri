@@ -28,10 +28,10 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "qml-launcher"
 
-    property color backgroundColor: Qt.rgba(0.157, 0.157, 0.157, 0.80)
-    property color foregroundColor: "#ffffff"
+    property color backgroundColor: Qt.rgba(0.157, 0.157, 0.157, 0.90)
+    property color foregroundColor: "#d4be98"
     property color mutedColor: "#a89984"
-    property color accentColor: "#fabd2f"
+    property color accentColor: "#d8a657"
 
     // Directory Models for NixOS & Flatpaks
     FolderListModel {
@@ -242,7 +242,7 @@ PanelWindow {
                         radius: 8
                         color: "transparent"
                         border.width: 1
-                        border.color: search.activeFocus ? window.accentColor : "#ffffff33"
+                        border.color: search.activeFocus ? window.accentColor : "#665c54"
                     }
 
                     onTextChanged: window.refreshResults()
