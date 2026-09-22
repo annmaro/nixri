@@ -15,7 +15,7 @@
           "cpp"
           "qml"
           "gruvbox-material"
-          "material-icon-theme"
+          "min-theme"
         ];
 
         userKeymaps = [
@@ -92,7 +92,7 @@
             dark = "Gruvbox Material";
             light = "Gruvbox Material";
           };
-          icon_theme = "Material Icon Theme";
+          icon_theme = "Min Theme";
 
           buffer_font_size = 24;
           relative_line_numbers = true;
