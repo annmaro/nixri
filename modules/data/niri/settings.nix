@@ -87,7 +87,7 @@ let
   ];
 
   commonBinds = {
-    "Mod+Return".spawn = "ghostty";
+    "Mod+Return".spawn = "thunar";
     "Mod+T".spawn = "footclient";
     "Ctrl+T".spawn = [
       "footclient"
