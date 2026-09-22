@@ -143,7 +143,7 @@ let
       [ -f "$ART_PATH" ] || exit 0
 
       # Generate theme using the dedicated matugen config
-      matugen -c "${matugen-rmpc-config}" image "$ART_PATH" -m dark --prefer chroma
+      matugen -c "${matugen-rmpc-config}" image "$ART_PATH" -m dark --source-color-index 0
     '';
   };
 in
