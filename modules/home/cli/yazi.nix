@@ -66,14 +66,14 @@
     theme = lib.mkForce {
       manager = {
         border_symbol = " ";
-        cwd = { fg = "#${config.lib.stylix.colors.base0D}"; };
+        cwd = { fg = "#${config.lib.stylix.colors.base0A}"; };
         hovered = {
           fg = "#${config.lib.stylix.colors.base00}";
           bg = "#${config.lib.stylix.colors.base0A}";
         };
         preview_hovered = {
           fg = "#${config.lib.stylix.colors.base00}";
-          bg = "#${config.lib.stylix.colors.base0B}";
+          bg = "#${config.lib.stylix.colors.base0A}";
         };
         find_keyword = {
           fg = "#${config.lib.stylix.colors.base0A}";
@@ -81,7 +81,7 @@
         };
         tab_active = {
           fg = "#${config.lib.stylix.colors.base00}";
-          bg = "#${config.lib.stylix.colors.base0D}";
+          bg = "#${config.lib.stylix.colors.base0A}";
         };
         tab_inactive = {
           fg = "#${config.lib.stylix.colors.base04}";

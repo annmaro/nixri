@@ -57,8 +57,8 @@
                   border: 1px solid #${config.lib.stylix.colors.base0E};
                 }
                 window.thunar menuitem:hover, window.thunar .menuitem:hover {
-                  background-color: #${config.lib.stylix.colors.base02};
-                  color: #${config.lib.stylix.colors.base0D};
+                  background-color: #${config.lib.stylix.colors.base0A};
+                  color: #${config.lib.stylix.colors.base00};
                 }
               '';
             };
