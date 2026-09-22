@@ -34,7 +34,7 @@ let
         +level 4%,96% \
         -channel R -gamma 1.05 +channel \
         -channel B -gamma 0.90 +channel \
-        \( +clone +level-colors "#1d2021","#ebdbb2" \) \
+        \( +clone +level-colors "#1d2021,#ebdbb2" \) \
         -compose blend -define compose:args=26,74 -composite \
         -modulate 98,84,100 \
         "$OUTPUT_IMG"
