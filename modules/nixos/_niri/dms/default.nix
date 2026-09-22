@@ -127,7 +127,7 @@
             idle = false;
             lockscreen = false;
             wallpaper = false; # The shared Waypaper/mpvpaper switcher owns the backdrop
-            launcher = false; # Handled by your native rofi setup
+            launcher = false;
             dock = false;
           };
 
@@ -164,7 +164,7 @@
               islandCompactThickness = 29;
               islandAlongOffset = 0;
               islandInteractionMode = "hybrid";
-              islandTransparency = 0.65;
+              islandTransparency = 0.75;
               islandCornerRadius = 16;
               islandSatellitesEnabled = true;
               islandSatellitePosition = "adjacent";
