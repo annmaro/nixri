@@ -44,7 +44,7 @@ in
     interactiveShellInit = ''
       bind \ca beginning-of-line
       bind \ce end-of-line
-      set -gx FZF_DEFAULT_OPTS "--color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6"
+      set -gx FZF_DEFAULT_OPTS "--color=bg+:#${config.lib.stylix.colors.base02},bg:#${config.lib.stylix.colors.base00},spinner:#${config.lib.stylix.colors.base0A},hl:#${config.lib.stylix.colors.base08} --color=fg:#${config.lib.stylix.colors.base05},header:#${config.lib.stylix.colors.base0D},info:#${config.lib.stylix.colors.base0E},pointer:#${config.lib.stylix.colors.base0A}"
       set -g fish_color_autosuggestion green
     '';
     shellAbbrs = commonAliases;

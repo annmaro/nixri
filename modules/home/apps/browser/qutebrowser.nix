@@ -1,7 +1,15 @@
 {
+<<<<<<< HEAD
+=======
+  config,
+>>>>>>> fix-nixos-experiment
   pkgs,
   ...
 }:
+
+let
+  colors = config.lib.stylix.colors;
+in
 let
   pythonEnv = pkgs.python3.withPackages (
     ps: with ps; [
@@ -75,6 +83,7 @@ in
       c.colors.webpage.darkmode.policy.images = "never"
 
       # --- UI Dark Theme Colors ---
+<<<<<<< HEAD
       c.colors.statusbar.normal.bg = "#131212"
       c.colors.statusbar.normal.fg = "#bbbbbb"
       c.colors.tabs.bar.bg = "#131212"
@@ -84,6 +93,17 @@ in
       c.colors.tabs.selected.even.bg = "#303030"
       c.colors.tabs.selected.odd.fg = "#b8ddea"
       c.colors.tabs.selected.even.fg = "#b8ddea"
+=======
+      c.colors.statusbar.normal.bg = "#${colors.base00}"
+      c.colors.statusbar.normal.fg = "#${colors.base05}"
+      c.colors.tabs.bar.bg = "#${colors.base00}"
+      c.colors.tabs.odd.bg = "#${colors.base01}"
+      c.colors.tabs.even.bg = "#${colors.base00}"
+      c.colors.tabs.selected.odd.bg = "#${colors.base02}"
+      c.colors.tabs.selected.even.bg = "#${colors.base02}"
+      c.colors.tabs.selected.odd.fg = "#${colors.base0D}"
+      c.colors.tabs.selected.even.fg = "#${colors.base0D}"
+>>>>>>> fix-nixos-experiment
 
       # --- Keybindings ---
 

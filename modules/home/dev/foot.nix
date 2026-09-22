@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   config = lib.mkIf (config.homeSettings.terminal == "foot") {
@@ -9,7 +9,7 @@
       settings = {
         main = {
           font = lib.mkForce "JetBrainsMono Nerd Font:size=14";
-          include = "${pkgs.foot.themes}/share/foot/themes/gruvbox-dark";
+          # Stylix supplies the official Gruvbox Material palette for Foot.
         };
 
         scrollback.lines = 10000;

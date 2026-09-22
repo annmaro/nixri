@@ -81,6 +81,7 @@ pkgs.writeShellApplication {
         fi
         pkill -x mpvpaper 2>/dev/null || true
         if pgrep -x awww-daemon >/dev/null 2>&1; then
+<<<<<<< HEAD
           # Check if daemon is responding (might be from an old session or shutting down)
           if ! awww query >/dev/null 2>&1; then
             awww kill 2>/dev/null || pkill -x awww-daemon 2>/dev/null || true
@@ -94,6 +95,15 @@ pkgs.writeShellApplication {
         if ! pgrep -x awww-daemon >/dev/null 2>&1; then
           # Clean up any leftover sockets in case of crash or ungraceful shutdown
           rm -f "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/awww.socket" "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swww.socket"
+=======
+          # Check if daemon is responding (might be from an old session)
+          if ! awww query >/dev/null 2>&1; then
+            pkill -x awww-daemon 2>/dev/null || true
+            sleep 0.2
+          fi
+        fi
+        if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+>>>>>>> fix-nixos-experiment
           awww-daemon >"$CACHE_DIR/awww-daemon.log" 2>&1 &
           sleep 0.5
         fi

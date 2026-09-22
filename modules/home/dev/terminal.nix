@@ -7,6 +7,7 @@ let
   success = "#${colors.base0B}";
   secondary = "#${colors.base0D}";
   muted = "#${colors.base04}";
+  info = "#${colors.base0C}";
 in
 {
   programs.starship = {
@@ -32,11 +33,11 @@ in
       };
       git_status = {
         format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](${accent}) ($ahead_behind$stashed)]($style)";
-        style = "#89dceb";
+        style = info;
       };
       cmd_duration = {
         format = "[$duration]($style) ";
-        style = "#f9e2af";
+        style = accent;
       };
       nix_shell = {
         symbol = "❄️ ";
@@ -44,13 +45,13 @@ in
       };
       shell = {
         disabled = false;
-        style = "#89dceb";
+        style = info;
         bash_indicator = "";
         powershell_indicator = "";
       };
       python = {
         format = "[$virtualenv]($style) ";
-        style = "#585b70";
+        style = muted;
         symbol = "py ";
       };
     };

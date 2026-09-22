@@ -1,7 +1,15 @@
 {
+<<<<<<< HEAD
+=======
+  config,
+>>>>>>> fix-nixos-experiment
   pkgs,
   ...
 }:
+
+let
+  colors = config.lib.stylix.colors;
+in
 
 let
   vimbWrapped = pkgs.symlinkJoin {
@@ -128,6 +136,7 @@ in
     # Define the global style.css stylesheet for dark mode
     xdg.configFile."vimb/style.css".text = ''
       *,div,pre,textarea,body,input,td,tr,p {
+<<<<<<< HEAD
           background-color: #131212 !important;
           background-image: none !important;
           color: #bbbbbb !important;
@@ -144,6 +153,24 @@ in
       }
       a:visited {
           color: #e07070 !important;
+=======
+          background-color: #${colors.base00} !important;
+          background-image: none !important;
+          color: #${colors.base05} !important;
+      }
+      h1,h2,h3,h4 {
+          background-color: #${colors.base01} !important;
+          color: #${colors.base0D} !important;
+      }
+      a {
+          color: #${colors.base0C} !important;
+      }
+      a:hover,a:focus {
+          color: #${colors.base0A} !important;
+      }
+      a:visited {
+          color: #${colors.base08} !important;
+>>>>>>> fix-nixos-experiment
       }
       img {
           opacity: .5;

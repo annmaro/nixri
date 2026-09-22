@@ -3,16 +3,16 @@
 let
   stylixColors = config.lib.stylix.colors or { };
 
-  labels = "#${stylixColors.base0E or "cba6f7"}";
-  kernelCol = "#${stylixColors.base0D or "89b4fa"}";
-  uptimeCol = "#${stylixColors.base0B or "a6e3a1"}";
-  pkgsCol = "#${stylixColors.base08 or "f38ba8"}";
-  shellCol = "#${stylixColors.base0A or "f9e2af"}";
-  cpuCol = "#${stylixColors.base0C or "89dceb"}";
-  gpuCol = "#${stylixColors.base0C or "89dceb"}";
-  memCol = "#${stylixColors.base0F or "f5c2e7"}";
-  wmCol = "#${stylixColors.base09 or "fab387"}";
-  termCol = "#${stylixColors.base07 or "b4befe"}";
+  labels = "#${stylixColors.base0E or "d3869b"}";
+  kernelCol = "#${stylixColors.base0D or "7daea3"}";
+  uptimeCol = "#${stylixColors.base0B or "a9b665"}";
+  pkgsCol = "#${stylixColors.base08 or "ea6962"}";
+  shellCol = "#${stylixColors.base0A or "d8a657"}";
+  cpuCol = "#${stylixColors.base0C or "89b482"}";
+  gpuCol = "#${stylixColors.base0C or "89b482"}";
+  memCol = "#${stylixColors.base0F or "bd6f3e"}";
+  wmCol = "#${stylixColors.base09 or "e78a4e"}";
+  termCol = "#${stylixColors.base07 or "fbf1c7"}";
 in
 {
   programs.fastfetch = {
@@ -31,7 +31,7 @@ in
         separator = " ── ";
         color = {
           keys = labels;
-          title = "#${stylixColors.base05 or "cdd6f4"}";
+          title = "#${stylixColors.base05 or "ddc7a1"}";
         };
       };
 

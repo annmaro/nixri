@@ -12,7 +12,7 @@ let
   kbdLayout = config.systemSettings.kbdLayout;
   kbdVariant = config.systemSettings.kbdVariant;
   isDms = bar == "DMS";
-  accentColor = "#${lib.attrByPath [ "lib" "stylix" "colors" "base0A" ] "d79921" config}";
+  accentColor = "#${lib.attrByPath [ "lib" "stylix" "colors" "base0A" ] "d8a657" config}";
   barNamespace = if isDms then "^dms:.*" else "^noctalia:.*";
   restartBar = if isDms then "dms" else "noctalia";
   screenshot = ''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.satty}/bin/satty -f - -o ~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png'';
@@ -53,7 +53,11 @@ let
     {
       matches = [
         {
+<<<<<<< HEAD
           app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim|antigravity|dev.zed.Zed|code|thunar)$";
+=======
+          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
+>>>>>>> fix-nixos-experiment
         }
       ];
       opacity = 0.85;
@@ -336,11 +340,15 @@ in
       place-within-backdrop = true;
     }
     {
+<<<<<<< HEAD
       matches = [
         { namespace = "^qml-launcher$"; }
         { namespace = "^qml-keybinds$"; }
       ];
 
+=======
+      matches = [ { namespace = "^qml-launcher$"; } ];
+>>>>>>> fix-nixos-experiment
       background-effect = {
         xray = false;
       };
@@ -368,12 +376,15 @@ in
         "-p"
         launcherConfig
       ];
+<<<<<<< HEAD
       "Mod+K".spawn = [
         "${pkgs.quickshell}/bin/quickshell"
         "--no-duplicate"
         "-p"
         "/home/${config.systemSettings.username}/.config/qml-keybinds"
       ];
+=======
+>>>>>>> fix-nixos-experiment
       "Mod+N".spawn = [
         "dms"
         "ipc"

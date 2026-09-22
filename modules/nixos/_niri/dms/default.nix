@@ -16,19 +16,19 @@
         # Safe extraction of Stylix colors with a fallback syntax layout
         stylixColors = config.lib.stylix.colors or { };
 
-        bgColor = "#${stylixColors.base00 or "1e1e2e"}"; # Background
-        fgColor = "#${stylixColors.base05 or "cdd6f4"}"; # Default Text
-        accentColor = "#d79921"; # Primary Accent (Gruvbox yellow)
-        surfaceMuted = "#${stylixColors.base03 or "45475a"}";
+        bgColor = "#${stylixColors.base00 or "292828"}"; # Gruvbox Material background
+        fgColor = "#${stylixColors.base05 or "ddc7a1"}"; # Gruvbox Material default text
+        accentColor = "#${stylixColors.base0A or "d8a657"}"; # Gruvbox Material yellow
+        surfaceMuted = "#${stylixColors.base03 or "665c54"}";
 
         # Cleaned up payload block: Defined once, inherited for both dark & light modes
         themePayload = {
           background = bgColor;
           backgroundText = fgColor;
-          error = "#${stylixColors.base08 or "f38ba8"}";
-          info = "#${stylixColors.base0D or "89b4fa"}";
-          name = "Gruvbox";
-          outline = "#${stylixColors.base04 or "585b70"}";
+          error = "#${stylixColors.base08 or "ea6962"}";
+          info = "#${stylixColors.base0D or "7daea3"}";
+          name = "Gruvbox Material";
+          outline = "#${stylixColors.base04 or "bdae93"}";
           primary = accentColor;
           primaryContainer = accentColor;
           primaryText = bgColor;
@@ -36,12 +36,12 @@
           surface = bgColor;
           surfaceContainer = bgColor;
           surfaceContainerHigh = surfaceMuted;
-          surfaceContainerHighest = "#${stylixColors.base04 or "585b70"}";
+          surfaceContainerHighest = "#${stylixColors.base04 or "bdae93"}";
           surfaceText = fgColor;
           surfaceTint = accentColor;
           surfaceVariant = surfaceMuted;
           surfaceVariantText = fgColor;
-          warning = "#${stylixColors.base0A or "f9e2af"}";
+          warning = "#${stylixColors.base0A or "d8a657"}";
         };
 
         gruvboxTheme = {

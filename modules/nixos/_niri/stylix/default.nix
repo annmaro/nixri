@@ -25,7 +25,7 @@
           polarity = "dark";
           enableReleaseChecks = false;
 
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+          base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
           # 2. Let Stylix handle your Bibata cursor globally
           cursor = {
@@ -64,6 +64,7 @@
             };
             qt.enable = true;
             btop.enable = true;
+            foot.enable = true;
             swaylock.enable = true; # Tells Stylix to inject the colors into the locker lock ring
             firefox = {
               enable = true; # Ensures Stylix automatically hooks into the layout template
