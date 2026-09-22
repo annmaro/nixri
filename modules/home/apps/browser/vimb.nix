@@ -1,8 +1,5 @@
 {
-<<<<<<< HEAD
-=======
   config,
->>>>>>> fix-nixos-experiment
   pkgs,
   ...
 }:
@@ -136,24 +133,6 @@ in
     # Define the global style.css stylesheet for dark mode
     xdg.configFile."vimb/style.css".text = ''
       *,div,pre,textarea,body,input,td,tr,p {
-<<<<<<< HEAD
-          background-color: #131212 !important;
-          background-image: none !important;
-          color: #bbbbbb !important;
-      }
-      h1,h2,h3,h4 {
-          background-color: #303030 !important;
-          color: #b8ddea !important;
-      }
-      a {
-          color: #70e070 !important;
-      }
-      a:hover,a:focus {
-          color: #7070e0 !important;
-      }
-      a:visited {
-          color: #e07070 !important;
-=======
           background-color: #${colors.base00} !important;
           background-image: none !important;
           color: #${colors.base05} !important;
@@ -170,7 +149,6 @@ in
       }
       a:visited {
           color: #${colors.base08} !important;
->>>>>>> fix-nixos-experiment
       }
       img {
           opacity: .5;

@@ -11,10 +11,7 @@
       "app.opencomic.OpenComic"
       "com.logseq.Logseq"
       "io.github.giantpinkrobots.varia"
-<<<<<<< HEAD
-=======
       "com.bilingify.readest"
->>>>>>> fix-nixos-experiment
       "net.waterfox.waterfox"
     ];
     update.onActivation = true;

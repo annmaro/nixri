@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 { pkgs, config, ... }:
-=======
-{ pkgs, ... }:
->>>>>>> fix-nixos-experiment
 
 {
   home.packages = [ pkgs.quickshell ];
 
-<<<<<<< HEAD
   xdg.configFile."qml-launcher/shell.qml".text = ''
 import QtQuick
 import QtQuick.Controls
@@ -336,7 +331,4 @@ PanelWindow {
     }
 }
   '';
-=======
-  xdg.configFile."qml-launcher/shell.qml".source = ../../../assets/qml-launcher/shell.qml;
->>>>>>> fix-nixos-experiment
 }

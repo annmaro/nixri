@@ -53,11 +53,7 @@ let
     {
       matches = [
         {
-<<<<<<< HEAD
-          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim|antigravity|dev.zed.Zed|code|thunar)$";
-=======
-          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
->>>>>>> fix-nixos-experiment
+          app-id = "^(Emacs|proton.vpn.app.gtk|heroic|lutris|discord|webcord|vesktop|nvim|nvim-wrapper|antigravity|dev.zed.Zed|code|thunar)$";
         }
       ];
       opacity = 0.85;
@@ -340,15 +336,10 @@ in
       place-within-backdrop = true;
     }
     {
-<<<<<<< HEAD
       matches = [
         { namespace = "^qml-launcher$"; }
         { namespace = "^qml-keybinds$"; }
       ];
-
-=======
-      matches = [ { namespace = "^qml-launcher$"; } ];
->>>>>>> fix-nixos-experiment
       background-effect = {
         xray = false;
       };
@@ -376,15 +367,12 @@ in
         "-p"
         launcherConfig
       ];
-<<<<<<< HEAD
       "Mod+K".spawn = [
         "${pkgs.quickshell}/bin/quickshell"
         "--no-duplicate"
         "-p"
         "/home/${config.systemSettings.username}/.config/qml-keybinds"
       ];
-=======
->>>>>>> fix-nixos-experiment
       "Mod+N".spawn = [
         "dms"
         "ipc"
