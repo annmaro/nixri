@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   xdg.configFile."qml-keybinds/shell.qml".text = ''
@@ -25,10 +25,10 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "qml-keybinds"
 
-    property color backgroundColor: Qt.rgba(0.157, 0.157, 0.157, 0.85)
-    property color foregroundColor: "#ffffff"
+    property color backgroundColor: Qt.rgba(0.157, 0.157, 0.157, 0.90)
+    property color foregroundColor: "#d4be98"
     property color mutedColor: "#a89984"
-    property color accentColor: "#fabd2f"
+    property color accentColor: "#d8a657"
     property color badgeColor: "#3c3836"
 
     ListModel {
@@ -149,7 +149,7 @@ PanelWindow {
                         radius: 8
                         color: "transparent"
                         border.width: 1
-                        border.color: search.activeFocus ? window.accentColor : "#ffffff33"
+                        border.color: search.activeFocus ? window.accentColor : "#665c54"
                     }
 
                     onTextChanged: window.filterEntries()
@@ -179,7 +179,7 @@ PanelWindow {
                         width: bindList.width
                         height: 38
                         radius: 6
-                        color: "#282828"
+                        color: "#32302f"
 
                         Rectangle {
                             id: catPill
