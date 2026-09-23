@@ -197,7 +197,6 @@ in
     xdg.configFile."vimb/style.css".text = ''
       *,div,pre,textarea,body,input,td,tr,p {
           background-color: #${colors.base00} !important;
-          background-image: none !important;
           color: #${colors.base05} !important;
       }
       h1,h2,h3,h4 {
@@ -213,15 +212,14 @@ in
       a:visited {
           color: #${colors.base08} !important;
       }
-      img {
-          opacity: .5;
-      }
+
     '';
 
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
       set home-page=https://google.com
       set download-path=~/Downloads/
+      set javascript-can-open-windows-automatically=false
 
       # Default Full-Content zoom level in percent. Default is 100.
       set default-zoom=140
