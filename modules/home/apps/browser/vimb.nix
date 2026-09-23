@@ -34,7 +34,7 @@ in
     ];
 
     xdg.configFile."vimb/scripts.js".text = ''
-      // Vimb Cosmetic Layout Cleaner
+      // Cosmetic ad filters and dynamic Reddit promoted-post cleanup
       (function() {
           'use strict';
           if (window !== window.top) return;
@@ -44,19 +44,53 @@ in
               'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads',
               '.css-1q97669'
           ];
+          const isReddit = window.location.hostname === 'reddit.com' ||
+              window.location.hostname.endsWith('.reddit.com');
+          const redditAdSelectors = [
+              'sh-promoted-post',
+              'sh-post[data-promoted="true"]',
+              'sh-post[promoted="true"]',
+              'article[data-ad="true"]',
+              '.promotedlink',
+              '.thing[data-promoted="true"]',
+              'div[data-adclicklocation="ad_post"]',
+              'aside[aria-label="Advertisements"]',
 
-          const style = document.createElement('style');
-          style.innerHTML = adSelectors.join(', ') + ' { display: none !important; height: 0 !important; visibility: hidden !important; }';
+          ];
+          const selectors = isReddit ? adSelectors.concat(redditAdSelectors) : adSelectors;
 
           const addStyle = () => {
-              if (document.head) document.head.appendChild(style);
-              else if (document.documentElement) document.documentElement.appendChild(style);
+              const root = document.documentElement;
+              if (!root) return;
+
+              if (!document.getElementById('vimb-ad-filter')) {
+                  const style = document.createElement('style');
+                  style.id = 'vimb-ad-filter';
+                  style.textContent = selectors.join(', ') +
+                      ' { display: none !important; height: 0 !important; visibility: hidden !important; }';
+                  (document.head || root).appendChild(style);
+              }
+
+              if (!isReddit) return;
+
+              const purgeAds = (node) => {
+                  if (node instanceof Element && node.matches(redditAdSelectors.join(', '))) {
+                      node.remove();
+                  }
+                  document.querySelectorAll(redditAdSelectors.join(', ')).forEach((ad) => ad.remove());
+              };
+              purgeAds(root);
+
+              const observer = new MutationObserver((records) => {
+                  records.forEach((record) => record.addedNodes.forEach(purgeAds));
+              });
+              observer.observe(root, { childList: true, subtree: true });
           };
 
-          if (document.readyState === "loading") {
-              document.addEventListener('DOMContentLoaded', addStyle);
-          } else {
+          if (document.documentElement) {
               addStyle();
+          } else {
+              document.addEventListener('DOMContentLoaded', addStyle, { once: true });
           }
       })();
 
@@ -114,11 +148,9 @@ in
       // Vimb Clickjack & Popup Blocker
       (function() {
           'use strict';
-          // Hook into window.open to stop automated tab hijacking
-          const originalWindowOpen = window.open;
-          window.open = function(url, name, specs, replace) {
-              console.log("Vimb blocked an attempted popup to: " + url);
-              // Return a dummy object so the website's script doesn't crash
+
+          window.open = function(url) {
+              console.warn('Vimb blocked an attempted popup to:', url);
               return {
                   focus: function() {},
                   blur: function() {},
@@ -126,6 +158,37 @@ in
                   closed: true
               };
           };
+
+          window.addEventListener('click', function(event) {
+              let node = event.target;
+              while (node && node !== document.body) {
+                  if (node instanceof Element && node.tagName === 'A' &&
+                      node.getAttribute('target') === '_blank') {
+                      const style = window.getComputedStyle(node);
+                      const zIndex = Number.parseInt(style.zIndex, 10);
+                      const suspiciousLayer =
+                          (style.position === 'fixed' || style.position === 'absolute') &&
+                          (zIndex >= 100 || Number.parseFloat(style.opacity) === 0);
+
+                      let destination;
+                      try {
+                          destination = new URL(node.getAttribute('href') || "", window.location.href);
+                      } catch (_) {
+                          return;
+                      }
+
+                      if (suspiciousLayer && /^https?:$/.test(destination.protocol) &&
+                          destination.origin !== window.location.origin) {
+                          event.preventDefault();
+                          event.stopImmediatePropagation();
+                          node.remove();
+                          console.warn('Vimb blocked a clickjack overlay:', node);
+                          return;
+                      }
+                  }
+                  node = node.parentElement;
+              }
+          }, true);
       })();
 
     '';

@@ -7,20 +7,12 @@
 let
   colors = config.lib.stylix.colors;
 in
-let
-  pythonEnv = pkgs.python3.withPackages (
-    ps: with ps; [
-      tldextract
-      pyperclip
-    ]
-  );
-
-in
 {
   config = {
     home.packages = with pkgs; [
       qutebrowser
       keyutils
+      python3Packages.adblock
     ];
 
 
@@ -66,6 +58,8 @@ in
       # --- Adblocking Configuration ---
       c.content.blocking.enabled = True
       c.content.blocking.method = "both"
+      c.content.javascript.can_open_tabs_automatically = False
+      c.content.pdfjs = False
       c.content.blocking.adblock.lists = [
           "https://easylist.to/easylist/easylist.txt",
           "https://easylist.to/easylist/easyprivacy.txt",
@@ -110,11 +104,11 @@ in
       })
     '';
 
-    # Greasemonkey cosmetic ad skip scriptlet
+    # Greasemonkey anti-clickjack, Reddit ad purge, and YouTube ad skipper
     xdg.dataFile."qutebrowser/greasemonkey/cosmetic-ad-skip.user.js".text = ''
       // ==UserScript==
-      // @name         Qutebrowser Cosmetic & YT Skipper
-      // @namespace    qutebrowser-custom
+      // @name         Browser Anti-Ad & Clickjack Defuser
+      // @namespace    custom
       // @match        *://*/*
       // @run-at       document-start
       // ==/UserScript==
@@ -122,27 +116,97 @@ in
       (function() {
           'use strict';
 
-          if (window.location.hostname.includes("youtube.com")) {
-              setInterval(() => {
-                  const skipButtons = [
-                      '.ytp-ad-skip-button-modern',
-                      '.ytp-skip-ad-button',
-                      '.ytp-ad-skip-button',
-                      'button[aria-label^="Skip ad"]'
-                  ];
+          const isHost = (domain) => window.location.hostname === domain ||
+              window.location.hostname.endsWith('.' + domain);
 
-                  for (const selector of skipButtons) {
-                      const btn = document.querySelector(selector);
-                      if (btn && btn.offsetParent !== null) {
-                          btn.click();
-                      }
+          // Block external links placed in transparent or unusually high overlays.
+          window.addEventListener('click', function(event) {
+              const clicked = event.target;
+              if (!(clicked instanceof Element)) return;
+
+              const link = clicked.closest('a');
+              if (!link) return;
+
+              const href = link.getAttribute('href') || "";
+              const style = window.getComputedStyle(link);
+              const zIndex = Number.parseInt(style.zIndex, 10);
+              const isOverlay = (style.position === 'fixed' || style.position === 'absolute') &&
+                  (zIndex > 999 || Number.parseFloat(style.opacity) === 0);
+
+              let destination;
+              try {
+                  destination = new URL(href, window.location.href);
+              } catch (_) {
+                  return;
+              }
+
+              if (isOverlay && /^https?:$/.test(destination.protocol) &&
+                  destination.origin !== window.location.origin) {
+                  event.preventDefault();
+                  event.stopImmediatePropagation();
+                  link.remove();
+              }
+          }, true);
+
+          // Remove promoted posts as well as hide them before the page is painted.
+          if (isHost('reddit.com')) {
+              const redditAdSelectors = [
+                  'sh-promoted-post',
+                  'sh-post[data-promoted="true"]',
+                  'sh-post[promoted="true"]',
+                  'article[data-ad="true"]',
+                  '.promotedlink',
+                  '.thing[data-promoted="true"]',
+                  'div[data-adclicklocation="ad_post"]',
+                  'aside[aria-label="Advertisements"]'
+              ];
+
+              const purgeAds = (root) => {
+                  if (root instanceof Element && root.matches(redditAdSelectors.join(', '))) {
+                      root.remove();
+                  }
+                  document.querySelectorAll(redditAdSelectors.join(', ')).forEach((node) => node.remove());
+              };
+
+              const installRedditFilters = () => {
+                  const root = document.documentElement;
+                  if (!root) return;
+
+                  if (!document.getElementById('custom-reddit-ad-filter')) {
+                      const style = document.createElement('style');
+                      style.id = 'custom-reddit-ad-filter';
+                      style.textContent = redditAdSelectors.join(', ') +
+                          ' { display: none !important; height: 0 !important; }';
+                      (document.head || root).appendChild(style);
                   }
 
+                  purgeAds(root);
+                  const observer = new MutationObserver((records) => {
+                      records.forEach((record) => record.addedNodes.forEach(purgeAds));
+                  });
+                  observer.observe(root, { childList: true, subtree: true });
+              };
+
+              if (document.documentElement) {
+                  installRedditFilters();
+              } else {
+                  document.addEventListener('DOMContentLoaded', installRedditFilters, { once: true });
+              }
+          }
+
+          // Skip YouTube video ads when a skip button or ad playback is detected.
+          if (isHost('youtube.com')) {
+              setInterval(() => {
+                  const skip = document.querySelector(
+                      '.ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-ad-skip-button, button[aria-label^="Skip ad"]'
+                  );
+                  if (skip && skip.offsetParent !== null) skip.click();
+
                   const video = document.querySelector('video');
-                  if (video && document.querySelector('.ad-showing, .ad-interrupting')) {
-                      if (video.duration && video.currentTime < video.duration - 0.5) {
-                          video.currentTime = video.duration - 0.1;
-                      }
+                  if (video && document.querySelector('.ad-showing, .ad-interrupting') &&
+                      Number.isFinite(video.duration) && video.duration > 0 &&
+                      video.currentTime < video.duration - 0.5) {
+                      video.currentTime = video.duration - 0.1;
                   }
               }, 1000);
           }
