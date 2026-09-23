@@ -42,14 +42,14 @@
           lsp.enable = true;
           lsp.servers = [ "nixd" ];
           format.enable = true;
-          format.type = [ "nixfmt" ];
+          format.type = "nixfmt";
         };
         rust = {
           enable = true;
           lsp.enable = true;
           lsp.servers = [ "rust-analyzer" ];
           format.enable = true;
-          format.type = [ "rustfmt" ];
+          format.type = "rustfmt";
         };
         python = {
           enable = true;
@@ -84,15 +84,26 @@
         copilot.enable = true;
       };
 
+      # CLI tools and LSP servers exposed to Neovim's PATH
       extraPackages = with pkgs; [
         nixd
-        nixfmt
+        nixfmt-rfc-style
         rust-analyzer
         rustfmt
         clippy
         pyright
         ruff
       ];
+
+      # Vim plugins loaded into Neovim's runtimepath
+      extraPlugins = with pkgs.vimPlugins; {
+        mini-nvim.package = mini-nvim;
+        snacks-nvim.package = snacks-nvim;
+        trouble-nvim.package = trouble-nvim;
+        lspsaga-nvim.package = lspsaga-nvim;
+        lspkind-nvim.package = lspkind-nvim;
+        lsp-signature-nvim.package = lsp-signature-nvim;
+      };
 
       luaConfigRC = {
         editor = ''
@@ -131,6 +142,66 @@
           map("n", "<C-j>", "<C-w>j", opts)
           map("n", "<C-k>", "<C-w>k", opts)
           map("n", "<C-l>", "<C-w>l", opts)
+          map("n", "<leader>f", "<cmd>lua require('conform').format({ async = true, lsp_format = 'fallback' })<CR>", opts)
+          map("n", "<leader>t", "<cmd>lua Snacks.terminal.toggle()<CR>", opts)
+          map("n", "<leader>tf", "<cmd>lua Snacks.terminal.toggle(nil, { style = 'float' })<CR>", opts)
+          map("n", "<leader>tg", "<cmd>lua Snacks.lazygit()<CR>", opts)
+          map("n", "<leader>uw", "<cmd>set wrap!<CR>", opts)
+          map("n", "<leader>ul", "<cmd>set linebreak!<CR>", opts)
+          map("n", "<leader>us", "<cmd>set spell!<CR>", opts)
+          map("n", "<leader>uc", "<cmd>set cursorline!<CR>", opts)
+          map("n", "<leader>un", "<cmd>set number!<CR>", opts)
+          map("n", "<leader>ur", "<cmd>set relativenumber!<CR>", opts)
+          map("n", "<leader>ut", "<cmd>set showtabline=2<CR>", opts)
+          map("n", "<leader>uT", "<cmd>set showtabline=0<CR>", opts)
+          map("n", "<leader>xt", "<cmd>TodoTrouble<CR>", opts)
+
+          -- Normal mode: Run shell command and paste stdout
+          map("n", "<leader>!", function()
+            local cmd = vim.fn.input('Command: ')
+            if cmd == "" then return end
+            local lines = vim.fn.systemlist(cmd)
+            vim.api.nvim_put(lines, "l", true, true)
+          end, opts)
+
+          -- Visual mode: Filter selected range through shell command
+          map("v", "<leader>!", function()
+            local start_line = vim.fn.line("'<")
+            local end_line = vim.fn.line("'>")
+            local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+            local input_text = table.concat(lines, "\n")
+            local cmd = vim.fn.input('$ ')
+            if cmd == "" then return end
+            local result = vim.fn.system({ "bash", "-c", cmd }, input_text)
+            local output = vim.split(result, "\n", { plain = true })
+            if output[#output] == "" then table.remove(output) end
+            if #output == 0 then return end
+            vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, output)
+          end, opts)
+
+          map("v", ">", ">gv", opts)
+          map("v", "<", "<gv", opts)
+          map({ "n", "v" }, "<C-d>", "<C-d>zz", opts)
+          map({ "n", "v" }, "<C-u>", "<C-u>zz", opts)
+          map("n", "<C-s>", "<cmd>w<CR>", opts)
+          map("n", "<Esc>", "<Nop>", opts)
+          map("n", "<Up>", "<Nop>", opts)
+          map("n", "<Down>", "<Nop>", opts)
+          map("n", "<Left>", "<Nop>", opts)
+          map("n", "<Right>", "<Nop>", opts)
+        '';
+
+        extraLuaConfig = ''
+          require('snacks').setup({
+            quickfile = { enabled = true },
+            statuscolumn = { enabled = true },
+            zen = { enabled = true },
+            bufdelete = { enabled = true },
+            gitsigns = { enabled = true },
+            animate = { enabled = true },
+            lazygit = { enabled = true, configure = false },
+            terminal = { enabled = true },
+          })
         '';
       };
     };
