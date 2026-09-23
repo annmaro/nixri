@@ -3,18 +3,18 @@
 pkgs.writeShellApplication {
   name = "screen-record";
 
-  # Nix securely injects all of these packages into the script's execution path
   runtimeInputs = with pkgs; [
-    coreutils    # Provides mkdir, date, basename, etc.
-    procps       # Provides pidof, pkill
-    libnotify    # Provides notify-send
-    slurp        # Provides slurp
-    wf-recorder  # Provides wf-recorder
+    coreutils
+    procps
+    libnotify
+    slurp
+    wf-recorder
   ];
 
   text = ''
     XDG_VIDEOS_DIR="''${XDG_VIDEOS_DIR:-$HOME/Videos}"
     DIR="''${XDG_VIDEOS_DIR}/screen-record"
+    LOCK_FILE="/tmp/screen-record.lock"
 
     mkdir -p "$DIR"
 
@@ -28,22 +28,47 @@ pkgs.writeShellApplication {
       exit 1
     }
 
-    timestamp=$(date +"%Y%m%d_%Hh%Mm%Ss")
-
+    # Stop recording if already running
     if pidof wf-recorder > /dev/null; then
       pkill wf-recorder
-      notify-send -e -t 2500 -u low "Recording Finished" \
-        "Saved to $DIR/recording_''${timestamp}.mp4"
+      if [ -f "$LOCK_FILE" ]; then
+        SAVED_FILE=$(cat "$LOCK_FILE")
+        rm -f "$LOCK_FILE"
+        notify-send -e -t 2500 -u low "Recording Finished" "Saved to $SAVED_FILE"
+      else
+        notify-send -e -t 2500 -u low "Recording Finished" "Saved to $DIR"
+      fi
       exit 0
     fi
 
+    timestamp=$(date +"%Y%m%d_%Hh%Mm%Ss")
+    TARGET_FILE="$DIR/recording_''${timestamp}.mp4"
+
     case "$1" in
-      a) REGION=$(slurp) ;;
-      m) REGION=$(slurp -o) ;;
-      *) print_error ;;
+      a)
+        # Force slurp to pick even dimensions divisible by 2
+        RAW_REGION=$(slurp)
+        REGION=$(echo "$RAW_REGION" | awk -F'[@x+]' '{printf "%dx%d+%d+%d", int($1/2)*2, int($2/2)*2, $3, $4}')
+        ;;
+      m)
+        REGION=$(slurp -o)
+        ;;
+      *)
+        print_error
+        ;;
     esac
 
+    # Cache target file path for stop notification
+    echo "$TARGET_FILE" > "$LOCK_FILE"
+
     notify-send -e -t 2500 -u low "Recording Started"
-    wf-recorder -g "$REGION" -f "$DIR/recording_''${timestamp}.mp4"
+
+    # Hardware-accelerated recording capped at 60fps
+    wf-recorder \
+      -r 60 \
+      -c h264_vaapi \
+      -d /dev/dri/renderD128 \
+      -g "$REGION" \
+      -f "$TARGET_FILE"
   '';
 }
