@@ -13,11 +13,6 @@
     containers.pihole = {
       autoStart = true;
       image = "pihole/pihole:latest";
-      ports = [
-        "53:53/tcp"
-        "53:53/udp"
-        "80:80/tcp"
-      ];
       environment = {
         TZ = "UTC";
       };
@@ -28,7 +23,10 @@
         "/var/lib/pihole/pihole:/etc/pihole"
         "/var/lib/pihole/dnsmasq.d:/etc/dnsmasq.d"
       ];
-      extraOptions = [ "--cap-add=NET_ADMIN" ];
+      extraOptions = [ 
+        "--cap-add=NET_ADMIN" 
+        "--network=host" 
+      ];
     };
   };
 
