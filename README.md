@@ -76,6 +76,7 @@
 - [Validation](#validation)
 - [Rollbacks](#rollbacks)
 - [Keybindings](#keybindings)
+- [Credits](#creditsinspiration)
 
 
 - ## Features
@@ -313,3 +314,9 @@
 - ## LICENSE
 
   This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for details.
+## Credits/Inspiration
+
+| Credit                                                        | Reason                       |
+| ------------------------------------------------------------- | ---------------------------- |
+| [Sly-Harvey NixOS](https://github.com/Sly-Harvey/NixOS)    | NixOS inspiration |
+| [Vimjoyer](https://www.youtube.com/@vimjoyer)              | NixOS tutorials              |
