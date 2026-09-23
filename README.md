@@ -76,7 +76,7 @@
 - [Validation](#validation)
 - [Rollbacks](#rollbacks)
 - [Keybindings](#keybindings)
-- [Credits](#credits-inspiration)
+- [Credits](#credits)
 
 
 - ## Features
