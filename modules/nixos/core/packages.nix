@@ -19,6 +19,7 @@
     helium
     gnome-disk-utility
     jq
+    doggo
     forkstat
     libsecret
     seahorse
