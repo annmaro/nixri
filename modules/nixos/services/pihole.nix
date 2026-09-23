@@ -16,6 +16,7 @@
       environment = {
         TZ = "UTC";
         FTLCONF_dns_listeningMode = "NONE";
+        FTLCONF_misc_etc_dnsmasq_d = "true";
       };
       environmentFiles = [
         config.age.secrets.pihole_env.path
