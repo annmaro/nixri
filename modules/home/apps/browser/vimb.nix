@@ -194,7 +194,8 @@ in
 
     # Define the global style.css stylesheet for dark mode
     xdg.configFile."vimb/style.css".text = ''
-      body,input,textarea,pre {
+      html,body,
+      body *:not(img):not(svg):not(canvas):not(video):not(picture):not(object):not(embed):not(input[type="image"]) {
           background-color: #${colors.base00} !important;
           color: #${colors.base05} !important;
       }
@@ -217,6 +218,8 @@ in
     xdg.configFile."vimb/config".text = ''
       set home-page=https://google.com
       set download-path=~/Downloads/
+      set dark-mode=true
+      set stylesheet=true
       set javascript-can-open-windows-automatically=false
 
       # Default Full-Content zoom level in percent. Default is 100.
