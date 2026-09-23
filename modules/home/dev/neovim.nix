@@ -42,14 +42,14 @@
           lsp.enable = true;
           lsp.servers = [ "nixd" ];
           format.enable = true;
-          format.type = "nixfmt";
+          format.type = [ "nixfmt" ];
         };
         rust = {
           enable = true;
           lsp.enable = true;
           lsp.servers = [ "rust-analyzer" ];
           format.enable = true;
-          format.type = "rustfmt";
+          format.type = [ "rustfmt" ];
         };
         python = {
           enable = true;
