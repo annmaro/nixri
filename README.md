@@ -196,6 +196,13 @@
   Host-specific overrides are kept in the host modules. For example, the laptop selects Intel graphics while the desktop selects AMD graphics.
   
   Home Manager receives a translated per-user interface called `homeSettings`. This makes the Home Manager modules reusable for additional users without copying the entire module list.
+
+<p align="right">
+  <a href="#top">
+    <img src="https://img.shields.io/badge/↑_Back_to_Top-363a4f?style=flat-square" alt="Back to top" />
+  </a>
+</p>
+
 - ## Installation
   
   This configuration assumes that NixOS has already been installed on the target machine.
@@ -256,6 +263,13 @@
   nh os switch --hostname <HOST>
   ```
   Replace `<HOST>` with the name of your host (e.g., `laptop`).
+
+<p align="right">
+  <a href="#top">
+    <img src="https://img.shields.io/badge/↑_Back_to_Top-363a4f?style=flat-square" alt="Back to top" />
+  </a>
+</p>
+
 - ## Secrets
   
   Encrypted Agenix files are stored under:
@@ -320,3 +334,9 @@
 | ------------------------------------------------------------- | ---------------------------- |
 | [Sly-Harvey NixOS](https://github.com/Sly-Harvey/NixOS)    | NixOS inspiration |
 | [Vimjoyer](https://www.youtube.com/@vimjoyer)              | NixOS tutorials              |
+
+<p align="right">
+  <a href="#top">
+    <img src="https://img.shields.io/badge/↑_Back_to_Top-363a4f?style=flat-square" alt="Back to top" />
+  </a>
+</p>
