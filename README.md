@@ -67,8 +67,8 @@
 
 - [Features](#features)
 - [Repository Structure](#repository-structure) 
-  - [Import Boundaries](#import-booundaries)
-  - [Overlays](#ovrelays)
+  - [Import Boundaries](#import-boundaries)
+  - [Overlays](#overlays)
   - [Niri Configuration](#niri-configuration)
   - [Settings](#settings)
 - [Installation](#installation)
@@ -76,7 +76,7 @@
 - [Validation](#validation)
 - [Rollbacks](#rollbacks)
 - [Keybindings](#keybindings)
-- [Credits](#creditsinspiration)
+- [Credits](#credits-inspiration)
 
 
 - ## Features
@@ -296,7 +296,7 @@
   
   List NixOS generations:
   
-  ```bash
+  ```bashi
   list-gens
   ```
   
@@ -314,7 +314,7 @@
 - ## LICENSE
 
   This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for details.
-- ## Credits/Inspiration
+- ## Credits
 
 | Credit                                                        | Reason                       |
 | ------------------------------------------------------------- | ---------------------------- |
