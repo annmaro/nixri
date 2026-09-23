@@ -87,7 +87,7 @@
       # CLI tools and LSP servers exposed to Neovim's PATH
       extraPackages = with pkgs; [
         nixd
-        nixfmt-rfc-style
+        nixfmt
         rust-analyzer
         rustfmt
         clippy
