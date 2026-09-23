@@ -15,6 +15,7 @@
       image = "pihole/pihole:latest";
       environment = {
         TZ = "UTC";
+        FTLCONF_dns_listeningMode = "NONE";
       };
       environmentFiles = [
         config.age.secrets.pihole_env.path
