@@ -41,8 +41,7 @@ in
 
           const adSelectors = [
               '.adsbox', '.ad-banner', '.adsbygoogle', 'amp-ad',
-              'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads',
-              '.css-1q97669'
+              'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads'
           ];
           const isReddit = window.location.hostname === 'reddit.com' ||
               window.location.hostname.endsWith('.reddit.com');
@@ -195,12 +194,11 @@ in
 
     # Define the global style.css stylesheet for dark mode
     xdg.configFile."vimb/style.css".text = ''
-      *,div,pre,textarea,body,input,td,tr,p {
+      body,input,textarea,pre {
           background-color: #${colors.base00} !important;
           color: #${colors.base05} !important;
       }
       h1,h2,h3,h4 {
-          background-color: #${colors.base01} !important;
           color: #${colors.base0D} !important;
       }
       a {
