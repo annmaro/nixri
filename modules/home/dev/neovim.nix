@@ -102,7 +102,7 @@
         trouble-nvim.package = trouble-nvim;
         lspsaga-nvim.package = lspsaga-nvim;
         lspkind-nvim.package = lspkind-nvim;
-        lsp-signature-nvim.package = lsp-signature-nvim;
+        lsp-signature-nvim.package = lsp_signature-nvim;
       };
 
       luaConfigRC = {
