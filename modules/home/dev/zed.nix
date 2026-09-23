@@ -15,7 +15,7 @@
           "cpp"
           "qml"
           "gruvbox-material"
-          "min-theme"
+          "zed-min-theme"
         ];
 
         userKeymaps = [
