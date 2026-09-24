@@ -193,27 +193,48 @@ in
     '';
 
     # Define the global style.css stylesheet for dark mode
-    xdg.configFile."vimb/style.css".text = ''
-      html,body,
-      body *:not(img):not(svg):not(canvas):not(video):not(picture):not(object):not(embed):not(input[type="image"]) {
-          background-color: #${colors.base00} !important;
-          color: #${colors.base05} !important;
-      }
-      h1,h2,h3,h4 {
-          color: #${colors.base0D} !important;
-      }
-      a {
-          color: #${colors.base0C} !important;
-      }
-      a:hover,a:focus {
-          color: #${colors.base0A} !important;
-      }
-      a:visited {
-          color: #${colors.base08} !important;
-      }
+        xdg.configFile."vimb/style.css".text = ''
+          /* Only apply dark background to root containers and text blocks */
+          html, body {
+              background-color: #${colors.base00} !important;
+              color: #${colors.base05} !important;
+          }
 
-    '';
+          /* Headings & Links */
+          h1, h2, h3, h4 {
+              color: #${colors.base0D} !important;
+          }
+          a {
+              color: #${colors.base0C} !important;
+          }
+          a:hover, a:focus {
+              color: #${colors.base0A} !important;
+          }
+          a:visited {
+              color: #${colors.base08} !important;
+          }
 
+          /* Never paint solid backgrounds over transparent click targets, overlays, or media */
+          a,
+          img,
+          svg,
+          video,
+          canvas,
+          picture,
+          [class*="overlay"],
+          [class*="lightbox"],
+          [class*="media"],
+          [style*="position: absolute"] {
+              background-color: transparent !important;
+          }
+
+          /* Fallback for unstyled text inputs */
+          input, textarea, select {
+              background-color: #${colors.base01} !important;
+              color: #${colors.base05} !important;
+              border: 1px solid #${colors.base03} !important;
+          }
+        '';
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
       set home-page=https://google.com
