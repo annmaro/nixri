@@ -195,45 +195,59 @@ in
     '';
 
     # Define the global style.css stylesheet for dark mode
-        xdg.configFile."vimb/style.css".text = ''
-          /* Force base container dark background */
-               html, body, main, article, section, header, footer, nav, aside {
-                   background-color: #${colors.base00} !important;
-                   color: #${colors.base05} !important;
-               }
+    xdg.configFile."vimb/style.css".text = ''
+          /* 1. Clear body background image (removes diamond pattern/gradients) */
+          html, body {
+              background: #${colors.base00} !important;
+              background-color: #${colors.base00} !important;
+              background-image: none !important;
+              color: #${colors.base05} !important;
+          }
 
-               /* Target legacy forum wrappers and panels */
-               div, table, tr, td, ul, li {
-                   background-color: inherit;
-                   color: inherit;
-               }
+          /* 2. Force containers, tables, and forum blocks to adopt base dark colors */
+          div, main, article, section, header, footer, nav, aside,
+          table, thead, tbody, tfoot, tr, td, th,
+          ul, ol, li, dl, dt, dd {
+              background-color: #${colors.base00} !important;
+              background-image: none !important;
+              color: #${colors.base05} !important;
+              border-color: #${colors.base02} !important;
+          }
 
-               /* Headings & Links */
-               h1, h2, h3, h4, h5, h6 {
-                   color: #${colors.base0D} !important;
-               }
-               a {
-                   color: #${colors.base0C} !important;
-               }
-               a:hover, a:focus {
-                   color: #${colors.base0A} !important;
-               }
-               a:visited {
-                   color: #${colors.base08} !important;
-               }
+          /* 3. Text and Headings */
+          h1, h2, h3, h4, h5, h6 {
+              color: #${colors.base0D} !important;
+              background-color: transparent !important;
+          }
+          p, span, label {
+              color: #${colors.base05} !important;
+          }
 
-               /* Prevent solid paint over media and overlays */
-               img, svg, video, canvas, picture {
-                   background-color: transparent !important;
-               }
+          /* 4. Links */
+          a, a * {
+              color: #${colors.base0C} !important;
+          }
+          a:hover, a:focus, a:hover *, a:focus * {
+              color: #${colors.base0A} !important;
+          }
+          a:visited, a:visited * {
+              color: #${colors.base08} !important;
+          }
 
-               /* Inputs and codeblocks */
-               input, textarea, select, pre, code {
-                   background-color: #${colors.base01} !important;
-                   color: #${colors.base05} !important;
-                   border: 1px solid #${colors.base03} !important;
-               }
-             '';
+          /* 5. Form controls and Code blocks */
+          input, textarea, select, button, pre, code {
+              background-color: #${colors.base01} !important;
+              background-image: none !important;
+              color: #${colors.base05} !important;
+              border: 1px solid #${colors.base03} !important;
+          }
+
+          /* 6. Preserve media, comic covers, and badges */
+          img, svg, video, canvas, picture,
+          [class*="cover"], [class*="avatar"], [class*="badge"] {
+              background-color: transparent !important;
+          }
+        '';
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
       set home-page=https://google.com
