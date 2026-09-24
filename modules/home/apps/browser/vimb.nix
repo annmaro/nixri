@@ -290,8 +290,8 @@ in
 
       # Accept all cookies or only first-party + visited third-party
       set cookie-accept=all
-      set cookie-expire-time=31536000
 
+      # Set custom user-agent
       set user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
 
       # Default Full-Content zoom level in percent. Default is 100.
