@@ -16,6 +16,8 @@ let
     postBuild = ''
       wrapProgram $out/bin/vimb \
         --set GDK_BACKEND "wayland,x11" \
+        --set GTK_THEME "Adwaita:dark" \
+        --set ADW_DEBUG_COLOR_SCHEME "prefer-dark" \
         --prefix GST_PLUGIN_SYSTEM_PATH_1_0 : "${pkgs.gst_all_1.gstreamer.out}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-ugly}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-libav}/lib/gstreamer-1.0"
     '';
   };
@@ -194,52 +196,48 @@ in
 
     # Define the global style.css stylesheet for dark mode
         xdg.configFile."vimb/style.css".text = ''
-          /* Only apply dark background to root containers and text blocks */
-          html, body {
-              background-color: #${colors.base00} !important;
-              color: #${colors.base05} !important;
-          }
+          /* Force base container dark background */
+               html, body, main, article, section, header, footer, nav, aside {
+                   background-color: #${colors.base00} !important;
+                   color: #${colors.base05} !important;
+               }
 
-          /* Headings & Links */
-          h1, h2, h3, h4 {
-              color: #${colors.base0D} !important;
-          }
-          a {
-              color: #${colors.base0C} !important;
-          }
-          a:hover, a:focus {
-              color: #${colors.base0A} !important;
-          }
-          a:visited {
-              color: #${colors.base08} !important;
-          }
+               /* Target legacy forum wrappers and panels */
+               div, table, tr, td, ul, li {
+                   background-color: inherit;
+                   color: inherit;
+               }
 
-          /* Never paint solid backgrounds over transparent click targets, overlays, or media */
-          a,
-          img,
-          svg,
-          video,
-          canvas,
-          picture,
-          [class*="overlay"],
-          [class*="lightbox"],
-          [class*="media"],
-          [style*="position: absolute"] {
-              background-color: transparent !important;
-          }
+               /* Headings & Links */
+               h1, h2, h3, h4, h5, h6 {
+                   color: #${colors.base0D} !important;
+               }
+               a {
+                   color: #${colors.base0C} !important;
+               }
+               a:hover, a:focus {
+                   color: #${colors.base0A} !important;
+               }
+               a:visited {
+                   color: #${colors.base08} !important;
+               }
 
-          /* Fallback for unstyled text inputs */
-          input, textarea, select {
-              background-color: #${colors.base01} !important;
-              color: #${colors.base05} !important;
-              border: 1px solid #${colors.base03} !important;
-          }
-        '';
+               /* Prevent solid paint over media and overlays */
+               img, svg, video, canvas, picture {
+                   background-color: transparent !important;
+               }
+
+               /* Inputs and codeblocks */
+               input, textarea, select, pre, code {
+                   background-color: #${colors.base01} !important;
+                   color: #${colors.base05} !important;
+                   border: 1px solid #${colors.base03} !important;
+               }
+             '';
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
       set home-page=https://google.com
       set download-path=~/Downloads/
-      set dark-mode=true
       set stylesheet=true
       set javascript-can-open-windows-automatically=false
 
