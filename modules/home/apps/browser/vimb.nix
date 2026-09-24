@@ -247,6 +247,27 @@ in
           [class*="cover"], [class*="avatar"], [class*="badge"] {
               background-color: transparent !important;
           }
+          /* Vimb Hint Badges (numbers 1, 2, 3...) */
+                ._vimbHint {
+                    background-color: #${colors.base01} !important;
+                    color: #${colors.base05} !important;
+                    border: 1px solid #${colors.base03} !important;
+                    font-weight: bold !important;
+                    border-radius: 2px !important;
+                    padding: 1px 3px !important;
+                }
+
+                /* Vimb Hinted Elements (replaces the neon yellow) */
+                ._vimbHintElem {
+                    background-color: #${colors.base02} !important;
+                    color: #${colors.base0D} !important;
+                }
+
+                /* Vimb Active/Focused Element (replaces the neon green) */
+                ._vimbHintFocus {
+                    background-color: #${colors.base0D} !important;
+                    color: #${colors.base00} !important;
+                }
         '';
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
