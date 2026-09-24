@@ -247,26 +247,27 @@ in
           [class*="cover"], [class*="avatar"], [class*="badge"] {
               background-color: transparent !important;
           }
-          /* Vimb Hint Badges (numbers 1, 2, 3...) */
+          /* Vimb Hint Badges (the number boxes: dark grey/black background with light text) */
                 ._vimbHint {
-                    background-color: #${colors.base01} !important;
-                    color: #${colors.base05} !important;
-                    border: 1px solid #${colors.base03} !important;
+                    background-color: #${colors.base01} !important;  /* Dark grey */
+                    color: #${colors.base05} !important;            /* Light grey/off-white text */
+                    border: 1px solid #${colors.base03} !important; /* Muted border */
                     font-weight: bold !important;
                     border-radius: 2px !important;
                     padding: 1px 3px !important;
                 }
 
-                /* Vimb Hinted Elements (replaces the neon yellow) */
+                /* Vimb Hinted Elements (the highlighted targets: eye-pleasing Stylix Green) */
                 ._vimbHintElem {
-                    background-color: #${colors.base02} !important;
-                    color: #${colors.base0D} !important;
+                    background-color: #${colors.base0B} !important;  /* Stylix Green */
+                    color: #${colors.base00} !important;            /* Black/dark text for high contrast */
                 }
 
-                /* Vimb Active/Focused Element (replaces the neon green) */
+                /* Vimb Focused Hint Element (the currently selected target: darker green tone) */
                 ._vimbHintFocus {
-                    background-color: #${colors.base0D} !important;
-                    color: #${colors.base00} !important;
+                    background-color: #${colors.base01} !important;
+                    color: #${colors.base0B} !important;
+                    outline: 2px solid #${colors.base0B} !important;
                 }
         '';
     # Vimb settings
