@@ -247,28 +247,34 @@ in
           [class*="cover"], [class*="avatar"], [class*="badge"] {
               background-color: transparent !important;
           }
-          /* Vimb Hint Badges (the number boxes: dark grey/black background with light text) */
-                ._vimbHint {
-                    background-color: #${colors.base01} !important;  /* Dark grey */
-                    color: #${colors.base05} !important;            /* Light grey/off-white text */
-                    border: 1px solid #${colors.base03} !important; /* Muted border */
-                    font-weight: bold !important;
-                    border-radius: 2px !important;
-                    padding: 1px 3px !important;
-                }
+          /* Vimb Hint Badges (the number boxes) */
+          span[vimbhint^='label'] {
+              background-color: #${colors.base01} !important;  /* Dark grey */
+              color: #${colors.base05} !important;            /* Light grey text */
+              border: 1px solid #${colors.base03} !important; /* Muted border */
+              font-weight: bold !important;
+              border-radius: 2px !important;
+              padding: 1px 3px !important;
+          }
 
-                /* Vimb Hinted Elements (the highlighted targets: eye-pleasing Stylix Green) */
-                ._vimbHintElem {
-                    background-color: #${colors.base0B} !important;  /* Stylix Green */
-                    color: #${colors.base00} !important;            /* Black/dark text for high contrast */
-                }
+          /* Focused Hint Badge (the active number box) */
+          span[vimbhint='label focus'] {
+              background-color: #${colors.base02} !important;
+              color: #${colors.base0B} !important;
+          }
 
-                /* Vimb Focused Hint Element (the currently selected target: darker green tone) */
-                ._vimbHintFocus {
-                    background-color: #${colors.base01} !important;
-                    color: #${colors.base0B} !important;
-                    outline: 2px solid #${colors.base0B} !important;
-                }
+          /* Vimb Hinted Elements (the highlighted links - replaces the bright yellow!) */
+          *[vimbhint^='hint'] {
+              background-color: #${colors.base0B} !important;  /* Stylix Green */
+              color: #${colors.base00} !important;            /* High contrast text */
+          }
+
+          /* Vimb Focused Hint Element (the currently selected target) */
+          *[vimbhint='hint focus'] {
+              background-color: #${colors.base01} !important;
+              color: #${colors.base0B} !important;
+              outline: 2px solid #${colors.base0B} !important;
+          }
         '';
     # Vimb settings
     xdg.configFile."vimb/config".text = ''
