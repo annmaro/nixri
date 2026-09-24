@@ -37,6 +37,11 @@ in
 
     xdg.configFile."vimb/scripts.js".text = ''
       // Cosmetic ad filters and dynamic Reddit promoted-post cleanup
+      if (window.location.hostname.includes("cloudflare.com") ||
+          document.title.includes("Just a moment") ||
+          document.title.includes("Security Check")) {
+          return;
+      }
       (function() {
           'use strict';
           if (window !== window.top) return;
@@ -282,6 +287,12 @@ in
       set download-path=~/Downloads/
       set stylesheet=true
       set javascript-can-open-windows-automatically=false
+
+      # Accept all cookies or only first-party + visited third-party
+      set cookie-accept=all
+      set cookie-expire-time=31536000
+
+      set user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
 
       # Default Full-Content zoom level in percent. Default is 100.
       set default-zoom=140
