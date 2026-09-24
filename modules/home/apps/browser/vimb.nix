@@ -289,7 +289,7 @@ in
       set javascript-can-open-windows-automatically=false
 
       # Accept all cookies or only first-party + visited third-party
-      set cookie-accept=all
+      set cookie-accept=always
 
       # Set custom user-agent
       set user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
