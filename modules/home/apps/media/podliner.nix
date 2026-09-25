@@ -4,7 +4,7 @@
   home.packages = with pkgs; [
     (buildDotnetModule {
       pname = "podliner";
-      version = "main"; 
+      version = "1.0.0"; 
       
       # Use the flake input directly instead of fetchFromGitHub
       src = inputs.podliner; 
