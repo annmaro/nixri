@@ -86,11 +86,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    podliner = {
-      url = "github:timkicker/podliner";
-      flake = false;
-    };
-
     bookokrat = {
       url = "github:bugzmanov/bookokrat";
       inputs.nixpkgs.follows = "nixpkgs";

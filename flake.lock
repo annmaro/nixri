@@ -791,6 +791,22 @@
         "type": "github"
       }
     },
+    "podliner": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789412056,
+        "narHash": "sha256-txRlxbn57EPUJimJoXje3fmHvjPZqb+JmAU7Nf3TzZU=",
+        "owner": "timkicker",
+        "repo": "podliner",
+        "rev": "7f00c1cb464d97c139b1e18fb4997c8edbf09a64",
+        "type": "github"
+      },
+      "original": {
+        "owner": "timkicker",
+        "repo": "podliner",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -812,6 +828,7 @@
         "noctalia": "noctalia",
         "nvchad4nix": "nvchad4nix",
         "nvf": "nvf",
+        "podliner": "podliner",
         "silentSDDM": "silentSDDM",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
