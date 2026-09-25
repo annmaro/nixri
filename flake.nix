@@ -86,6 +86,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    podliner = {
+      url = "github:timkicker/podliner";
+      flake = false;
+    };
+
     betterfox = {
       url = "github:yokoffing/Betterfox";
       flake = false;
