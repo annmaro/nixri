@@ -9,7 +9,7 @@
       # Use the flake input directly instead of fetchFromGitHub
       src = inputs.podliner; 
 
-      projectFile = "podliner.csproj";
+      projectFile = "Podliner.App/Podliner.App.csproj";
       
       # In modern Nixpkgs, you can use nugetHash instead of a separate deps file.
       # Start with a fake hash like below, build it, and Nix will error and tell you the real hash!
