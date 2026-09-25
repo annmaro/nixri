@@ -28,16 +28,9 @@
           clipboard-paste = "Control+y";
         };
 
-        # Larger font profile for dedicated Bookokrat reading windows.
-        # Launch with: foot --override=main.font="JetBrains Mono:size=16" bookokrat
-        profile-reading = {
-          font = "JetBrains Mono:size=16";
-        };
-
         # Optimize Sixel rendering for high-density PDF/DJVU pages in Bookokrat.
         tweak = {
           sixel = "yes";
-          max-sixel-dimensions = "4096x4096";
         };
       };
     };
