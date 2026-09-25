@@ -9,12 +9,10 @@
       # Use the flake input directly instead of fetchFromGitHub
       src = inputs.podliner;
 
-      # Target the .sln so all subprojects are restored during dependency generation
-      projectFile = "Podliner.sln"; # Update this to the exact solution filename in the repo root
+      # Point to the solution file so all projects are restored together
+      projectFile = "Podliner.sln";
 
-      # If there is no .sln, keep projectFile pointing to Podliner.App.csproj
-      # and add:
-      # dotnetRestoreFlags = [ "--source" "https://api.nuget.org/v3/index.json" ];
+      executables = [ "Podliner.App" ];
       # In modern Nixpkgs, you can use nugetHash instead of a separate deps file.
       # Start with a fake hash like below, build it, and Nix will error and tell you the real hash!
       nugetHash = pkgs.lib.fakeHash;
