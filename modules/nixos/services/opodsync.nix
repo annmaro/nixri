@@ -1,0 +1,14 @@
+{ ... }:
+
+{
+  virtualisation.oci-containers.containers.opodsync = {
+    image = "ganeshlab/opodsync:latest";
+    ports = [ "8080:80" ];
+    volumes = [
+      "/var/lib/opodsync:/var/www/html/data"
+    ];
+  };
+
+  # Open port 8080 for oPodSync
+  networking.firewall.allowedTCPPorts = [ 8080 ];
+}
