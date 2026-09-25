@@ -9,14 +9,8 @@
       # Use the flake input directly instead of fetchFromGitHub
       src = inputs.podliner;
 
-      # Point to the solution file so all projects are restored together
-      projectFile = [
-              "Podliner.App/Podliner.App.csproj"
-              "Podliner.Infra/Podliner.Infra.csproj"
-              "Podliner.Core/Podliner.Core.csproj"
-            ];
+      projectFile = "Podliner.App/Podliner.App.csproj";
 
-      executables = [ "Podliner.App" ];
       # In modern Nixpkgs, you can use nugetHash instead of a separate deps file.
       # Start with a fake hash like below, build it, and Nix will error and tell you the real hash!
       nugetHash = pkgs.lib.fakeHash;
@@ -27,7 +21,7 @@
       # Podliner shells out to external media players (like mpv, ffplay, or vlc).
       # Wrap the executable so it can find your preferred player.
       makeWrapperArgs = [
-        "--prefix PATH : ${lib.makeBinPath [ pkgs.mpv ]}"
+        "--prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.mpv ]}"
       ];
     })
   ];
