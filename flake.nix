@@ -91,6 +91,11 @@
       flake = false;
     };
 
+    bookokrat = {
+      url = "github:bugzmanov/bookokrat";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     betterfox = {
       url = "github:yokoffing/Betterfox";
       flake = false;
