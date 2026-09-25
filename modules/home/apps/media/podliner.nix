@@ -10,7 +10,11 @@
       src = inputs.podliner;
 
       # Point to the solution file so all projects are restored together
-      projectFile = "Podliner.sln";
+      projectFile = [
+              "Podliner.App/Podliner.App.csproj"
+              "Podliner.Infra/Podliner.Infra.csproj"
+              "Podliner.Core/Podliner.Core.csproj"
+            ];
 
       executables = [ "Podliner.App" ];
       # In modern Nixpkgs, you can use nugetHash instead of a separate deps file.
