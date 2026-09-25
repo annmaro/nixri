@@ -86,6 +86,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    podliner = {
+      url = "github:timkicker/podliner";
+      flake = false;
+    };
+
     bookokrat = {
       url = "github:bugzmanov/bookokrat";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -117,7 +122,7 @@
       ];
 
       perSystem = { pkgs, system, ... }: {
-        packages.podliner = pkgs.callPackage ./modules/packages/podliner {
+        packages.podliner = pkgs.callPackage ./modules/home/apps/media/podliner-pkg.nix {
           podlinerSrc = inputs.podliner;
         };
       };
