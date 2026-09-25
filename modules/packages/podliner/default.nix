@@ -9,7 +9,7 @@ buildDotnetModule {
   projectFile = "Podliner.App/Podliner.App.csproj";
 
   # We have to use nugetDeps and generate the file via fetch-deps
-  nugetDeps = ./nuget-deps.nix;
+  nugetDeps = ./nuget-deps.json;
 
   dotnet-sdk = dotnetCorePackages.sdk_9_0;
   dotnet-runtime = dotnetCorePackages.runtime_9_0;

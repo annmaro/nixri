@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }:
 
 let
-  podlinerPkg = pkgs.callPackage ./podliner-pkg.nix {
+  podlinerPkg = pkgs.callPackage ../../../packages/podliner {
     podlinerSrc = inputs.podliner;
   };
 in
