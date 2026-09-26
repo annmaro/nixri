@@ -15,9 +15,10 @@ in
     allowed_binaries = "yt-dlp"
 
     [plugins.gpodder-sync]
-    # You can set credentials here or via 'cliamp plugins gpodder-sync login' interactively
+    # You can set credentials here or via 'cliamp plugins call gpodder-sync login' interactively
     # username = "your-gpodder-username"
     # password = "your-gpodder-password"
+    server = "http://127.0.0.1:8081"
     auto_sync = true
     downloader = "yt-dlp"
     download_dir       = "~/Music/Podcasts " # where downloaded episodes are saved
