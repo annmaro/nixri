@@ -3,7 +3,7 @@
 let
   patchedCliamp = (inputs.cliamp.packages.${pkgs.stdenv.hostPlatform.system}.default).overrideAttrs (old: {
     patches = (old.patches or []) ++ [
-      (pkgs.writeText "cliamp-fixes.patch" ''
+      (pkgs.writeText "cliamp-allow-local.patch" ''
 --- a/luaplugin/api_http.go
 +++ b/luaplugin/api_http.go
 @@ -26,10 +26,6 @@
@@ -16,17 +16,6 @@ let
 -	}
  	return nil
  }
---- a/config/config.go
-+++ b/config/config.go
-@@ -652,3 +652,7 @@
- func parseString(s string) string {
--	s = strings.Trim(s, "\"'")
-+	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
-+		s = s[1 : len(s)-1]
-+	} else if len(s) >= 2 && s[0] == '\'' && s[len(s)-1] == '\'' {
-+		s = s[1 : len(s)-1]
-+	}
- 	if len(s) < 2 || s[0] != '$' {
       '')
     ];
   });
