@@ -14,9 +14,7 @@ in
   # enable custom userchrome
   "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
   "svg.context-properties.content.enabled" = true;
-  "layout.css.color-mix.enabled" = true;
   "browser.tabs.delayHidingAudioPlayingIconMS" = 0;
-  "layout.css.backdrop-filter.enabled" = true;
   "browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar" = false;
   "privacy.userContext.enabled" = true;
   "privacy.userContext.ui.enabled" = true;
@@ -134,7 +132,6 @@ in
   "permissions.default.xr" = 2; # Virtual Reality
 
   # General settings
-  "ui.key.accelKey" = 17; # Set CTRL as master key
   "intl.locale.requested" = "en-GB,en-US";
   "browser.aboutConfig.showWarning" = lock-false;
   "browser.aboutwelcome.enabled" = lock-false;
@@ -164,7 +161,6 @@ in
   "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.havePinned" = "";
   "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.searchEngines" = "";
   "browser.protections_panel.infoMessage.seen" = lock-true;
-  "browser.ssb.enabled" = true;
   "browser.toolbars.bookmarks.visibility" = "newtab"; # always, never, newtab
   #"browser.urlbar.placeholderName" = "Google";
   "browser.urlbar.suggest.topsites" = lock-false;

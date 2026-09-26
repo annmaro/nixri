@@ -15,6 +15,7 @@ in
 
   programs.firefox = lib.mkIf (config.homeSettings.browser == "firefox") {
     enable = true;
+    nativeMessagingHosts = [ pkgs.keepassxc ];
     languagePacks = [
       "en-GB"
       "en-US"
@@ -48,13 +49,11 @@ in
         lockPref("dom.security.https_only_mode_error_page_user_suggestions", true);
         lockPref("browser.firefox-view.feature-tour", "{\"screen\":\"\",\"complete\":true}");
         lockPref("identity.fxaccounts.enabled", false);
-        lockPref("browser.tabs.firefox-view-next", false);
         lockPref("privacy.sanitize.sanitizeOnShutdown", false);
         lockPref("privacy.clearOnShutdown.cache", true);
         lockPref("privacy.clearOnShutdown.cookies", false);
         lockPref("privacy.clearOnShutdown.offlineApps", false);
         lockPref("browser.sessionstore.privacy_level", 0);
-        lockPref("floorp.browser.sidebar.enable", false);
         lockPref("geo.enabled", false);
         lockPref("media.navigator.enabled", false);
         lockPref("dom.event.clipboardevents.enabled", false);
@@ -62,8 +61,6 @@ in
         lockPref("dom.battery.enabled", false);
         lockPref("extensions.enabledScopes", 15);
         lockPref("extensions.autoDisableScopes", 0);
-        lockPref("browser.newtabpage.activity-stream.floorp.newtab.imagecredit.hide", true);
-        lockPref("browser.newtabpage.activity-stream.floorp.newtab.releasenote.hide", true);
         lockPref("browser.search.separatePrivateDefault", true);
       '';
     };
