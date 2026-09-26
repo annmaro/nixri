@@ -20,6 +20,7 @@ in
     # password = "your-gpodder-password"
     auto_sync = true
     downloader = "yt-dlp"
+    download_dir       = "~/Music/Podcasts " # where downloaded episodes are saved
   '';
 
   # Automatically install and trust the plugin on home-manager switch
