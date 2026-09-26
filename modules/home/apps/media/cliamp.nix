@@ -40,7 +40,7 @@ in
 
     # Install the plugin non-interactively
     if [ -x "${cliampPkg}/bin/cliamp" ]; then
-      export PATH="${cliampPkg}/bin:$PATH"
+      axport PATH="${cliampPkg}/bin:$PATH"
         $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
       fi
     '';
