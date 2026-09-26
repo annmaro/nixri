@@ -45,7 +45,6 @@
     nomacs
     kid3-qt
     bc
-    readest
     sox
     spek
     losslessaudiochecker
