@@ -3,7 +3,7 @@
 let
   patchedCliamp = (inputs.cliamp.packages.${pkgs.stdenv.hostPlatform.system}.default).overrideAttrs (old: {
     patches = (old.patches or []) ++ [
-      (pkgs.writeText "cliamp-allow-local.patch" ''
+      (pkgs.writeText "cliamp-fixes.patch" ''
 --- a/luaplugin/api_http.go
 +++ b/luaplugin/api_http.go
 @@ -26,10 +26,6 @@
@@ -16,6 +16,17 @@ let
 -	}
  	return nil
  }
+--- a/config/config.go
++++ b/config/config.go
+@@ -652,3 +652,7 @@
+ func parseString(s string) string {
+-	s = strings.Trim(s, "\"'")
++	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
++		s = s[1 : len(s)-1]
++	} else if len(s) >= 2 && s[0] == '\'' && s[len(s)-1] == '\'' {
++		s = s[1 : len(s)-1]
++	}
+ 	if len(s) < 2 || s[0] != '$' {
       '')
     ];
   });
@@ -23,12 +34,11 @@ in
 {
   home.packages = with pkgs; [
     patchedCliamp
-    yt-dlp # Default downloader used by gpodder-sync
+    yt-dlp
   ];
 
   xdg.configFile."cliamp/config.base.toml".text = ''
     [plugins]
-    # Merge with default allowlist for safe execution
     allowed_binaries = "yt-dlp"
 
     [plugins.gpodder-sync]
@@ -38,21 +48,18 @@ in
     download_dir = "~/Music/Podcasts"
   '';
 
-  # Combined activation script: installs plugin & merges secret credentials
   home.activation.setupCliamp = lib.hm.dag.entryAfter ["writeBoundary"] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.config/cliamp/plugins"
 
-    # Assemble config.toml from the declarative base and the local secret file
     TARGET="$HOME/.config/cliamp/config.toml"
     rm -f "$TARGET"
     cat "$HOME/.config/cliamp/config.base.toml" > "$TARGET"
 
     if [ -f "$HOME/.config/cliamp/secrets.toml" ]; then
-      cat "$HOME/.config/cliamp/secrets.toml" >> "$TARGET"
+      grep -v '\[plugins.gpodder-sync\]' "$HOME/.config/cliamp/secrets.toml" >> "$TARGET"
     fi
     chmod 600 "$TARGET"
 
-    # Install the plugin non-interactively
     if [ -x "${patchedCliamp}/bin/cliamp" ]; then
       export PATH="${patchedCliamp}/bin:$PATH"
       $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
