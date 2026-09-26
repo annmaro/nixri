@@ -11,8 +11,6 @@
       "app.opencomic.OpenComic"
       "com.logseq.Logseq"
       "io.github.giantpinkrobots.varia"
-      "com.bilingify.readest"
-      "net.waterfox.waterfox"
     ];
     update.onActivation = true;
   };
