@@ -21,17 +21,27 @@ in
     server = "http://127.0.0.1:8081"
     auto_sync = true
     downloader = "yt-dlp"
-    download_dir       = "~/Music/Podcasts " # where downloaded episodes are saved
+    download_dir = "~/Music/Podcasts " # where downloaded episodes are saved
   '';
 
-  # Automatically install and trust the plugin on home-manager switch
-  home.activation.installCliampGpodderSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  # Combined activation script: installs plugin & merges secret credentials
+  home.activation.setupCliamp = lib.hm.dag.entryAfter ["writeBoundary"] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.config/cliamp/plugins"
 
-    # Install and trust the plugin non-interactively
+    # Assemble config.toml from the declarative base and the local secret file
+    TARGET="$HOME/.config/cliamp/config.toml"
+    rm -f "$TARGET"
+    cat "$HOME/.config/cliamp/config.base.toml" > "$TARGET"
+
+    if [ -f "$HOME/.config/cliamp/secrets.toml" ]; then
+      cat "$HOME/.config/cliamp/secrets.toml" >> "$TARGET"
+    fi
+    chmod 600 "$TARGET"
+
+    # Install the plugin non-interactively
     if [ -x "${cliampPkg}/bin/cliamp" ]; then
       export PATH="${cliampPkg}/bin:$PATH"
-      $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
-    fi
-  '';
+        $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
+      fi
+    '';
 }
