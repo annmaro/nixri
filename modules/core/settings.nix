@@ -54,7 +54,7 @@ in
         "vimb"
         "helium"
       ];
-      default = "helium";
+      default = "firefox";
       description = "Primary web browser.";
     };
 
