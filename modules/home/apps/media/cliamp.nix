@@ -1,8 +1,11 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
+let
+  cliampPkg = inputs.cliamp.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   home.packages = with pkgs; [
-    cliamp
+    cliampPkg
     yt-dlp # Default downloader used by gpodder-sync
   ];
 
@@ -24,8 +27,8 @@
     $DRY_RUN_CMD mkdir -p "$HOME/.config/cliamp/plugins"
 
     # Install and trust the plugin non-interactively
-    if [ -x "${pkgs.cliamp}/bin/cliamp" ]; then
-      export PATH="${pkgs.cliamp}/bin:$PATH"
+    if [ -x "${cliampPkg}/bin/cliamp" ]; then
+      export PATH="${cliampPkg}/bin:$PATH"
       $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
     fi
   '';
