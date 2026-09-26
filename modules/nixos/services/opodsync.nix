@@ -5,7 +5,7 @@
     image = "ganeshlab/opodsync:latest";
     ports = [ "8081:8080" ];
     volumes = [
-      "/var/lib/opodsync:/var/www/html/data"
+      "/var/lib/opodsync:/var/www/server/data"
     ];
   };
 
