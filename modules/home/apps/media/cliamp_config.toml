@@ -1,9 +1,0 @@
-[plugins]
-# Merge with default allowlist for safe execution
-allowed_binaries = "yt-dlp"
-
-[plugins.gpodder-sync]
-server = "http://127.0.0.1:8081"
-auto_sync = true
-downloader = "yt-dlp"
-download_dir = "~/Music/Podcasts"
