@@ -36,6 +36,7 @@
         mode = "0600";
       };
       openrouter_api_key.file = ../../../secrets/openrouter_api_key.age;
+      opodsyncPassword.file = ../../../secrets/opodsync-password.age;
     };
   };
 }
