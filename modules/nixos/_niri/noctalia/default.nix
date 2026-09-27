@@ -23,8 +23,10 @@
     ({ config, lib, ... }: {
       imports = [
         inputs.noctalia.homeModules.default
+        inputs.niri.homeModules.niri
       ];
 
+      programs.niri.config = null;
       programs.noctalia = {
         enable = true;
 
