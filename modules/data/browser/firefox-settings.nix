@@ -1,13 +1,7 @@
 { config, lib, ... }:
 let
-  lock-false = {
-    Value = false;
-    Status = "locked";
-  };
-  lock-true = {
-    Value = true;
-    Status = "locked";
-  };
+  lock-false = false;
+  lock-true = true;
   extensions = import ./extensions.nix { inherit lib config; };
 in
 {
@@ -85,10 +79,7 @@ in
   # Block more unwanted stuff
   "dom.block_multiple_popups" = lock-true;
   "browser.privatebrowsing.forceMediaMemoryCache" = lock-false;
-  "browser.contentblocking.category" = {
-    Value = "strict";
-    Status = "locked";
-  };
+  "browser.contentblocking.category" = "strict";
   "browser.search.suggest.enabled" = lock-false;
   "browser.search.suggest.enabled.private" = lock-false;
   "privacy.popups.disable_from_plugins" = 3;
@@ -179,19 +170,10 @@ in
   "extensions.webcompat.perform_injections" = true;
   "extensions.webcompat.perform_ua_overrides" = true;
 
-  "extensions.autoDisableScopes" = {
-    Value = 0;
-    Status = "locked";
-  };
-  "extensions.enabledScopes" = {
-    Value = 15;
-    Status = "locked";
-  };
+  "extensions.autoDisableScopes" = 0;
+  "extensions.enabledScopes" = 15;
   "extensions.allowPrivateBrowsingByDefault" = lock-true;
-  "extensions.webextensions.restrictedDomains" = {
-    Value = "";
-    Status = "locked";
-  };
+  "extensions.webextensions.restrictedDomains" = "";
 
   # Do not tell what plugins we have enabled: https://mail.mozilla.org/pipermail/firefox-dev/2013-November/001186.html
   "plugins.enumerable_names" = "";
