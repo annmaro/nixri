@@ -1,7 +1,10 @@
-[
+{
+  force = true;
+  settings = [
     {
-      name = "Bookmarks Toolbar";
+      name = "Bookmarks";
       toolbar = true;
+    
       bookmarks = [
         {
           name = "Youtube";
@@ -137,4 +140,5 @@
         }
       ];
     }
-  ]
+  ];
+}
