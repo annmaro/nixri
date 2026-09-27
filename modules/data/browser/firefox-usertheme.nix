@@ -1,115 +1,3662 @@
 { config, ... }:
 {
   userChrome = ''
-    /* Native Firefox Cascade Theme Layout Rules Bridge */
-    :root {
-      /* Dynamic System Mappings sourced cleanly from Stylix */
-      --uc-base-colour: #${config.lib.stylix.colors.base00};
-      /* Absolute Black */
-      --uc-highlight-colour: #${config.lib.stylix.colors.base01};
-      /* Dark Material Interface Layer */
-      --uc-inverted-colour: #${config.lib.stylix.colors.base05};
-      /* High Contrast Text */
-      --uc-muted-colour: #${config.lib.stylix.colors.base03};
-      /* Subdued/Inactive Gray */
-      --uc-accent-colour: #${config.lib.stylix.colors.base0E};
-      /* Catppuccin Mocha Mauve Accent */
+/*==============================================================================================*
 
-      /* Container Tabs Color Profiles */
-      --uc-identity-colour-blue: #${config.lib.stylix.colors.base0D};
-      --uc-identity-colour-turquoise: #${config.lib.stylix.colors.base0C};
-      --uc-identity-colour-green: #${config.lib.stylix.colors.base0B};
-      --uc-identity-colour-yellow: #${config.lib.stylix.colors.base0A};
-      --uc-identity-colour-orange: #${config.lib.stylix.colors.base09};
-      --uc-identity-colour-red: #${config.lib.stylix.colors.base08};
-      --uc-identity-colour-pink: #${config.lib.stylix.colors.base0F};
-      --uc-identity-colour-purple: #${config.lib.stylix.colors.base0E};
-    }
+  FoxOne 3.8 – A minimalistic one-line Firefox theme
+  Based on Cascade (https://github.com/andreasgrafen/cascade)
+  Floating Find Bar and dynamic Bookmarks Bar by LittleFox
+  (https://github.com/biglavis/LittleFox)
+  MIT License
 
-    /* Cascade UI Engine Interface Bindings */
-    :root {
-      --lwt-frame: var(--uc-base-colour) !important;
-      --lwt-accent-color: var(--lwt-frame) !important;
-      --lwt-text-color: var(--uc-inverted-colour) !important;
+*==============================================================================================*/
 
-      --toolbar-field-color: var(--uc-inverted-colour) !important;
-      --toolbar-field-focus-color: var(--uc-inverted-colour) !important;
-      --toolbar-field-focus-background-color: var(--uc-highlight-colour) !important;
-      --toolbar-field-focus-border-color: transparent !important;
-      --toolbar-field-background-color: var(--lwt-frame) !important;
-      --lwt-toolbar-field-highlight: var(--uc-inverted-colour) !important;
-      --lwt-toolbar-field-highlight-text: var(--uc-highlight-colour) !important;
-      --urlbar-popup-url-color: var(--uc-accent-colour) !important;
 
-      --lwt-tab-text: var(--lwt-text-color) !important;
-      --lwt-selected-tab-background-color: var(--uc-highlight-colour) !important;
-      --toolbar-bgcolor: var(--lwt-frame) !important;
-      --toolbar-color: var(--lwt-text-color) !important;
-      --toolbarseparator-color: var(--uc-accent-colour) !important;
-      --toolbarbutton-hover-background: var(--uc-highlight-colour) !important;
-      --toolbarbutton-active-background: var(--toolbarbutton-hover-background) !important;
+/* ==========================================================================
+   CONFIG
+   ========================================================================== */
 
-      --lwt-sidebar-background-color: var(--lwt-frame) !important;
-      --sidebar-background-color: var(--lwt-sidebar-background-color) !important;
+:root {
+  /* Color palette — change these five values to retheme FoxOne (dark scheme) */
+  --uc-color-base:    #${config.lib.stylix.colors.base00};   /* main background (toolbar, frame) */
+  --uc-color-surface: #${config.lib.stylix.colors.base01};   /* secondary tone (borders, separators, focused URL field) */
+  --uc-color-accent:  #${config.lib.stylix.colors.base0E};   /* accent color (active tab, focus ring) */
+  --uc-color-text:    #${config.lib.stylix.colors.base05};   /* primary text */
+  --uc-color-hover:   #${config.lib.stylix.colors.base03};   /* hover / highlight backgrounds */
 
-      --urlbar-box-bgcolor: var(--uc-highlight-colour) !important;
-      --urlbar-box-text-color: var(--uc-muted-colour) !important;
-      --urlbar-box-hover-bgcolor: var(--uc-highlight-colour) !important;
-      --urlbar-box-hover-text-color: var(--uc-inverted-colour) !important;
-      --urlbar-box-focus-bgcolor: var(--uc-highlight-colour) !important;
-    }
+  /* Light palette (Gruvbox Light) — used instead of the five above whenever
+     Firefox runs a light colour scheme: about:addons → Themes → "Hell", the
+     built-in "Hell" theme, or "System" on a light OS. Same roles. The accent
+     is Gruvbox Light's own yellow, not #fabd2f: FoxOne uses the accent as a
+     TEXT colour (hover, selected tab, links), and bright amber on a light
+     ground is unreadable. */
+  --uc-light-color-base:    #fbf1c7;
+  --uc-light-color-surface: #ebdbb2;
+  --uc-light-color-accent:  #b57614;
+  --uc-light-color-text:    #3c3836;
+  --uc-light-color-hover:   #bdae93;
 
-    /* Multi-Account Container Tab Intercept Rules */
-    .identity-color-blue {
-      --identity-tab-color: var(--uc-identity-colour-blue) !important;
-      --identity-icon-color: var(--uc-identity-colour-blue) !important;
+  /* Corner radius for the surfaces FoxOne owns (tab-group chips, library
+     search field) and the value handed to every surface the rounded-corners
+     toggle below can round. */
+  --uc-border-radius: 8px;
+
+  /* Rounded corners (0 = FoxOne's square edges, 1 = every surface FoxOne
+     squares takes --uc-border-radius instead). Details in the derived block
+     right below the config. */
+  --uc-rounded: 0;
+
+  /* Statuspanel distance from window border (0 = corner). Set to match the
+     floating findbar's --findbar-top / --findbar-right (8px): both are CSS px,
+     so they render at the same real inset under any display scaling. */
+  --uc-status-panel-spacing: 8px;
+
+  /* URL Bar width (min applied normally, max on focus). The px ceiling caps
+     growth on ultrawide/4K, where bare vw scales to absurd widths (issue #6).
+     Caps engage from ~1800px CSS-px viewport; below that the vw value wins. */
+  --uc-urlbar-min-width: min(35vw, 630px);
+  --uc-urlbar-max-width: min(50vw, 900px);
+
+  /* Dynamic tab widths. The inactive ceiling is intentionally lower than the
+     active one: inactive tabs cap sooner, freeing strip space for the active
+     tab to grow visibly larger. Raise it back toward the active ceiling and the
+     active-tab size advantage only appears at very wide strips (issue #7).
+
+     These are the narrow-window defaults (< 1710px). At and above 1710px
+     (~2/3 of WQHD) the ceilings are widened back to the pre-#7 pair so the
+     strip distributes evenly and tabs read uniformly again — see the
+     min-width: 1710px override below the :root block. */
+  --uc-active-tab-width: clamp(100px, 30vw, 190px);
+  --uc-inactive-tab-width: clamp(100px, 20vw, 120px);
+  /* Tab min width (opt-in): 76px = Firefox default (browser.tabs.tabMinWidth).
+     Lower it (e.g. 36px) to allow narrower tabs / fit more before overflow scroll */
+  --uc-tab-min-width: 76px;
+
+  /* Inactive tab hover title color (issue #16). Sits between text and accent:
+     lighter amber on dark, darker amber on light. */
+  --uc-tab-hover-text: #ffda85;
+  --uc-light-tab-hover-text: #855d22;
+
+  /* Container tab indicator line (0 = bottom edge, 1 = top) */
+  --uc-container-line-top: 1;
+
+  /* Context menu: "Open Link in Split View" (0 = hidden, 1 = visible) */
+  --uc-show-context-splitview: 0;
+
+  /* All-tabs button (0 = hidden, 1 = visible) */
+  --uc-show-all-tabs-button: 0;
+
+  /* Windows control button width. Fallback only: on non-macOS the hamburger
+     auto-tracks the real window-control box via CSS anchor positioning, so
+     this value is used just on macOS and on Firefox builds without anchor
+     support. No need to measure it by hand on a modern build. */
+  --uc-window-buttons-width: 138px;
+
+  /* Hamburger button width — reserved in tab bar to prevent overlap */
+  --uc-hamburger-width: 44px;
+
+  /* Extensions (puzzle) button — pin it to the right edge, next to the
+   * hamburger, instead of leaving it in the nav-bar after the URL bar
+   * (1 = right, beside the hamburger, 0 = Firefox default in the nav-bar).
+   * Firefox locks the button to the nav-bar in Customize Toolbar, so this is
+   * the only way to get it there. (issue #48) */
+  --uc-extensions-button-right: 1;
+  /* Width reserved for the pinned puzzle button. Also its distance from the
+   * window controls beyond the hamburger, so it doubles as the gap knob:
+   * lower it to pull the two buttons closer, raise it to space them out. */
+  --uc-extensions-button-width: 36px;
+
+  /* Extra toolbar button width (extensions, uBlock etc.) */
+  --uc-toolbar-button-width: 36px;
+  
+  /* Standalone new-tab button width (set to 0 if removed from toolbar) */
+  --uc-newtab-width: 36px;
+
+  /* Drag space — grab zone after the tabs for moving the window. Kept small;
+     it is functional space, not just a gap, so don't drop it to 0. */
+  --uc-drag-space: 20px;
+
+  /* Findbar — floating search bar */
+  --findbar-top: 8px;
+  --findbar-right: 8px;
+  --findbar-width: 360px;
+
+  /* Show/Hide Find Bar Options
+   * Show: 1
+   * Hide: 0
+   */
+  --show-highlight-all:    1;
+  --show-match-case:       1;
+  --show-match-diacritics: 1;
+  --show-whole-words:      1;
+
+  /* Find Bar Options Position */
+  --highlight-all-position:    0;
+  --match-case-position:       1;
+  --match-diacritics-position: 2;
+  --whole-words-position:      3;
+
+  /* Tab loading progress bar (1 = show, 0 = hide) */
+  --uc-show-loading-progress: 0;
+
+  /* Navigation buttons — auto-hide with hover reveal (0 = always show, 1 = reveal with hover and focus, 2 = reveal with hover) */
+  --uc-autohide-nav-buttons: 0;
+
+  /* Navigation buttons — remove back/forward/reload for mouse button and shortcut users (1 = hide, 0 = show) */
+  --uc-hide-nav-buttons: 0;
+
+  /* URL-bar clutter icons — fully hide shield (tracking protection), reader
+   * mode, translations, bookmark star and add-to-taskbar so they can't be
+   * misclicked when aiming for the URL bar (1 = hide all, 0 = default reveal) */
+  --uc-hide-urlbar-buttons: 0;
+
+  /* Pinned toolbar extension icons — hide and reveal on hamburger hover, to
+   * keep the one-line layout clean (1 = hide + hover-reveal, 0 = always show) */
+  --uc-hide-extension-icons: 1;
+
+  /* Bookmarks bar — float it out of the layout and reveal it on URL-bar hover
+   * (1 = dynamic overlay, 0 = static row that keeps its own line).
+   * Only bites with Firefox' bookmarks toolbar set to "Always show": under
+   * "Never show" there is nothing to reveal, and "Only on New Tab" leaves
+   * Firefox' own collapse in charge everywhere else. */
+  --uc-dynamic-bookmarks: 1;
+
+  /* Delay before the URL-bar hover reveals the bar, and before it hides again
+   * once the pointer leaves. The hide delay is the grace period for travelling
+   * from the URL bar down onto the bookmarks. */
+  --uc-dynamic-bookmarks-hover-delay: 450ms;
+  --uc-dynamic-bookmarks-hide-delay: 50ms;
+
+  /* Bookmarks bar on fresh tabs — keep the dynamic bar revealed while the
+   * active tab shows no page yet (new tab, home), no hover needed
+   * (1 = show on fresh tabs, 0 = hover only). Ignored while
+   * --uc-dynamic-bookmarks is 0. */
+  --uc-dynamic-bookmarks-newtab: 1;
+
+}
+
+
+/* ==========================================================================
+   ROUNDED CORNERS – derived from --uc-rounded (issue #37).
+
+   Not config: edit --uc-rounded and --uc-border-radius above, not these two.
+   Every surface FoxOne squares reads --uc-radius-surface or --uc-radius-row
+   instead of a literal 0, so one flag drives all of them. Multiplying by the
+   flag rather than gating rules on it keeps the square default byte-for-byte
+   (calc(0 * 8px) resolves to 0px) and needs no @container support: the value
+   arrives everywhere plain inheritance reaches, popups and shadow DOM
+   included.
+
+   Two radii, because Firefox uses two: a shell radius for the surface itself
+   and half that for the rows inside it (toolkit puts menu items on
+   --border-radius-xsmall against a larger panel).
+
+   What the flag deliberately does NOT touch:
+
+   - Layout. The content area and the .chrome-block frames around toolbox,
+     sidebar and browser stay square. Firefox only rounds those because it
+     insets them by 4px first; FoxOne is edge-to-edge, and rounding them
+     without the inset cuts notches into the page and beside the sidebar.
+     That is a layout change, not a corner.
+   - The popups' drawing path. Firefox rounds Win11 context menus by handing
+     shadow, border AND radius to the Mica backdrop (toolkit menu.css sets
+     --panel-border-radius: 0px itself there and lets the backdrop clip the
+     window). FoxOne opts out of that backdrop for its own palette, so the
+     popups sit on the CSS-drawn path with a transparent popup window – which
+     is exactly what makes a CSS radius render as a normal antialiased corner
+     here instead of the 1-bit window region that looked like a staircase in
+     the first attempt. Note the Mica branch covers `menupopup` only, so
+     handing the shape back to the system would round the context menu and
+     leave the hamburger panel square anyway.
+   ========================================================================== */
+
+:root {
+  --uc-radius-surface: calc(var(--uc-rounded) * var(--uc-border-radius));
+  --uc-radius-row: calc(var(--uc-radius-surface) / 2);
+}
+
+/* Wide-window tab widths (>= 1710px physical, ~2/3 of WQHD). Restores the
+   pre-#7 ceilings: inactive caps near the active one, so flex distributes strip
+   space evenly and tabs look uniform — the everyday-comfortable behaviour.
+   Below that the narrow defaults above keep the active tab visibly larger.
+
+   The catch: `width` is CSS pixels, which DPI scaling shrinks (1920 physical
+   at 125% = 1536 CSS px), so a plain `min-width: 1710px` never fires on a
+   scaled display. CSS can't read the scale factor as a number, but it can
+   match it via `resolution` (dppx == OS scale). So the threshold is tiered per
+   scale, each set to 1710 / scale CSS px, all writing the SAME wide values
+   (overlap between tiers is harmless). The highest dppx tier <= the current
+   scale wins, giving a constant ~1710 *physical*-px trigger at any scaling.
+     100%  -> 1710 / 1.00 = 1710     150%  -> 1710 / 1.50 = 1140
+     125%  -> 1710 / 1.25 = 1368     175%  -> 1710 / 1.75 =  977
+                                     200%  -> 1710 / 2.00 =  855
+
+   Deliberate semantics: the trigger is a constant physical pixel COUNT, not a
+   constant perceived size. High-PPI panels pack more device px per CSS px, so
+   1710 physical px is reached by a physically smaller window there; on scaled
+   displays wide mode therefore engages earlier in real terms (a 2x Retina
+   panel sits in wide mode almost permanently). Kept on purpose – tuned and
+   preferred on the hardware this project targets. A plain CSS-px breakpoint
+   would be the perceptually consistent alternative if ever revisited. */
+@media (min-width: 1710px) {
+  :root {
+    --uc-active-tab-width: clamp(100px, 30vw, 250px);
+    --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  }
+}
+@media (min-resolution: 1.2dppx) and (min-width: 1368px) {
+  :root {
+    --uc-active-tab-width: clamp(100px, 30vw, 250px);
+    --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  }
+}
+@media (min-resolution: 1.45dppx) and (min-width: 1140px) {
+  :root {
+    --uc-active-tab-width: clamp(100px, 30vw, 250px);
+    --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  }
+}
+@media (min-resolution: 1.7dppx) and (min-width: 977px) {
+  :root {
+    --uc-active-tab-width: clamp(100px, 30vw, 250px);
+    --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  }
+}
+@media (min-resolution: 1.95dppx) and (min-width: 855px) {
+  :root {
+    --uc-active-tab-width: clamp(100px, 30vw, 250px);
+    --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  }
+}
+
+
+/* ==========================================================================
+   COLOR THEME — Gruvbox Dark / Gruvbox Light (issue #19)
+   Replaces the standalone ColorTheme.xpi. Applies in both colour schemes:
+   every rule below reads the --uc-color-* palette, and the light scheme
+   swaps that palette for the --uc-light-color-* set right here. Before 3.8
+   the whole block sat inside @media (prefers-color-scheme: dark), so a light
+   scheme dropped FoxOne's colours AND shapes and left stock Nova.
+   ========================================================================== */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --uc-color-base:    var(--uc-light-color-base);
+    --uc-color-surface: var(--uc-light-color-surface);
+    --uc-color-accent:  var(--uc-light-color-accent);
+    --uc-color-text:    var(--uc-light-color-text);
+    --uc-color-hover:   var(--uc-light-color-hover);
+    --uc-tab-hover-text: var(--uc-light-tab-hover-text);
+  }
+}
+
+/* ----------------------------------------------------------------------
+   Dynamic-theme compatibility (issue #5)
+
+   Firefox applies a lightweight theme's colours as inline custom properties
+   on :root. Author !important rules beat those inline values, so FoxOne's
+   forced surface colours used to override extensions like Adaptive Tab Bar
+   Colour, which retints the chrome to match each page. The surface overrides
+   below are therefore scoped to :root:not([lwtheme]): when any dynamic theme
+   is active FoxOne steps back and lets it drive frame, toolbar, URL field,
+   popups and sidebar. The accent/identity cues stay unconditional so FoxOne
+   remains recognisable, and a small :root[lwtheme] block keeps FoxOne's own
+   helper tokens following the theme instead of drifting to Nova defaults.
+   FoxOne itself sets no lightweight theme, so without such an extension
+   :root:not([lwtheme]) always matches and behaviour is unchanged.
+   (Firefox sets lwtheme="" on the root; the old :-moz-lwtheme pseudo-class
+   was removed, so attribute selectors are the way now.)
+   ---------------------------------------------------------------------- */
+
+/* Chrome surfaces – yielded to a dynamic theme when one is active */
+:root:not([lwtheme]) {
+  /* Frame & toolbar */
+  --lwt-accent-color: var(--uc-color-base) !important;
+  --toolbar-bgcolor: var(--uc-color-base) !important;
+  --toolbar-color: var(--uc-color-text) !important;
+  --lwt-text-color: var(--uc-color-text) !important;
+  /* Nova renamed the toolbar/toolbox colour tokens (--toolbar-bgcolor →
+     --toolbar-background-color, plus --toolbox-background-color for
+     chrome-blocks). FoxOne's old override misses them, so the bookmarks
+     bar and sidebar drifted to #2b2a33. Pin both to base. */
+  --toolbar-background-color: var(--uc-color-base) !important;
+  --toolbox-background-color: var(--uc-color-base) !important;
+
+  /* URL bar. Nova renamed the field text tokens (--toolbar-field-color →
+     --toolbar-field-text-color, and --toolbar-field-focus-color →
+     --toolbar-field-text-color-focus, word order flipped). FoxOne's old
+     overrides miss the new names, so the field text drifted to Nova's
+     lilac default (#e7e1f8). Pin the renamed tokens to the palette text
+     colour too (issue: URL-bar text tint under browser.nova.enabled). */
+  --toolbar-field-background-color: var(--uc-color-base) !important;
+  --toolbar-field-color: var(--uc-color-text) !important;
+  --toolbar-field-text-color: var(--uc-color-text) !important;
+  --toolbar-field-focus-color: var(--uc-color-text) !important;
+  --toolbar-field-text-color-focus: var(--uc-color-text) !important;
+  --toolbar-field-focus-background-color: var(--uc-color-surface) !important;
+
+  /* Popups & panels — legacy token names, pre-Nova builds only. Nova
+     retired the --arrowpanel-* family; its replacements are set per-popup
+     below (see POPUP SURFACES). Values match that block: base background
+     so panels and context menus read as one surface. */
+  --arrowpanel-background: var(--uc-color-base) !important;
+  --arrowpanel-color: var(--uc-color-text) !important;
+  --arrowpanel-border-color: var(--uc-color-surface) !important;
+  --panel-item-hover-bgcolor: var(--uc-color-hover) !important;
+
+  /* Sidebar. Current builds paint the revamped sidebar panel (#sidebar,
+     sidebar.css under sidebar.revamp) with --sidebar-background-color,
+     whose dark default is rgb(28 27 34) - a blue-grey that ignores the
+     FoxOne palette. The --lwt-* names below are only consumed when a theme
+     extension sets them, so pin the real tokens too. */
+  --sidebar-background-color: var(--uc-color-base) !important;
+  --sidebar-text-color: var(--uc-color-text) !important;
+  --lwt-sidebar-background-color: var(--uc-color-base) !important;
+  --lwt-sidebar-text-color: var(--uc-color-text) !important;
+  --lwt-sidebar-border-color: var(--uc-color-surface) !important;
+  --sidebar-highlight-background-color: var(--uc-color-hover) !important;
+
+  /* Content container behind the page. Painting it base kills the white
+     flash Firefox shows while a page loads or during navigation. Chrome
+     surface only — does not touch website content (about:newtab keeps its
+     own opaque canvas). */
+  --tabpanel-background-color: var(--uc-color-base) !important;
+}
+
+/* ----------------------------------------------------------------------
+   NOVA VIOLET PURGE – one central lever plus its satellites.
+
+   Nova's violet (#d4c1ff and friends) enters the chrome through the
+   semantic accent tokens: with browser.nova.enabled the design tokens map
+   --color-accent-primary(-hover/-active) to the violet palette
+   (tokens-shared.css: light-dark(--color-violet-50, --color-violet-30)
+   etc.). Everything accent-coloured derives from these four: links
+   (--link-color), focus rings (--focus-outline-color), toggles
+   (moz-toggle pressed state), primary buttons, selected borders. Pinning
+   them to the FoxOne accent recolours all of it at once: protections
+   panel toggle, "Datenschutzeinstellungen" link, permission chips.
+
+   A handful of Nova tokens reference the violet palette DIRECTLY, past
+   the accent tokens; those are repointed individually below. Scoped
+   :root:not([lwtheme]) like the other surface colours: a dynamic theme
+   keeps its own accents. Inert without Nova (pre-Nova builds simply get
+   amber instead of the old cyan accent, which is on-brand anyway). */
+:root:not([lwtheme]) {
+  /* The central lever: the semantic accent family. */
+  --color-accent-primary: var(--uc-color-accent) !important;
+  --color-accent-primary-hover: var(--uc-color-accent) !important;
+  --color-accent-primary-active: var(--uc-color-accent) !important;
+  --color-accent-primary-selected: var(--uc-color-accent) !important;
+
+  /* Direct violet references (satellites). */
+  /* Info-message surface, e.g. the "Firefox ist wachsam" card in the
+     protections panel (dark: --color-violet-70). The fox illustration
+     inside it is a baked SVG image and stays violet; only its card
+     recolours. */
+  --background-color-information: var(--uc-color-surface) !important;
+  --icon-color-information: var(--uc-color-accent) !important;
+  --icon-color-accent-primary-desaturated: var(--uc-color-accent) !important;
+  /* Generic chrome-button hover/active blocks (dark:
+     --color-violet-desaturated-50/-40). Inside popups FoxOne's panel
+     rules force these transparent and win there; this covers everything
+     outside popups (findbar, sidebar, infobars). */
+  --button-background-color-hover: var(--uc-color-hover) !important;
+  --button-background-color-active: var(--uc-color-hover) !important;
+  --button-background-color-primary-disabled: color-mix(in srgb, var(--uc-color-accent) 40%, var(--uc-color-base)) !important;
+  /* Base chrome text drifts to violet-desaturated-0 (#f2f0f8) under Nova;
+     pin to the palette text colour. */
+  --text-color: var(--uc-color-text) !important;
+  /* Nova paints the toolbox with a violet-leading gradient; FoxOne pins
+     the toolbox colour already, kill the gradient stop too. */
+  --toolbox-background-color-gradient-leading: var(--uc-color-base) !important;
+}
+
+/* ----------------------------------------------------------------------
+   POPUP SURFACES — one family for arrow panels AND context menus.
+
+   Nova removed the --arrowpanel-* tokens; panels and menupopups now share
+   --panel-background-color / --panel-text-color / --panel-border-color
+   (toolkit popup.css paints ::part(content) from them). Untouched they
+   diverge: arrow panels (hamburger, extensions panel, shield/permissions
+   popup) resolve the design-token default rgb(66,65,77), context menus the
+   darker Menu system colour. Pin both to the palette so every popup reads
+   as the same surface: base background, surface border/separators, hover
+   as accent text without a background block (see the button tokens below).
+   #DateTimePickerPanel is excluded — it themes itself to the content
+   colour scheme, and forcing chrome colours breaks a light-mode picker.
+   .autoscroller (middle-click scroll indicator) is excluded from all three
+   popup blocks: it is a panel whose entire look lives in these tokens at
+   element level (global-shared.css) — the double-arrow icon is PART of its
+   --panel-background-color value and 100% radius makes it round, so any
+   !important override here flattens it to a plain square.
+   ---------------------------------------------------------------------- */
+:root:not([lwtheme]) :is(panel, menupopup):not(#DateTimePickerPanel, .autoscroller) {
+  --panel-background-color: var(--uc-color-base) !important;
+  --panel-text-color: var(--uc-color-text) !important;
+  --panel-border-color: var(--uc-color-surface) !important;
+  --panel-separator-color: var(--uc-color-surface) !important;
+}
+
+/* Popup SHAPE and HOVER – always applied, unlike the colour block above.
+   Square corners and the accent-text hover are FoxOne identity (like the
+   accent cues), so a dynamic theme such as Adaptive Tab Bar Colour keeps
+   its colours but not its shapes or hover treatment; with the lwtheme
+   guard these tokens fell back to Nova's design-token radius and the
+   native hover block as soon as any theme extension was active.
+   toolkit popup.css defaults --panel-border-radius to 6px (arrow panels:
+   hamburger, extensions, permissions popups); context menus already sit
+   at 0 via their own :not([type="arrow"]) branch. Pin both to square so
+   every popup matches the findbar / context-menu / breakout-urlbar look.
+   Square is --uc-radius-surface at the default --uc-rounded: 0; see the
+   ROUNDED CORNERS block under the config for why the radius can simply be
+   set here, Mica or not. */
+:is(panel, menupopup):not(#DateTimePickerPanel, .autoscroller) {
+  --panel-border-radius: var(--uc-radius-surface) !important;
+  /* Row hover marks with accent text instead of a background block, the
+     same cue FoxOne uses for toolbar icons and tab titles (issue #16).
+     Panel rows (subviewbuttons) consume the ghost button tokens, a few
+     app-menu widgets (zoom, fullscreen) the plain ones; override text AND
+     background for both, plus the :active pair so a click doesn't flash
+     the native grey back in. */
+  --button-background-color-hover: transparent !important;
+  --button-background-color-ghost-hover: transparent !important;
+  --button-background-color-active: transparent !important;
+  --button-background-color-ghost-active: transparent !important;
+  --button-text-color-hover: var(--uc-color-accent) !important;
+  --button-text-color-ghost-hover: var(--uc-color-accent) !important;
+  --button-text-color-active: var(--uc-color-accent) !important;
+  --button-text-color-ghost-active: var(--uc-color-accent) !important;
+  /* Firefox 154 moved panel rows (subviewbuttons, panelview toolbarbuttons)
+     to a new --button-*-menu-* token family. At :root those alias the ghost
+     tokens, but custom-property substitution bakes the alias at :root and
+     inherits it down pre-resolved, so the panel-scoped ghost overrides
+     above never reach the rows anymore: same trap the uei tokens fell into
+     (see the gear-button block below). Declare the menu family here too;
+     inert on builds without it. */
+  --button-background-color-menu-hover: transparent !important;
+  --button-background-color-menu-active: transparent !important;
+  --button-text-color-menu-hover: var(--uc-color-accent) !important;
+  --button-text-color-menu-active: var(--uc-color-accent) !important;
+  /* Row-level hover/select highlight has its own radius, separate from the
+     panel's outer corners: --menuitem-border-radius drives native menuitems
+     (context menus), --panel-menuitem-border-radius drives subviewbuttons
+     (hamburger menu rows, extensions panel rows and its gear icon). Both
+     default to a design-token radius (menu.css / tokens-shared.css); square
+     both so the selection colour matches the panel it sits in. At
+     --uc-rounded: 1 the row radius lands on 4px against the panel's 8px,
+     which is the same pair tokens-shared.css ships (--border-radius-small
+     against --border-radius-medium). */
+  --menuitem-border-radius: var(--uc-radius-row) !important;
+  --panel-menuitem-border-radius: var(--uc-radius-row) !important;
+}
+
+/* Extensions-panel gear buttons escape the hover treatment above: toolkit
+   declares the --uei-button-* family at :root (--uei-button-hover-bgcolor:
+   var(--button-background-color-ghost-hover), unified-extensions.css), so
+   the ghost token resolves against Nova's design tokens AT :root and
+   inherits down pre-baked as the violet default; the panel-scoped ghost
+   overrides never enter that resolution. Re-declare the uei tokens on the
+   button itself, same cue as every other panel row: no background block,
+   accent icon on hover/active. Inert on builds without the uei family. */
+.unified-extensions-item-menu-button {
+  --uei-button-hover-bgcolor: transparent !important;
+  --uei-button-active-bgcolor: transparent !important;
+  --uei-button-hover-color: var(--uc-color-accent) !important;
+  --uei-button-active-color: var(--uc-color-accent) !important;
+}
+
+/* The separator under the account/profiles section in the app menu is the
+   "proton-zap": panelUI-shared.css paints its ::before with a gradient
+   border-image (under Nova var(--tab-border-color-accent)). Killing the
+   image removes the line entirely; recolouring attempts (border-color
+   fallback, explicit 1px border) never produced a visible line, so the
+   separator is retired rather than rethemed. Deliberate: no line beats a
+   violet gradient in a Gruvbox menu. */
+toolbarseparator.proton-zap::before {
+  border-image: none !important;
+}
+
+/* Windows 11 Mica popups. Nova defaults widget.windows.mica to on
+   (NovaPrefs.sys.mjs), and widget.windows.mica.popups follows it, so on
+   Win11 toolkit menu.css switches panels AND menupopups to native
+   appearance (-moz-default-appearance: menupopup). The rounded corners
+   then come from DWM clipping the popup *window* — outside CSS reach, so
+   the --panel-border-radius: 0 above never shows. Opt the popups out of
+   the native backdrop; they fall back to the CSS-drawn path where the
+   square corners apply. The Mica branch also zeroes the shadow tokens
+   ("the mica backdrop takes care of our shadow"), so restore the toolkit
+   defaults (global-shared.css) to keep the same soft shadow non-Mica
+   systems get. #DateTimePickerPanel and .autoscroller stay excluded,
+   matching the popup blocks above. No lwtheme guard: nsMenuPopupFrame grants the Mica backdrop
+   (and with it the DWM corner rounding) whenever the popup's effective
+   appearance is `menupopup`, theme or not – so the opt-out has to hold
+   under a dynamic theme too, or its popups come back rounded. */
+@media (-moz-windows-mica-popups) {
+  :is(panel, menupopup):not(#DateTimePickerPanel, .autoscroller) {
+    appearance: none !important;
+    --panel-box-shadow-margin: 4px !important;
+    --panel-box-shadow: 0 0 var(--panel-box-shadow-margin) rgba(0, 0, 0, 0.2) !important;
+    /* The Mica branch also empties the popup background at element level
+       (the backdrop was supposed to paint it); without a theme FoxOne's
+       base-colour rule above wins on specificity and covers that, but
+       under a dynamic theme it is off and menus went see-through.
+       `inherit` skips the element-level junk and resolves from :root,
+       where the theme's popup colour lives (or the [lwtheme] fallback
+       below). */
+    --panel-background-color: inherit !important;
+  }
+}
+
+/* Context-menu item hover. Toolkit paints it with the -moz-menuhover
+   system colour from a :where() rule (zero specificity, deliberately
+   overridable); match the panel hover so both popup types highlight
+   identically: accent text, no background block. */
+menupopup :is(menuitem, menu)[_moz-menuactive]:not([disabled]) {
+  background-color: transparent !important;
+  color: var(--uc-color-accent) !important;
+}
+/* Disabled rows have their own hover chip in toolkit menu.css
+   (--menuitem-disabled-hover-background-color); clear that one too. */
+menupopup :is(menuitem, menu)[_moz-menuactive][disabled] {
+  background-color: transparent !important;
+}
+/* Navigation row (back/forward/reload/bookmark icons): a disabled arrow
+   answers hover with the hover yellow at disabled strength, mirroring a
+   disabled toolbar button (#ffda85 under the native 0.4 opacity). Text
+   menuitems keep their native GrayText and are not touched. */
+#context-navigation > menuitem[_moz-menuactive][disabled] {
+  color: color-mix(in srgb, var(--uc-tab-hover-text) 40%, transparent) !important;
+}
+
+/* Accent & identity – always applied, including under a dynamic theme, so
+   FoxOne stays recognisable: the selected-tab line/text, focus ring, the
+   attention icon fill, and the deliberate transparent tab-hover (issue #16). */
+:root {
+  --lwt-tab-line-color: var(--uc-color-accent) !important;
+  --tab-selected-textcolor: var(--uc-color-accent) !important;
+  /* 157 colours .tab-content itself from split tokens instead of letting it
+     inherit from .tabbrowser-tab, which bypasses the tab title rules below.
+     Feed FoxOne's colours into the new tokens (tab.tokens.css). */
+  --tab-text-color-selected: var(--uc-color-accent) !important;
+  --tab-text-color-hover: var(--uc-tab-hover-text) !important;
+  /* Kill native grey hover background – hover is a title-colour cue (issue #16).
+     Nova renamed the token to --tab-background-color-hover (word order
+     flipped, tab.tokens.css); override both names. */
+  --tab-hover-background-color: transparent !important;
+  --tab-background-color-hover: transparent !important;
+  --lwt-toolbarbutton-icon-fill-attention: var(--uc-color-accent) !important;
+  --toolbarbutton-icon-fill-attention: var(--uc-color-accent) !important;
+  --toolbar-field-focus-border-color: var(--uc-color-accent) !important;
+}
+
+/* Toolbox background – forced to base only when no dynamic theme is active;
+   otherwise Firefox paints it from the theme frame colour. The per-theme
+   surface collapse lives in its own block – see DYNAMIC-THEME COMPAT. */
+:root:not([lwtheme]) #navigator-toolbox {
+  background: var(--uc-color-base) !important;
+}
+
+/* Selected tab text */
+.tabbrowser-tab[selected] {
+  color: var(--uc-color-accent) !important;
+}
+
+/* Inactive tab hover — dimmed-accent title instead of background (issue #16) */
+.tabbrowser-tab:not([selected]):hover {
+  color: var(--uc-tab-hover-text) !important;
+}
+
+/* URL bar results — accent text instead of a background block, the same
+   cue as popup rows and tab hover. Colour sits on the row-inner so the
+   title inherits it; the URL keeps its own colour. */
+.urlbarView-row[selected] {
+  background: transparent !important;
+}
+.urlbarView-row[selected] > .urlbarView-row-inner {
+  color: var(--uc-color-accent) !important;
+  background: transparent !important;
+}
+
+/* Result URLs take var(--link-color) natively, which resolves to
+   --color-accent-primary – pinned to the FoxOne accent by the violet purge,
+   so URL and selected title ended up the same amber. Only profiles with
+   browser.theme.native-theme = true dodged that (the token layer is skipped
+   there and the link colour stays cyan). Pin the cyan (--color-cyan-30) so
+   the dropdown looks the same either way. Same :not([selected]) scope as
+   the native rule: the selected row's URL follows the accent title. */
+.urlbarView-row:not([selected]) :is(.urlbarView-url, .urlbarView-explanation) {
+  color: #00cadb !important;
+}
+/* Cyan washes out on the light ground; Gruvbox Light's blue takes the role. */
+@media (prefers-color-scheme: light) {
+  .urlbarView-row:not([selected]) :is(.urlbarView-url, .urlbarView-explanation) {
+    color: #076678 !important;
+  }
+}
+
+
+/* ==========================================================================
+   DYNAMIC-THEME COMPATIBILITY (issue #5) – scheme-independent
+
+   Scheme-independent on purpose. A theme extension (e.g. Adaptive Tab Bar
+   Colour) sets the chrome colour scheme per page, and can report a LIGHT
+   scheme even while the OS is dark. Since the COLOR THEME block runs in both
+   schemes (3.8), that only swaps FoxOne's palette to the light set; the
+   per-page collapse below must not depend on the scheme either.
+
+   ATBC paints frame, toolbar and URL field as three different tones for a
+   layered look; FoxOne is one flat surface, so that layering shows up as a box
+   around the URL field. Collapse them onto the frame tone (--lwt-accent-color,
+   the tab-strip colour that sits behind FoxOne's transparent nav-bar). In Nova
+   --toolbar-bgcolor is unset (renamed to --toolbar-background-color); revive it
+   here too so FoxOne's own consumers (splitters, sound-overlay icons, bookmarks
+   bar) keep resolving under a theme.
+   ========================================================================== */
+
+:root[lwtheme] {
+  --toolbar-bgcolor: var(--lwt-accent-color) !important;
+  --toolbar-background-color: var(--lwt-accent-color) !important;
+  --toolbox-background-color: var(--lwt-accent-color) !important;
+  --toolbar-field-background-color: var(--lwt-accent-color) !important;
+  /* Popup surface fallback for the Mica opt-out's `inherit`: a theme that
+     defines popup colours puts them here as inline style (which beats these
+     non-!important rules); a theme without them would otherwise leave menus
+     transparent, so back them with FoxOne's own surface. */
+  --panel-background-color: var(--uc-color-base);
+  --panel-text-color: var(--uc-color-text);
+}
+
+/* Nova paints the URL field fill on .urlbar-input-container (the legacy
+   .urlbar-background is transparent), so back the variable override above with
+   a direct paint of the element to the frame tone. */
+:root[lwtheme] .urlbar-input-container,
+:root[lwtheme] #urlbar-input-container {
+  background-color: var(--lwt-accent-color) !important;
+}
+
+/* Nova washes the toolbox under a theme: browser-shared.css lays a translucent
+   light-dark(rgba(0,0,0,.05), rgba(255,255,255,.05)) over #navigator-toolbox
+   (:root[lwtheme]:not([theme-image-in-toolbox]), Nova-scoped) on top of the
+   body's frame tone. The variable collapse above never sees that layer – it is
+   a literal colour, not token-driven – so the bar sat a shade off the
+   accent-painted URL field and the field read as a box (issues #38/#40).
+   Private windows are hit too: under Nova they ship a built-in theme
+   (firefox-privatewindow@mozilla.org) through the same lwtheme path as a
+   theme extension. Repaint the toolbox with the frame tone directly.
+   background-color only, not the shorthand – a theme's header image lives in
+   background-image on this element ([theme-image-in-toolbox]) and must
+   survive. Also covers the inactive-window repaint (which would dim to
+   --toolbox-background-color-inactive): FoxOne's field paint does not dim
+   either, so bar and field stay one surface in both window states. */
+:root[lwtheme] #navigator-toolbox {
+  background-color: var(--lwt-accent-color) !important;
+}
+
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+#toolbar-menubar {
+  &[autohide] {
+    &[inactive]:not([customizing]) {
+      width: 0px;
     }
-    .identity-color-turquoise {
-      --identity-tab-color: var(--uc-identity-colour-turquoise) !important;
-      --identity-icon-color: var(--uc-identity-colour-turquoise) !important;
+  }
+}
+
+#main-window,
+#toolbar-menubar,
+#TabsToolbar,
+#navigator-toolbox,
+#sidebar-box,
+#sidebar-main,
+sidebar-main,
+#sidebar,
+#nav-bar {
+  box-shadow: none !important;
+}
+
+#main-window,
+#toolbar-menubar,
+#TabsToolbar,
+#PersonalToolbar,
+#navigator-toolbox,
+#sidebar-box,
+#sidebar-main,
+sidebar-main,
+#sidebar,
+#nav-bar {
+  border: none !important;
+}
+
+.titlebar-spacer {
+  display: none !important;
+}
+
+/* fix Shield Icon padding — Nova moved urlbar-input-container from id to
+   class, so match both. */
+#urlbar-input-container[pageproxystate="valid"]
+  > #tracking-protection-icon-container
+  > #tracking-protection-icon-box
+  > #tracking-protection-icon,
+.urlbar-input-container[pageproxystate="valid"]
+  > #tracking-protection-icon-container
+  > #tracking-protection-icon-box
+  > #tracking-protection-icon {
+  padding-bottom: 1px;
+}
+
+/* Nova added #trust-icon (site-info/security icon) inside the new
+   #trust-icon-container, sitting next to a flex #trust-label. The Nova betas
+   rendered it ~2px too high (FoxOne nudged +2px); the FF153 final/RC fixed the
+   native offset, so the icon now only cancels the container's +1px below,
+   which stays for #trust-label and the breakout math. */
+#trust-icon {
+  margin-top: -1px !important;
+}
+
+/* The whole #trust-icon-container still renders 1px too high under Nova at
+   rest, so the icon's own nudge above only got within 1px. Correct the 1px on
+   the container, not the icon: the error is a uniform baseline offset, so a
+   single container margin rides through to every state (rest + breakout) and
+   the state-differential stays isolated in the #trust-icon rules (2px / 3px).
+   This carries #trust-label along, which shares the same offset when it shows. */
+#urlbar #trust-icon-container {
+  margin-top: 1px !important;
+}
+
+/* No breakout-state correction anymore: the Nova betas shifted the trust icon
+   up + inline-start on [breakout-extend] (issue #31, fixed here with a scoped
+   4px/1px counter-nudge), but the FF153 final renders rest and breakout
+   identically, so the base rules above cover both states. */
+
+/* The EME / DRM-content indicator (#eme-notification-icon, in
+   #notification-popup-box) pops up next to the shield during DRM playback and
+   hits the same Nova quirk: it renders ~2px too high relative to the other
+   urlbar icons. Same nudge as the shield above. Sibling notification icons
+   (geo, camera, mic) likely share this if they ever surface. */
+#eme-notification-icon {
+  margin-top: 2px !important;
+}
+
+/* The unified-extensions (puzzle) button sits 1px too high in the nav-bar
+   since the FF153 final. Same family as the trust-icon corrections above.
+   3.4.3 used 1px, which on FF155 still leaves the puzzle ~1px above the
+   other icons. The nav-bar centres the button's margin box, so a top margin
+   only moves the icon by half its value: 2px margin = 1px visible shift. */
+#unified-extensions-button {
+  margin-top: 2px !important;
+}
+
+#TabsToolbar { order: 2; }
+#nav-bar { order: 3; }
+
+#PersonalToolbar {
+  padding: 6px !important;
+  order: 4;
+  width: 100%;
+}
+/* Bookmarks bar background. Nova sets it directly (#2b2a33, the default dark
+   toolbar colour) instead of inheriting --toolbar-bgcolor, so it drifts from
+   the navbar. Pin it to base when no dynamic theme is active; under one (e.g.
+   Adaptive Tab Bar Colour) follow --toolbar-bgcolor like the rest of the
+   chrome so it retints with the page (issue #5). */
+:root:not([lwtheme]) #PersonalToolbar {
+  background-color: var(--uc-color-base) !important;
+}
+:root[lwtheme] #PersonalToolbar {
+  background-color: var(--toolbar-bgcolor) !important;
+}
+
+/* ==========================================================================
+   DYNAMIC BOOKMARKS BAR (on by default, --uc-dynamic-bookmarks: 0 opts out)
+
+   Mechanism adapted from LittleFox (github.com/biglavis/LittleFox, MIT):
+   the bar leaves the toolbox flex flow via position:absolute/top:100% and
+   hangs below it as an overlay, so it costs no vertical space, then fades
+   in on URL-bar hover. On fresh tabs (new tab, home) it stays revealed
+   outright — --uc-dynamic-bookmarks-newtab opts out.
+
+   Three details carried over from LittleFox because each is a trap:
+   - max-height is animated with `0s step-end` DELAYED past the fade, so the
+     bar keeps its hit box while fading out but collapses to a zero-height,
+     unhoverable strip afterwards. Without it the invisible bar still eats
+     clicks at the top of the page.
+   - :not(:has(toolbarpaletteitem)) drops the whole overlay in Customize
+     mode, where an absolutely positioned drop target is unusable.
+   - :has(toolbarbutton[open]) keeps the bar up while a bookmarks FOLDER is
+     open; otherwise the bar collapses out from under its own menu.
+
+   FoxOne differences from the original: gated by @container instead of
+   calc()-encoded 0/1, so at the default 0 not one declaration reaches the
+   toolbar; the reveal trigger is #urlbar rather than #urlbar-container
+   (Nova reshuffled the container); the toolbox clip is lifted (see below);
+   and the collapsed bar sheds its padding, not just its content height.
+   ========================================================================== */
+
+@container style(--uc-dynamic-bookmarks: 1) {
+
+  /* Positioning context for the overlay, and stacking above the content.
+
+     overflow is the part LittleFox does not need: Nova gives every
+     .chrome-block container `overflow: clip` (browser-shared.css, inside
+     @media -moz-pref("browser.nova.enabled")), and #navigator-toolbox is
+     one. The overlay's containing block IS the toolbox and it sits at
+     top:100%, i.e. entirely outside it, so the clip erases the bar in every
+     state — reveal included. Lifted on the toolbox only, from inside this
+     block, so setting --uc-dynamic-bookmarks: 0 hands the clip straight
+     back; the shared .chrome-block rule is never touched. */
+  #navigator-toolbox {
+    position: relative !important;
+    z-index: 9999 !important;
+    overflow: visible !important;
+  }
+
+  /* F11 fullscreen: Firefox collapses every toolbar without
+     fullscreentoolbar="true" (fullscreen-and-pointerlock.css), and
+     #PersonalToolbar is one: visibility: collapse killed the whole overlay,
+     hover and newtab reveal included (issue #44). The overlay costs no
+     space and is opacity-gated anyway, so hand visibility back and let the
+     normal reveal rules decide. DOM fullscreen (videos) stays excluded:
+     there the toolbox itself is collapsed and the bar must not resurface
+     on its own. */
+  :root[inFullscreen]:not([inDOMFullscreen]) #PersonalToolbar {
+    visibility: visible !important;
+  }
+
+  /* Travelling from the urlbar DOWN onto the revealed bar collapsed both:
+     the overlay hangs at top:100%, outside the toolbox border box, and
+     Firefox's fullscreen autohide hides as soon as the pointer leaves that
+     box — via a plain inline margin-top. While the bar is hovered (or one
+     of its folder menus is open), out-shout the inline style and pin the
+     toolbox down; leaving the bar hands control straight back. */
+  :root[inFullscreen]:not([inDOMFullscreen])
+    #navigator-toolbox:has(#PersonalToolbar:is(:hover, :has(toolbarbutton[open]))) {
+    margin-top: 0 !important;
+  }
+
+  /* Resting state: out of flow, transparent, zero height. overflow:hidden is
+     FoxOne's addition — the collapsed box must clip its own rows, otherwise
+     they stay hit-testable over the page and re-trigger the reveal. */
+  #PersonalToolbar:not(:has(toolbarpaletteitem)) {
+    position: absolute !important;
+    top: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    transform-origin: top;
+    transform: scaleY(0.96) translateY(-4px) !important;
+    max-height: 0 !important;
+    /* max-height caps the CONTENT box only, and XUL keeps padding outside it,
+       so the bar's own 6px (see #PersonalToolbar above) left a 12px invisible
+       strip under the toolbar. Crossing it from the page hovered the bar and
+       fired the bridge reveal below — a flash on every trip up to the
+       toolbar. Collapse the block padding too, on the same delayed step-end
+       schedule as max-height so the box keeps its height (and the bridge
+       keeps working) for the whole fade-out. */
+    padding-block: 0 !important;
+    transition:
+      opacity 100ms ease-out var(--uc-dynamic-bookmarks-hide-delay),
+      transform 100ms ease-out var(--uc-dynamic-bookmarks-hide-delay),
+      max-height 0s step-end calc(100ms + var(--uc-dynamic-bookmarks-hide-delay)),
+      padding-block 0s step-end calc(100ms + var(--uc-dynamic-bookmarks-hide-delay)) !important;
+  }
+
+  /* Reveal, but never while the results list is open — the panel and the bar
+     would occupy the same strip. The guard keys on [open] (set by
+     UrlbarView when the list opens) and deliberately NOT on
+     [breakout-extend]: under Nova that attribute follows the FOCUS alone
+     (UrlbarInput.updateLayoutExtend: `if (this.focused || this.view.isOpen)`,
+     where pre-Nova it followed view.isOpen), so guarding on it froze the bar
+     for as long as the caret sat in an empty URL bar — every fresh tab. */
+  #navigator-toolbox:not(:has(#urlbar[open])) {
+    &:has(#urlbar:hover) #PersonalToolbar,
+    & #PersonalToolbar:is(:hover, :has(toolbarbutton[open])) {
+      opacity: 1 !important;
+      transform: scaleY(1) translateY(0) !important;
+      max-height: 4em !important;
+      /* Mirrors the 6px on #PersonalToolbar above; keep the two in step. */
+      padding-block: 6px !important;
     }
-    .identity-color-green {
-      --identity-tab-color: var(--uc-identity-colour-green) !important;
-      --identity-icon-color: var(--uc-identity-colour-green) !important;
+    /* Hover on the URL bar waits out the delay; hover on the bar itself (the
+       bridge that lets the pointer travel down) opens immediately. */
+    &:has(#urlbar:hover) #PersonalToolbar {
+      transition-delay: var(--uc-dynamic-bookmarks-hover-delay),
+                        var(--uc-dynamic-bookmarks-hover-delay), 0s, 0s !important;
     }
-    .identity-color-yellow {
-      --identity-tab-color: var(--uc-identity-colour-yellow) !important;
-      --identity-icon-color: var(--uc-identity-colour-yellow) !important;
+    & #PersonalToolbar:is(:hover, :has(toolbarbutton[open])) {
+      transition-delay: 0s, 0s, 0s, 0s !important;
     }
-    .identity-color-orange {
-      --identity-tab-color: var(--uc-identity-colour-orange) !important;
-      --identity-icon-color: var(--uc-identity-colour-orange) !important;
+  }
+
+  /* Results list opened: drop the grace period, collapse the hit box right
+     after the fade instead of after the fade plus hide delay. */
+  #navigator-toolbox:has(#urlbar[open]) #PersonalToolbar {
+    transition-delay: 0s, 0s, 100ms, 100ms !important;
+  }
+
+  /* Fresh tabs: while the selected tab shows no page — about:newtab, home,
+     blank — pageproxystate sits at "invalid", so keep the bar revealed with
+     no hover and no delay: Ctrl+T straight onto a bookmark. pageproxystate
+     alone is not enough, though: editing the URL bar on a normal page flips
+     it to "invalid" too, and it STAYS there when the edit is abandoned by
+     clicking into the page. :placeholder-shown is the discriminator — a
+     fresh tab's input is empty (placeholder visible), an abandoned edit
+     still holds the typed text. While the edit is live the [open] guard
+     hides the bar anyway. Navigating restores "valid" and the normal
+     fade-out takes over. Nova moved urlbar-input-container from id to
+     class, so match both (same dance as the shield-icon fix further up). */
+  @container style(--uc-dynamic-bookmarks-newtab: 1) {
+    #navigator-toolbox:not(:has(#urlbar[open])):has(
+      #urlbar-input-container[pageproxystate="invalid"],
+      .urlbar-input-container[pageproxystate="invalid"]
+    ):has(#urlbar-input:placeholder-shown, .urlbar-input:placeholder-shown)
+      #PersonalToolbar {
+      opacity: 1 !important;
+      transform: scaleY(1) translateY(0) !important;
+      max-height: 4em !important;
+      /* Mirrors the 6px on #PersonalToolbar above; keep the two in step. */
+      padding-block: 6px !important;
+      transition-delay: 0s, 0s, 0s, 0s !important;
     }
-    .identity-color-red {
-      --identity-tab-color: var(--uc-identity-colour-red) !important;
-      --identity-icon-color: var(--uc-identity-colour-red) !important;
+  }
+}
+
+#statuspanel #statuspanel-label {
+  border: none !important;
+  border-radius: var(--uc-radius-surface) !important;
+  margin: 0 0 var(--uc-status-panel-spacing) var(--uc-status-panel-spacing) !important;
+}
+
+
+/* ==========================================================================
+   ONE-LINE LAYOUT – urlbar shares the toolbar row with the tabs.
+   Always on, at every window width. When urlbar + tabs no longer fit
+   comfortably, tabs shrink to their min-width and the strip scrolls
+   (native arrowscrollbox). Deliberately no width breakpoint: switching the
+   toolbox flex layout on resize leaves the urlbar's paint layer stale until
+   a repaint (Ctrl+L / tab switch), so the structure stays constant.
+   ========================================================================== */
+
+#navigator-toolbox {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+/* Prevent notifications toolbar from becoming a 1px flex column —
+   force it to its own row so it collapses when empty. */
+#notifications-toolbar {
+  width: 100% !important;
+  order: 99 !important;
+}
+
+#nav-bar {
+  order: 1;
+  width: var(--uc-urlbar-min-width);
+  /* !important required: Firefox overrides our transition with
+     :root[sessionrestored][lwtheme] #nav-bar { transition-property:
+     background-color } when any lwtheme (Alpenglow, custom) is active. */
+  transition: width 0.25s ease !important;
+  &.browser-titlebar {
+    width: 100%;
+  }
+}
+
+/* FF157 drops the urlbar's breakout popover, so #urlbar lays out in flow and
+   its content width becomes the container's flex basis. Firefox's
+   flex: 400 0 auto forbids shrinking, so on narrow windows the urlbar spilled
+   over the tab strip. inline-size containment zeroes the intrinsic width
+   again, as the out-of-flow popover did up to 156; flex-grow fills the rest. */
+#nav-bar #urlbar-container {
+  min-width: 0px !important;
+  width: auto !important;
+  contain: inline-size !important;
+}
+
+#titlebar {
+  width: calc(100vw - var(--uc-urlbar-min-width) - 1px);
+  transition: width 0.25s ease !important;
+}
+
+#TabsToolbar {
+  width: 100%;
+}
+
+/* The last term reserves the pinned puzzle button (#48); it is a 0/1 toggle,
+   so the product is 0 while the button stays in the nav-bar. */
+#tabbrowser-tabs:not([orient="vertical"]) {
+  max-width: calc(100% - var(--uc-hamburger-width) - var(--uc-toolbar-button-width) - var(--uc-drag-space) - var(--uc-newtab-width)
+                  - var(--uc-extensions-button-width) * var(--uc-extensions-button-right)) !important;
+}
+
+#navigator-toolbox:focus-within #nav-bar {
+  width: var(--uc-urlbar-max-width);
+  &.browser-titlebar {
+    width: 100%;
+  }
+}
+#navigator-toolbox:focus-within #titlebar {
+  width: calc(100vw - var(--uc-urlbar-max-width) - 1px);
+}
+
+/* Vertical tabs — toolbar layout override.
+   Tabs live in the sidebar, so the toolbar only holds URL bar + buttons.
+   Uses :has() to detect vertical mode reliably in userChrome.css. */
+:root:has(#tabbrowser-tabs[orient="vertical"]) #nav-bar {
+  flex: 1 !important;
+  width: auto !important;
+}
+
+:root:has(#tabbrowser-tabs[orient="vertical"]) #titlebar {
+  width: auto !important;
+}
+
+:root:has(#tabbrowser-tabs[orient="vertical"]) #PanelUI-button {
+  position: static !important;
+}
+
+
+/* ==========================================================================
+   macOS — left-side window controls (traffic lights).
+   Restore the pre-tabs spacer that reserves room for close/minimize/
+   fullscreen and zero out the right-side window-button offset since
+   macOS has no controls there.
+   ========================================================================== */
+
+@media (-moz-platform: macos) {
+  :root {
+    /* No right-side window controls on macOS */
+    --uc-window-buttons-width: 0px;
+
+    /* Width reserved for macOS traffic light buttons */
+    --uc-traffic-light-width: 80px;
+  }
+
+  /* Position traffic lights at the left edge of the toolbar, vertically
+     centred.  absolute (not fixed) so the buttons track the toolbox,
+     not the viewport — gives the correct macOS inset. */
+  #navigator-toolbox {
+    position: relative !important;
+  }
+
+  .titlebar-buttonbox-container {
+    position: absolute !important;
+    left: 0 !important;
+    top: 12px !important;
+    z-index: 1000 !important;
+    display: block !important;
+  }
+
+  /* Reserve left-side space — box-sizing ensures padding stays within
+     the nav-bar's flex width instead of overflowing the layout.
+     Drops in fullscreen where macOS hides the traffic lights. */
+  :root:not([inFullscreen]) #nav-bar {
+    box-sizing: border-box !important;
+    padding-inline-start: var(--uc-traffic-light-width) !important;
+  }
+}
+
+
+/* ==========================================================================
+   NAV BAR
+   ========================================================================== */
+
+/* Toolbox fill is the frame tone (base), NOT the URL-field colour. Feeding
+   --toolbar-field-background-color in here leaked the field colour onto the
+   whole top panel (issue #28); the field itself is painted at #urlbar below. */
+:root:not([lwtheme]) #navigator-toolbox {
+  background: var(--uc-color-base) !important;
+}
+
+/* kill toolbar–content separator (covers all known Firefox versions) */
+#navigator-toolbox::after,
+#navigator-toolbox::before {
+  display: none !important;
+  height: 0 !important;
+  border: none !important;
+}
+
+:root {
+  --chrome-content-separator-color: transparent !important;
+}
+
+#navigator-toolbox {
+  border-bottom: 0 solid transparent !important;
+}
+
+/* Nova frames every .chrome-block container (toolbox, sidebar, content) with
+   a 4px margin and an 8px radius (--chrome-block-radius), letting the window
+   background show through as a border and leaving panels floating inset.
+   #navigator-toolbox, #sidebar-main and others all carry class="chrome-block".
+   FoxOne is edge-to-edge, so flatten them all at the source. Side effects:
+   removes the toolbox 4px top margin (realigns #PanelUI-button, fixed top:0),
+   the sidebar side gaps, and the AI-panel height/strip mismatch. */
+.chrome-block {
+  margin-inline: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* margin-top is split out: Firefox's fullscreen autohide hides the toolbox
+   via a plain inline margin-top, and a blanket !important here overrides it.
+   That killed F11 autohide entirely (issue #44). Keep the !important flatten
+   everywhere except on the toolbox while in fullscreen. */
+:root:not([inFullscreen]) .chrome-block,
+.chrome-block:not(#navigator-toolbox) {
+  margin-top: 0 !important;
+}
+
+/* Nova insets the web content on #browser (the flex hbox wrapping sidebar +
+   content): padding pushed the page off the window edge, and a 4px flex gap
+   (column + row) left strips between content and sidebar and a height/strip
+   mismatch on the AI panel. Remove both — the 2px #sidebar-splitter still
+   divides content from sidebar. */
+#browser {
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+#browser,
+#appcontent,
+#tabbrowser-tabbox,
+/* Nova frames .browserContainer with a FULL 1px border (all four edges),
+   not just a top separator: border-top pushed the content 1px below the
+   AI sidebar, and the remaining transparent edges are 1px windows onto
+   the chrome background, visible as a faint light line against dark
+   pages (left/right/bottom). The transparent separator-color override
+   only camouflages the border, it does not remove it. Kill it whole. */
+.browserContainer {
+  border: none !important;
+}
+
+#nav-bar {
+  padding-block-start: 0px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+
+#urlbar,
+#urlbar * {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#urlbar,
+#urlbar *,
+#urlbar-background,
+#urlbar-input-container,
+#urlbar-container {
+  border-radius: 0 !important;
+}
+
+/* The rounded-corners toggle only lifts the painted shell back out of that
+   catch-all: the field box at rest, the breakout box when the results are
+   open. Everything else inside the URL bar stays square on purpose – row
+   hover, icon chips and result buttons are all transparent under FoxOne, so
+   their corners are invisible either way, and an 8px radius on a 16px icon
+   chip would only look wrong. Descendant selectors because `#urlbar *`
+   carries an id and out-specifies a bare class; legacy id and Nova class are
+   both covered, same pairing as the colour rules further down.
+
+   Exactly ONE box per state, never both. .urlbar-background and
+   .urlbar-input-container are stacked, both painted, and not the same height:
+   round the pair together and the lower box shows at the corners the upper
+   one rounds away, which reads as the field hanging a pixel out of the row.
+   Without a dynamic theme FoxOne paints .urlbar-background (see the field
+   tone rules above), so the radius goes there.
+
+   Bottom corners only (PR #42, NeroWolfe75). The box sits flush against the
+   toolbar row since PR #39 pulled the breakout edges back, so a top radius
+   never rounded anything real – it only drew the open state's border as two
+   stray arcs at the window edge. Square on top the open dropdown merges into
+   the bar like a sheet and rounds only where it meets the page; at rest the
+   field is toolbar-on-toolbar, so the missing top radius is invisible there
+   either way. */
+#urlbar #urlbar-background,
+#urlbar .urlbar-background {
+  border-radius: 0 0 var(--uc-radius-surface) var(--uc-radius-surface) !important;
+}
+
+/* Under a dynamic theme the fill moves to .urlbar-input-container (see
+   DYNAMIC-THEME COMPAT), so the radius follows it – and only there. */
+:root[lwtheme] #urlbar #urlbar-input-container,
+:root[lwtheme] #urlbar .urlbar-input-container {
+  border-radius: var(--uc-radius-surface) !important;
+}
+
+/* Match the URL-bar text size to the tab-strip labels (12px). Native Nova
+   renders #urlbar-input at 13.8px — ~15% larger than the 12px tab labels —
+   so the two read as different heights on the shared toolbar row. Both boxes
+   already centre on the row (centerY 22), and line-height only adds symmetric
+   leading, so equal font-size keeps their baselines on the same line. 13px is
+   a deliberate step up from the 12px labels: the URL reads slightly more
+   prominent while the baselines stay aligned (sub-pixel offset, invisible). */
+#urlbar-input {
+  font-size: 13px !important;
+}
+
+/* Nova rebuilt the urlbar as <moz-urlbar> and moved its internals from
+   id to class (.urlbar-background, .urlbar-input-container). The new
+   .urlbar-input-container carries a 1px deemphasized border
+   (urlbar-searchbar.css). Reset both the legacy id and the Nova classes
+   so the field keeps blending into the toolbar across channels. */
+#urlbar-background,
+.urlbar-background,
+.urlbar-input-container {
+  border: none !important;
+}
+
+#urlbar[focused="true"] > #urlbar-background,
+#urlbar[focused="true"] > .urlbar-background,
+#urlbar:not([open]) > #urlbar-background,
+#urlbar:not([open]) > .urlbar-background {
+  /* The field tone (issue #28): --uc-color-base normally, --lwt-accent-color
+     under a dynamic theme, both resolved via --toolbar-field-background-color. */
+  background: var(--toolbar-field-background-color) !important;
+}
+
+#urlbar[open] > #urlbar-background,
+#urlbar[open] > .urlbar-background {
+  background: var(--toolbar-field-background-color) !important;
+  /* Nova ships the open results panel without the border/shadow that used
+     to separate it, so it blends into the page. Restore a 1px outline.
+     Higher specificity (id+class) than the global border:none reset, so it
+     only applies while the dropdown is open; the closed field stays flush. */
+  border: 1px solid var(--uc-color-surface) !important;
+}
+
+/* Nova extends the breakout by growing .urlbar-background past the popover
+   box on every side (--urlbar-background-inset-breakout resolves to -8px:
+   --urlbar-height / 2 - --urlbarview-border-radius, 16 - 24), so the sheet
+   overhangs into the page content below AND past the row edge above. Pull
+   both edges back until the box sits flush with the row. Fixes the overhang
+   half of issue #31 and the missing top edge (PR #39, NeroWolfe75); the
+   remaining two-Esc collapse is Nova state logic, not geometry.
+
+   FF155 turned the urlbar into a manual popover (.urlbar[breakout] is
+   position: absolute, JS measures the row into --urlbar-container-height and
+   [breakout-extend] re-centres the field via margin-block-start), but the
+   background geometry is unchanged: the popover top sits where the field sat
+   in the row, so the same pull still lands the box on the row edge. What DID
+   change is the variable name – --urlbar-min-height is gone, the height now
+   lives in --urlbar-height (urlbar/variables.css). The old name left the
+   calc() unresolvable, top/bottom fell back to auto and the background
+   collapsed to a zero-height sliver: no fill behind the results (the
+   "transparent dropdown") and Nova's 14px breakout shadow smeared along that
+   sliver as a grey bar on the row's top edge.
+
+   The [breakout-extend] scope is the fix for issue #37's stray pixel. The
+   note that used to sit here – "unconditional is safe, bottom only acts in
+   breakout" – is wrong: urlbar-searchbar.css gives .urlbar-background
+   `position: absolute; inset: 0` in EVERY state, so an unconditional offset
+   drags the resting field box out of its row too. Square and toolbar-coloured
+   that goes unnoticed; give the box a corner radius and it reads as the URL
+   bar hanging a pixel out of the toolbar.
+
+   The pull is derived, not measured: the row is 44px (the height the
+   hamburger is pinned to) and the field is centred in it, so the gap between
+   field and row edge is (--urlbar-height - 44px) / 2 on either side.
+   That resolves to -6px for the normal 32px field and -5px at touch
+   density's 34px – one expression that tracks the density by itself. */
+#urlbar[breakout-extend] > .urlbar-background {
+  top: calc((var(--urlbar-height) - 44px) / 2) !important;
+  bottom: calc((var(--urlbar-height) - 44px) / 2) !important;
+}
+
+/* FF157 dropped the breakout: the results are their own popover anchored
+   below the field, and the sheet behind them is a "joint background" in two
+   halves. .urlbar-background paints the part behind the field, the new
+   .urlbarView-background paints the part behind the rows, each clipped at the
+   seam. [breakout-extend] is gone ([popover-open] replaces it), so the rule
+   above is inert there, and the new half took Nova's focus tone
+   (--urlbar-background-color-focus) because nothing of FoxOne's addressed it:
+   the dropdown went near-black (#171519). Both selectors below match nothing
+   before 157.
+
+   Upper half: only the top edge needs the pull back to the row now, the
+   bottom edge is Nova's seam overlap and must stay. Lower half: same fill and
+   1px outline as the upper half, and the bottom corners for the
+   rounded-corners toggle, which land here since the upper half ends square at
+   the seam. */
+#urlbar[popover-open] > .urlbar-background {
+  top: calc((var(--urlbar-height) - 44px) / 2) !important;
+}
+
+#urlbar .urlbarView-background {
+  background: var(--toolbar-field-background-color) !important;
+  border: 1px solid var(--uc-color-surface) !important;
+  border-radius: 0 0 var(--uc-radius-surface) var(--uc-radius-surface) !important;
+}
+
+.urlbarView-row:hover > .urlbarView-row-inner {
+  background: transparent !important;
+  color: var(--uc-color-accent) !important;
+}
+
+/* result-menu button ([...]) — show dots, drop frame around them.
+   Two-pronged attack:
+   1. Override the CSS variables Firefox feeds into background-color across
+      hover/selected states (kills the grey at the source, regardless of
+      which rule consumes the var).
+   2. Brute-force transparent on button + wrapper selectors as defense.
+   background-color (not background!) keeps the dot icon (bg-image) intact. */
+.urlbarView,
+#urlbar {
+  --button-background-color: transparent !important;
+  --urlbarView-result-button-hover-background-color: transparent !important;
+  --urlbarView-result-button-selected-background-color: transparent !important;
+  --urlbarView-result-button-background-opacity: 0 !important;
+  --urlbarView-action-button-background-color: transparent !important;
+  --urlbarView-action-button-hover-background-color: transparent !important;
+  --urlbarView-hover-background: transparent !important;
+  /* Nova renamed the row-hover token (lowercase "view", urlbar/tokens.css)
+     and paints it on the row itself, not the row-inner; the camelCase one
+     above is the dead Proton name. Selected counterpart included so both
+     states rely on accent text alone. */
+  --urlbarview-background-color-hover: transparent !important;
+  --urlbarview-background-color-selected: transparent !important;
+}
+
+.urlbarView-row-buttons,
+.urlbarView-button,
+.urlbarView-button:hover,
+.urlbarView-button:active,
+.urlbarView-button-menu,
+.urlbarView-button-menu:hover,
+.urlbarView-button-result-menu,
+.urlbarView-button-result-menu:hover,
+.urlbarView-button-result-menu:active,
+.urlbarView-row-button-menu,
+.urlbarView-row[selected] :is(.urlbarView-row-buttons, .urlbarView-button-menu, .urlbarView-button-result-menu),
+.urlbarView-row:hover :is(.urlbarView-row-buttons, .urlbarView-button-menu, .urlbarView-button-result-menu) {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.urlbarView-button-result-menu:hover,
+.urlbarView-button-menu:hover,
+.urlbarView-row:hover .urlbarView-button-result-menu:hover {
+  fill: var(--uc-color-accent) !important;
+}
+
+/* Type-icon badges on urlbar results (the small glyph on the favicon):
+   natively handled since Firefox 154. The old FoxOne mask-hack (paint amber
+   under the row type's own SVG used as a mask, built in the bookmark-12.svg
+   era when the context-fill channel was dead on this path) is retired: 154
+   rebuilt the badges as fragment SVGs (badge-bookmark.svg#ltr-icon etc.) on
+   a 24px .urlbarView-type-icon box overlaying the whole favicon, with a
+   working fill channel (fill: var(--toolbarbutton-icon-fill-attention)) and
+   a mask that notches the favicon corner. Under the old rule the star was
+   scaled to that full 24px box and swallowed the favicon. FoxOne already
+   pins --toolbarbutton-icon-fill-attention to the accent (identity block),
+   so the native badge arrives amber with no rule needed here. */
+
+.urlbar-icon,
+#urlbar-go-button {
+  margin: auto;
+}
+
+/* Nova's search-mode switcher (the engine icon) is a moz-button; its
+   visible button lives in the shadow DOM (part="button") and draws a violet
+   frame (#d4c1ff in dark mode) from the design tokens. Rather than fight to
+   remove it, recolour it to FoxOne's accent so it reads as an on-brand
+   search-mode indicator. Cover the host tokens (incl. the full
+   --focus-outline shorthand, missed earlier) and the exposed part, since
+   the exact channel resisted isolation. */
+.searchmode-switcher {
+  --focus-outline: 2px solid var(--uc-color-accent) !important;
+  --focus-outline-color: var(--uc-color-accent) !important;
+  --button-border: 1px solid var(--uc-color-accent) !important;
+  --button-border-color: var(--uc-color-accent) !important;
+  --button-border-color-active: var(--uc-color-accent) !important;
+  --button-border-color-hover: var(--uc-color-accent) !important;
+  --button-border-color-selected: var(--uc-color-accent) !important;
+  --border-color-selected: var(--uc-color-accent) !important;
+}
+.searchmode-switcher::part(button) {
+  border-color: var(--uc-color-accent) !important;
+  outline-color: var(--uc-color-accent) !important;
+}
+
+/* Bookmark star alignment: the star renders lower than the sibling urlbar
+   icons. #star-button (the image) already carries margin:auto from the rule
+   above, so the offset is one of two things — the #star-button-box container
+   sitting low in the input row, or the image not centring inside its box.
+   Cover both at the root: align-self centres the box in the (flex) input
+   container, align-items centres the image inside the box. No pixel nudge,
+   so nothing for a Nova token-rename to break. */
+#star-button-box {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  /* The native 6px block padding on a border-box 27.2px box leaves a 15.2px
+     content area — smaller than the 16px star icon. The overflowing icon
+     rounds downward when centred, so the star renders 1px low. The sibling
+     page-action icons carry 0 block padding and centre cleanly; match them.
+     Inline padding stays untouched for horizontal spacing. */
+  padding-block: 0 !important;
+}
+
+
+/* ==========================================================================
+   ICON COLOURING – hover/active feedback by fill, not by background.
+   Mirrors the tab-title model (issue #16): inactive white, hover #ffda85,
+   active/open the accent. Colour is the sole interaction signal, so there is
+   no hover chip and no square/round inconsistency left to chase. The bookmark
+   star (native amber-when-set logic) and the window controls stay untouched.
+   ========================================================================== */
+
+/* Toolbar buttons: back/forward/reload, library, extensions, hamburger.
+   Override --toolbarbutton-icon-fill on the button so the icon inherits it,
+   independent of the .toolbarbutton-icon / badge-stack nesting, and drop the
+   native hover/active background so colour alone signals the interaction. */
+#nav-bar .toolbarbutton-1 {
+  --toolbarbutton-hover-background: transparent !important;
+  --toolbarbutton-active-background: transparent !important;
+}
+/* The variable above does not cover every channel, so also clear the chip
+   directly on the icon/badge-stack in the hover and active/open states. */
+#nav-bar .toolbarbutton-1:hover > .toolbarbutton-icon,
+#nav-bar .toolbarbutton-1:hover > .toolbarbutton-badge-stack,
+#nav-bar .toolbarbutton-1:is(:active, [open]) > .toolbarbutton-icon,
+#nav-bar .toolbarbutton-1:is(:active, [open]) > .toolbarbutton-badge-stack {
+  background-color: transparent !important;
+}
+#nav-bar .toolbarbutton-1:hover {
+  --toolbarbutton-icon-fill: var(--uc-tab-hover-text) !important;
+}
+#nav-bar .toolbarbutton-1:is(:active, [open]) {
+  --toolbarbutton-icon-fill: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+/* The new-tab "+" lives in the tab strip, not #nav-bar, so the rules above
+   miss it. Same fill model and background clear, scoped to its two ids. */
+:is(#tabs-newtab-button, #new-tab-button) {
+  --toolbarbutton-hover-background: transparent !important;
+  --toolbarbutton-active-background: transparent !important;
+}
+:is(#tabs-newtab-button, #new-tab-button):is(:hover, :active, [open]) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  background-color: transparent !important;
+}
+:is(#tabs-newtab-button, #new-tab-button):hover {
+  --toolbarbutton-icon-fill: var(--uc-tab-hover-text) !important;
+}
+:is(#tabs-newtab-button, #new-tab-button):is(:active, [open]) {
+  --toolbarbutton-icon-fill: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+/* Bookmarks-bar overflow chevron (">>"): lives in #PersonalToolbar, so the
+   #nav-bar rules miss it. Same background clear as the buttons above, but
+   the fill is accent by DEFAULT (Max's call: the chevron is a permanent
+   overflow indicator, not an interaction target, so it wears the accent
+   outright, dimmed toward base at rest); hover lifts it to full accent. */
+#PlacesChevron {
+  --toolbarbutton-hover-background: transparent !important;
+  --toolbarbutton-active-background: transparent !important;
+  --toolbarbutton-icon-fill: color-mix(in srgb, var(--uc-color-accent) 65%, var(--uc-color-base)) !important;
+}
+#PlacesChevron:is(:hover, :active, [open]) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  background-color: transparent !important;
+}
+#PlacesChevron:hover {
+  --toolbarbutton-icon-fill: var(--uc-color-accent) !important;
+}
+
+/* urlbar action icons: shield, site-settings, page actions, reader,
+   translations. They paint via fill directly; the bookmark star is excluded
+   so its native state colour survives, and the icon background is dropped so
+   colour alone signals here too. */
+/* Hover background sits on the button container (e.g.
+   #identity-permission-box.identity-box-button), not on the .urlbar-icon image,
+   so clearing it on .urlbar-icon alone was not enough. Clear it on the button
+   containers too; the bookmark star box keeps its native background. */
+#urlbar .urlbar-icon:not(#star-button),
+#urlbar .urlbar-page-action,
+#urlbar .identity-box-button,
+#urlbar #tracking-protection-icon-container,
+#urlbar #trust-icon-container {
+  background-color: transparent !important;
+}
+#urlbar .urlbar-icon:not(#star-button):hover,
+#urlbar .urlbar-page-action:hover .urlbar-icon {
+  fill: var(--uc-tab-hover-text) !important;
+}
+#urlbar .urlbar-icon:not(#star-button):is(:active, [open]),
+#urlbar .urlbar-page-action:is(:active, [open]) .urlbar-icon {
+  fill: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+/* Shield (tracking protection) and the site-info/settings icon use their own
+   ids rather than a plain .urlbar-icon, and may paint via fill OR color, so
+   set both, triggered by hovering the icon's container. If one still does not
+   recolour, its image node uses a different channel and needs a Toolbox read. */
+#tracking-protection-icon-container:hover #tracking-protection-icon,
+#trust-icon-container:hover #trust-icon,
+#urlbar .identity-box-button:hover {
+  fill: var(--uc-tab-hover-text) !important;
+  color: var(--uc-tab-hover-text) !important;
+}
+#tracking-protection-icon-container:is(:active, [open]) #tracking-protection-icon,
+#trust-icon-container:is(:active, [open]) #trust-icon,
+#urlbar .identity-box-button:is(:active, [open]) {
+  fill: var(--tab-selected-textcolor, #fabd2f) !important;
+  color: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+
+/* ==========================================================================
+   BOOKMARKS BAR – colour-as-signal, same model as the icons above and the
+   tab titles (issue #16). Drop the native hover/active chip on each bookmark
+   so the title text alone signals the interaction: inactive native white,
+   hover #ffda85, active press or open folder the accent. The favicon is a
+   real image, not a recolourable mask, so it stays native – like a tab, the
+   icon sits left and the title carries the colour. Scoped to #PersonalToolbar
+   so bookmarks in menus and the sidebar keep their native behaviour.
+   ========================================================================== */
+#PersonalToolbar .bookmark-item {
+  --toolbarbutton-hover-background: transparent !important;
+  --toolbarbutton-active-background: transparent !important;
+}
+#PersonalToolbar .bookmark-item:hover {
+  background-color: transparent !important;
+  color: var(--uc-tab-hover-text) !important;
+}
+#PersonalToolbar .bookmark-item:is(:active, [open]) {
+  background-color: transparent !important;
+  color: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+
+/* ==========================================================================
+   LOADING PROGRESS BAR — active tab bottom indicator.
+   Animated glow bar at the bottom of the selected tab while loading.
+   Same visual style as the pinned-tab indicator (::after), using ::before
+   to avoid conflicts.
+   Pinned tabs are excluded from every [busy] rule: the pinned indicator owns
+   ::after, and the busy top-glow would merge into it (its opacity is bound to
+   --uc-show-loading-progress, so with the progress bar off the indicator
+   vanished for the whole load; with it on, top:0 + bottom:0 + fixed height is
+   over-constrained and the bar jumped to the top edge). A 36px pinned tab has
+   no legible progress track anyway.
+   Note: transform must NOT be !important — animations can't override it.
+   ========================================================================== */
+
+/* Bottom bar — hidden default on ALL tabs */
+.tabbrowser-tab .tab-background::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 10px !important;
+  right: 10px !important;
+  height: 1px !important;
+  background: var(--tab-selected-textcolor, #fabd2f) !important;
+  box-shadow: 0 1px 10px 1px var(--tab-selected-textcolor, #fabd2f) !important;
+  transform-origin: left !important;
+  transform: scaleX(0);
+  opacity: 0 !important;
+  transition: opacity 0.3s ease 0.15s !important;
+  pointer-events: none !important;
+}
+
+/* Bottom bar – animated on busy tabs (pinned excluded, see header) */
+.tabbrowser-tab[busy]:not([pinned]) .tab-background::before {
+  opacity: var(--uc-show-loading-progress) !important;
+  transition: none !important;
+  animation: uc-progress 2.5s cubic-bezier(0.2, 0.6, 0.4, 1) forwards !important;
+}
+
+/* Inactive busy tabs — white to match tab text color */
+.tabbrowser-tab[busy]:not([selected], [pinned]) .tab-background::before {
+  background: var(--toolbar-color, #FFFFFF) !important;
+  box-shadow: 0 1px 10px 1px var(--toolbar-color, #FFFFFF) !important;
+}
+
+/* Top glow – busy tabs (pinned excluded: their ::after is the indicator) */
+.tabbrowser-tab[busy]:not([pinned]) .tab-background::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 10px !important;
+  right: 10px !important;
+  height: 1px !important;
+  background: var(--tab-selected-textcolor, #fabd2f) !important;
+  box-shadow: 0 1px 10px 1px var(--tab-selected-textcolor, #fabd2f) !important;
+  transform-origin: left !important;
+  opacity: var(--uc-show-loading-progress) !important;
+  animation: uc-progress 2.5s cubic-bezier(0.2, 0.6, 0.4, 1) forwards !important;
+  pointer-events: none !important;
+}
+
+/* Top glow — inactive tabs use white */
+.tabbrowser-tab[busy]:not([selected], [pinned]) .tab-background::after {
+  background: var(--toolbar-color, #FFFFFF) !important;
+  box-shadow: 0 1px 10px 1px var(--toolbar-color, #FFFFFF) !important;
+}
+
+@keyframes uc-progress {
+  0%   { transform: scaleX(0); }
+  15%  { transform: scaleX(0.35); }
+  40%  { transform: scaleX(0.65); }
+  70%  { transform: scaleX(0.82); }
+  100% { transform: scaleX(0.95); }
+}
+
+
+/* ==========================================================================
+   SIDEBAR (incl. AI sidebar revamp) — kill panel border & splitter line
+   ========================================================================== */
+
+:root {
+  --sidebar-border-color: transparent !important;
+}
+
+/* splitter between content and sidebar — thin 2px line, still draggable.
+   Use --toolbar-bgcolor (not the hardcoded dark base) so it blends in both
+   colour schemes: dark mode resolves it to base via FoxOne's override, light
+   mode to the system toolbar tone. Without this the dark splitter shows as a
+   black bar next to light content. */
+#sidebar-splitter {
+  border: none !important;
+  background: var(--toolbar-bgcolor) !important;
+  appearance: none !important;
+  width: 2px !important;
+  min-width: 2px !important;
+  max-width: 2px !important;
+  /* Nova seats the splitter inside the 4px chrome-window gap via negative
+     inline margins (calc(-1 * gap + 1px)) and lifts it off the bottom edge
+     (margin-block-end). FoxOne runs gap 0, so those margins shoved the
+     splitter 1px into the content and let a 1px strip of page shine through
+     next to the sidebar. Zero them: flush 2px line, full height. */
+  margin: 0 !important;
+}
+
+/* sidebar panel header (the "Anthropic Claude" bar) — hide entirely */
+#sidebar-header,
+.sidebar-panel-header {
+  display: none !important;
+}
+
+/* drop the 6px padding-bottom that leaves a strip below the chat panel */
+#sidebar-box {
+  padding: 0 !important;
+}
+
+/* square corners on all browser surfaces (Win 2000 vibe).
+   --browser-area-border-radius is the official knob (FF 138+).
+   Selectors below are a safety net in case Firefox bypasses the var. */
+:root {
+  --browser-area-border-radius: 0 !important;
+}
+
+.browserStack,
+#tabbrowser-tabbox,
+#sidebar-box,
+#sidebar-main,
+sidebar-main,
+.sidebar-panel,
+.sidebar-browser-stack,
+.browserContainer,
+browser[type="content"],
+#sidebar {
+  border-radius: 0 !important;
+}
+
+/* Launcher icons (tools + extensions) — selection follows the FoxOne model:
+   no background block, accent colour instead. The buttons are moz-buttons
+   inside sidebar-main's SHADOW ROOT, unreachable by selector; everything
+   below works through inherited design tokens.
+
+   Backgrounds: Nova paints the selected tool via
+   --toolbarbutton-background-color-active (sidebar-main.css puts it on the
+   non-ghost button); the rest are moz-button's own surface tokens for
+   rest/hover/press/selected in both ghost and default type. All flat. */
+sidebar-main {
+  --toolbarbutton-background-color-active: transparent !important;
+  --button-background-color: transparent !important;
+  --button-background-color-hover: transparent !important;
+  --button-background-color-active: transparent !important;
+  --button-background-color-selected: transparent !important;
+  --button-background-color-ghost-hover: transparent !important;
+  --button-background-color-ghost-active: transparent !important;
+  --button-background-color-ghost-selected: transparent !important;
+
+  /* Icons are context-fill images filled from --toolbarbutton-icon-fill
+     (routed through --button-icon-fill inside the shadow root). currentColor
+     hands the fill over to the button's TEXT colour, which moz-button swaps
+     per state on its own — so the hover/press tokens below recolour the
+     icon to the accent, no background needed. */
+  --toolbarbutton-icon-fill: currentColor !important;
+  --button-text-color-hover: var(--uc-color-accent) !important;
+  --button-text-color-ghost-hover: var(--uc-color-accent) !important;
+  --button-text-color-active: var(--uc-color-accent) !important;
+  --button-text-color-ghost-active: var(--uc-color-accent) !important;
+
+  /* Rest + selected stay FoxOne text. Without these the selected (non-ghost,
+     aria-pressed) button keeps --button-text-color-selected, which is meant
+     as text ON a filled accent surface and resolves dark — on the now
+     transparent background the icon went dark too. */
+  --button-text-color: var(--uc-color-text) !important;
+  --button-text-color-ghost: var(--uc-color-text) !important;
+  --button-text-color-selected: var(--uc-color-text) !important;
+  --button-text-color-ghost-selected: var(--uc-color-text) !important;
+}
+
+
+/* Sidebar panel documents (history, synced tabs, bookmarks …) are separate
+   chrome pages under chrome://browser/content/sidebar/, same mechanic as the
+   genai block below. Their "Chronik/Tabs durchsuchen" boxes are
+   moz-input-search widgets in shadow roots; the background token inherits
+   through. #1f1f1f: FoxOne's compiled-in field dark (matches the in-content
+   standins), deliberately darker than base. */
+@-moz-document url-prefix(chrome://browser/content/sidebar/) {
+  /* Search boxes ("Chronik/Lesezeichen/Tabs durchsuchen"). The
+     --input-text-background-color token is redefined on :host INSIDE the
+     widget shadow roots, so an inherited :root override never arrives.
+     userChrome.css is a USER sheet and user sheets match inside shadow
+     trees — style the input directly. #1f1f1f: FoxOne's compiled-in field
+     dark (matches the in-content standins). */
+  input[type="search"] {
+    background-color: #1f1f1f !important;
+  }
+
+  /* Selected row (bookmarks, history, synced/open tabs) — native paints
+     --button-background-color-primary, which resolves to the OS accent
+     (cyan block). Selection follows the FoxOne model instead: no
+     background block, accent text. Rules pierce into the list shadow
+     trees for the same user-sheet reason as above; #fabd2f =
+     --uc-color-accent (tokens don't reach here either). */
+  sidebar-tab-row[selected],
+  sidebar-bookmark-row[selected] {
+    background-color: transparent !important;
+    color: #fabd2f !important;
+  }
+
+  /* Light scheme: the same two literals from the light palette. Field
+     #f9f5d7 is Gruvbox Light's hard-contrast ground, a shade off base like
+     #1f1f1f is in dark; #b57614 = --uc-light-color-accent. */
+  @media (prefers-color-scheme: light) {
+    input[type="search"] {
+      background-color: #f9f5d7 !important;
     }
-    .identity-color-pink {
-      --identity-tab-color: var(--uc-identity-colour-pink) !important;
-      --identity-icon-color: var(--uc-identity-colour-pink) !important;
+    sidebar-tab-row[selected],
+    sidebar-bookmark-row[selected] {
+      color: #b57614 !important;
     }
-    .identity-color-purple {
-      --identity-tab-color: var(--uc-identity-colour-purple) !important;
-      --identity-icon-color: var(--uc-identity-colour-purple) !important;
+  }
+}
+
+/* The BOOKMARKS sidebar is still the old places document (XUL tree), not a
+   revamped Lit panel like history/synced tabs — the sidebar/ block above
+   never reaches it. Its search box is a modern moz-input-search though, so
+   the same shadow-piercing input rule works; the selection is a XUL tree
+   like the Library: FoxOne model via ::-moz-tree pseudos, hardcoded
+   #fabd2f = --uc-color-accent (tree pseudos cannot read variables),
+   with the light-palette twins (#f9f5d7 field, #b57614 accent) in the
+   light-scheme block, same split as the Library block. */
+@-moz-document url("chrome://browser/content/places/bookmarksSidebar.xhtml") {
+  input[type="search"] {
+    background-color: #1f1f1f !important;
+  }
+
+  treechildren::-moz-tree-row(selected),
+  treechildren::-moz-tree-row(selected, focus) {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  treechildren::-moz-tree-cell-text(selected),
+  treechildren::-moz-tree-cell-text(selected, focus) {
+    color: #fabd2f !important;
+  }
+  treechildren::-moz-tree-image(selected),
+  treechildren::-moz-tree-image(selected, focus),
+  treechildren::-moz-tree-twisty(selected),
+  treechildren::-moz-tree-twisty(selected, focus) {
+    fill: #fabd2f !important;
+  }
+
+  @media (prefers-color-scheme: light) {
+    input[type="search"] {
+      background-color: #f9f5d7 !important;
     }
+    treechildren::-moz-tree-cell-text(selected),
+    treechildren::-moz-tree-cell-text(selected, focus) {
+      color: #b57614 !important;
+    }
+    treechildren::-moz-tree-image(selected),
+    treechildren::-moz-tree-image(selected, focus),
+    treechildren::-moz-tree-twisty(selected),
+    treechildren::-moz-tree-twisty(selected, focus) {
+      fill: #b57614 !important;
+    }
+  }
+}
+
+
+/* AI chatbot chrome — everything but the chat iframe lives inside
+   chrome://browser/content/genai/chat.html, not browser.xhtml.
+   #header = provider dropdown + settings/close buttons
+   #message-container = permission/error notifications (hidden = silent)
+   #summarize-btn-container = "Seite zusammenfassen" strip */
+@-moz-document url-prefix(chrome://browser/content/genai/) {
+  #header,
+  #message-container,
+  #summarize-btn-container {
+    display: none !important;
+  }
+
+  /* fill the panel — drop body padding & ensure container expands */
+  body {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  #browser-container,
+  #browser-container browser {
+    flex: 1 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+
+/* ==========================================================================
+   HIDDEN ELEMENTS
+   ========================================================================== */
+
+/* Permanent hide — takes precedence over autohide */
+@container style(--uc-hide-nav-buttons: 1) {
+  #back-button,
+  #forward-button,
+  #reload-button,
+  #stop-reload-button,
+  #ipprotection-button {
+    display: none !important;
+  }
+}
+
+/* Navigation buttons — auto-hide with hover reveal */
+/* Mode 1 and 2 apply hidden state */
+@container style(--uc-autohide-nav-buttons: 1), style(--uc-autohide-nav-buttons: 2) {
+  #back-button,
+  #forward-button,
+  #reload-button,
+  #stop-reload-button,
+  #ipprotection-button {
+    opacity: 0 !important;
+    max-width: 0 !important;
+    min-width: 0 !important;
+    width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+  }
+  /* Hover reveal applies to both modes — revert restores native button widths */
+  #nav-bar:hover :is(
+    #back-button,
+    #forward-button,
+    #reload-button,
+    #stop-reload-button,
+    #ipprotection-button
+  ) {
+    opacity: 1 !important;
+    width: revert !important;
+    min-width: revert !important;
+    max-width: 60px !important;
+    padding-inline: revert !important;
+  }
+  /* Back button has extra native leading padding (8px left vs 2px); revert misses it */
+  #nav-bar:hover #back-button {
+    padding-inline-start: 8px !important;
+  }
+  /* Disabled back/forward stay visible but dimmed, like native */
+  #nav-bar:hover :is(#back-button, #forward-button)[disabled] {
+    opacity: 0.4 !important;
+  }
+}
+
+/* Mode 1 also reveals on focus */
+@container style(--uc-autohide-nav-buttons: 1) {
+  #nav-bar:focus-within :is(
+    #back-button,
+    #forward-button,
+    #reload-button,
+    #stop-reload-button,
+    #ipprotection-button
+  ) {
+    opacity: 1 !important;
+    width: revert !important;
+    min-width: revert !important;
+    max-width: 60px !important;
+    padding-inline: revert !important;
+  }
+  #nav-bar:focus-within #back-button {
+    padding-inline-start: 8px !important;
+  }
+  #nav-bar:focus-within :is(#back-button, #forward-button)[disabled] {
+    opacity: 0.4 !important;
+  }
+}
+
+#pageActionButton { display: none !important; }
+#urlbar-go-button { display: none !important; }
+
+/* Context menu: "Open Link in Split View" (toggle in CONFIG). Hidden by
+   default, restored via style query at 1. The old none/-moz-box toggle broke
+   silently: -moz-box was removed from Firefox and CSS-wide keywords like
+   revert cannot travel through var(), so 0/1 + revert is the pattern. */
+#context-openlinkinsplitview { display: none !important; }
+@container style(--uc-show-context-splitview: 1) {
+  #context-openlinkinsplitview { display: revert !important; }
+}
+
+#identity-permission-box {
+  max-width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  margin-inline: 0 !important;
+  padding-inline: 0 !important;
+  transition: max-width 0.2s ease, opacity 0.2s ease,
+              margin-inline 0.2s ease, padding-inline 0.2s ease !important;
+}
+
+#urlbar:hover #identity-permission-box,
+#urlbar[focused="true"] #identity-permission-box {
+  max-width: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  margin-inline: revert !important;
+  padding-inline: revert !important;
+}
+
+/* Always show active permissions (granted camera/mic/location) and sharing
+   icons (active stream) — security indicator should not depend on focus.
+   Firefox sets [hasPermissions] also for blocked-only permissions (e.g.
+   autoplay), so we exclude those via :not(:has(.blocked-permission-icon))
+   to keep blocked icons hover/focus-revealed like the rest of FoxOne. */
+#identity-permission-box[hasPermissions]:not(:has(.blocked-permission-icon)),
+#identity-permission-box[hasSharingIcon] {
+  max-width: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  margin-inline: revert !important;
+  padding-inline: revert !important;
+}
+
+#identity-box.extensionPage { display: none !important; }
+
+/* Container indicator: hidden by default; indicator shown on hover/focus, text label on focus only */
+#userContext-label,
+#userContext-indicator {
+  max-width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: max-width 0.2s ease, opacity 0.2s ease,
+              padding 0.2s ease, margin 0.2s ease !important;
+}
+
+#urlbar:hover #userContext-indicator,
+#urlbar[focused="true"] #userContext-indicator {
+  max-width: 200px !important;
+  opacity: 1 !important;
+  margin-inline: 2px !important;
+}
+
+#urlbar[focused="true"] #userContext-label {
+  max-width: 200px !important;
+  opacity: 1 !important;
+  margin-inline-start: 2px !important;
+}
+
+/* FF153 Nova wraps the container indicator in a pill: #userContext-icons gets
+   own padding, a rounded 15%-tint background and muted --identity-pill-color
+   recolouring. Collapsing only the children leaves the empty pill shell
+   standing as a coloured box. Collapse the shell too and pull icon + label
+   back to the saturated container colours. */
+#userContext-icons {
+  padding: 0 !important;
+  gap: 0 !important;
+  background-color: transparent !important;
+}
+
+/* One stop brighter than the legacy palette: lift lightness and chroma at the
+   point of use, and let the icon glow the way the context line does. */
+#userContext-indicator {
+  fill: oklch(from var(--identity-icon-color) calc(l + 0.12) calc(c * 1.15) h) !important;
+  filter: drop-shadow(0 0 3px var(--identity-icon-color)) !important;
+}
+
+#userContext-label {
+  color: oklch(from var(--identity-tab-color) calc(l + 0.12) calc(c * 1.15) h) !important;
+}
+
+/* Nova's design-system tokens mute the container palette to pastel; FoxOne's
+   container cues (indicator fill, label, context-line glow) live from colour.
+   Restore the legacy CONTAINER_COLORS hex values on the same classes Firefox
+   uses, so every consumer of --identity-tab-color / --identity-icon-color
+   gets the saturated pre-Nova palette back. */
+.identity-color-blue   { --identity-tab-color: #37adff !important; --identity-icon-color: #37adff !important; }
+.identity-color-cyan   { --identity-tab-color: #00c79a !important; --identity-icon-color: #00c79a !important; }
+.identity-color-green  { --identity-tab-color: #51cd00 !important; --identity-icon-color: #51cd00 !important; }
+.identity-color-yellow { --identity-tab-color: #ffcb00 !important; --identity-icon-color: #ffcb00 !important; }
+.identity-color-orange { --identity-tab-color: #ff9f00 !important; --identity-icon-color: #ff9f00 !important; }
+.identity-color-red    { --identity-tab-color: #ff613d !important; --identity-icon-color: #ff613d !important; }
+.identity-color-pink   { --identity-tab-color: #ff4bda !important; --identity-icon-color: #ff4bda !important; }
+.identity-color-purple { --identity-tab-color: #af51f5 !important; --identity-icon-color: #af51f5 !important; }
+.identity-color-violet { --identity-tab-color: #764edd !important; --identity-icon-color: #764edd !important; }
+.identity-color-gray   { --identity-tab-color: currentColor !important; --identity-icon-color: currentColor !important; }
+
+/* Hide unwanted page action icons — reveal on hover/focus.
+   .urlbar-addon-page-action covers every extension-injected URL-bar icon
+   (Firefox assigns that class to all of them), so no per-add-on ID list. */
+#reader-mode-button,
+#taskbar-tabs-button,
+#translations-button,
+.urlbar-addon-page-action {
+  max-width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: max-width 0.2s ease, opacity 0.2s ease,
+              padding 0.2s ease, margin 0.2s ease !important;
+}
+
+#urlbar:hover #reader-mode-button,
+#urlbar:hover #taskbar-tabs-button,
+#urlbar:hover #translations-button,
+#urlbar:hover .urlbar-addon-page-action,
+#urlbar[focused="true"] #reader-mode-button,
+#urlbar[focused="true"] #taskbar-tabs-button,
+#urlbar[focused="true"] #translations-button,
+#urlbar[focused="true"] .urlbar-addon-page-action {
+  /* max-width only drives the slide-in transition; it must never act as the
+     real width cap. An exact icon+padding fit (30px, then 32px) clipped the
+     translations icon on FF153 stable because the rendered icon runs wider
+     than its nominal 16px. Actual width = icon + padding-inline; the generous
+     cap just has to stay above that. */
+  max-width: 40px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  /* The vertical padding was the bug: padding-block squeezed the content to
+     12px, which FF153 rendered low (152 tolerated it). Drop only the block
+     padding so the icon centres via .urlbar-icon { margin: auto } in the full
+     24px height like the star; keep the inline padding for horizontal spacing,
+     else the icon sits cramped. 8px calibrated on FF153 stable. */
+  padding-block: 0 !important;
+  padding-inline: 8px !important;
+  margin: 0 !important;
+}
+
+/* Translations icon, FF153: Mozilla's translations.svg is 17px wide in a
+   16px .urlbar-icon box; upstream ships it with a "right letter is 1px too
+   long" comment and a margin-right: -1px band-aid. At fractional display
+   scaling the overhanging column gets clipped (right edge of the "A").
+   Replace the asset with the identical artwork wrapped in a proper
+   viewBox="0 0 17 16" so it scales into the box instead of overflowing it;
+   context-fill keeps the FoxOne recolouring intact. */
+#translations-button-icon {
+  list-style-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2017%2016'%20fill='context-fill%20light-dark(black,%20white)'%20fill-opacity='context-fill-opacity'%3E%3Cpath%20fill-rule='nonzero'%20d='M15.37%2015H17l-3.63-8.54a.75.75%200%200%200-.69-.46h-.82c-.3%200-.58.18-.7.46L9.32%2010.8l-.01-.01a10.8%2010.8%200%200%201-3.27-2.2%2012.38%2012.38%200%200%200%202.54-4.18L9.08%203H10V1.5H5.75V0h-1.5v1.5H0V3h7.5l-.33.91c-.47%201.31-1.2%202.52-2.13%203.56-.7-.9-1.25-1.9-1.63-2.97H1.8l.18.48a12.43%2012.43%200%200%200%201.97%203.56c-.9.75-1.89%201.35-2.96%201.78v1.58a12.3%2012.3%200%200%200%203.96-2.26%2012.31%2012.31%200%200%200%203.77%202.54L7.53%2015h1.64l1.06-2.5h4.08l1.06%202.5Zm-4.5-4%201.4-3.3%201.4%203.3h-2.8Z'/%3E%3C/svg%3E") !important;
+  /* Upstream compensates its 17px art with margin-right: -1px; our art fits
+     the box, so the compensation would just shave the spacing. */
+  margin-right: 0 !important;
+}
+
+/* Opt-in: fully hide URL-bar clutter icons, no hover/focus reveal.
+   display:none removes them regardless of the reveal rules above, so misclicks
+   while aiming for the URL bar are impossible. The shield/security indicator
+   (Nova: #trust-icon-container; pre-Nova: #tracking-protection-icon-container),
+   #star-button-box and the picture-in-picture button are otherwise always
+   visible (PiP only while a video plays); this is the only thing that hides
+   them. (Issue #21) */
+@container style(--uc-hide-urlbar-buttons: 1) {
+  #trust-icon-container,
+  #tracking-protection-icon-container,
+  #reader-mode-button,
+  #taskbar-tabs-button,
+  #translations-button,
+  #picture-in-picture-button,
+  #star-button-box {
+    display: none !important;
+  }
+}
+
+/* Hide private browsing indicator */
+.private-browsing-indicator-with-label { display: none !important; }
+
+/* Hide secondary tab label (e.g. playing indicator text) */
+.tab-secondary-label { display: none !important; }
+
+/* Hide vertical tabs new tab button */
+#vertical-tabs-newtab-button { display: none !important; }
+
+/* All-tabs button (toggle in CONFIG) – same 0/1 + revert pattern as the
+   split-view context-menu item. */
+#alltabs-button { display: none !important; }
+@container style(--uc-show-all-tabs-button: 1) {
+  #alltabs-button { display: revert !important; }
+}
+
+
+/* ==========================================================================
+   HAMBURGER MENU — fixed position next to the window control buttons.
+   Base rule uses the --uc-window-buttons-width fallback; non-macOS overrides
+   it below with CSS anchor positioning so it tracks the real box width.
+   ========================================================================== */
+
+#PanelUI-button {
+  position: fixed !important;
+  right: var(--uc-window-buttons-width) !important;
+  top: 0 !important;
+  height: 44px !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Non-macOS (Windows, Linux): anchor the hamburger's right edge to the left
+   edge of the real window-control box, so it auto-adapts to display scaling,
+   custom titlebar themes and per-DE control widths with no hand-set value.
+   The anchor() fallback keeps the old --uc-window-buttons-width behaviour on
+   Firefox builds without anchor positioning, so there is no regression.
+   Excluded on macOS, where the control box sits on the LEFT (traffic lights)
+   and would fling the hamburger to the wrong edge. (Issue #9) */
+@media not (-moz-platform: macos) {
+  .titlebar-buttonbox-container {
+    anchor-name: --uc-winbtns !important;
+  }
+  #PanelUI-button {
+    right: anchor(--uc-winbtns left, var(--uc-window-buttons-width)) !important;
+  }
+}
+
+/* Fullscreen (F11): position:fixed pins the hamburger to the viewport, so it
+   stayed on screen while the toolbox autohid (issue #44). A neutral transform
+   makes the toolbox the containing block for FIXED descendants (position:
+   absolute would grab the nearest positioned ancestor instead, which is
+   #nav-bar and parked the hamburger on the puzzle button), so the button
+   rides the autohide margin. Everything else stays untouched: the window
+   controls ARE shown in fullscreen reveal, so the anchor() from issue #9
+   keeps placing the hamburger beside them. */
+:root[inFullscreen] #navigator-toolbox {
+  transform: translateY(0) !important;
+}
+
+/* The #44 fix left the toolbox in flex flow, so the top-edge reveal (Firefox
+   restoring the autohide margin-top) pushed #browser and the page down with
+   it (issue #46, fix by NeroWolfe75). Take the toolbox out of flow in F11:
+   Firefox still drives margin-top for hide/reveal, but the toolbar now
+   overlays the page instead of displacing it. DOM fullscreen (videos) stays
+   excluded — the toolbox is fully hidden there anyway. */
+:root[inFullscreen]:not([inDOMFullscreen]) #navigator-toolbox {
+  position: fixed !important;
+  top: 0 !important;
+  inset-inline-start: 0 !important;
+  width: 100vw !important;
+  z-index: 9999 !important;
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   TOOLBAR EXTENSION BUTTONS — push to right, next to hamburger.
+   Only targets <toolbarbutton> and <toolbaritem> children of #TabsToolbar
+   that are NOT known built-in elements. Adjust --uc-toolbar-button-width
+   in CONFIG for multiple buttons (36px per button).
+   ========================================================================== */
+
+#TabsToolbar-customization-target > toolbaritem {
+  margin-inline: 0 !important;
+}
+/* Only the first item gets the auto start-margin, so the whole group shifts
+   right as one cluster instead of each item claiming its own slice of free
+   space (which split a second icon off toward the middle). */
+#TabsToolbar-customization-target > toolbaritem:first-of-type {
+  margin-inline-start: auto !important;
+}
+/* Only the last item clears the fixed hamburger; intermediate items stay snug. */
+#TabsToolbar-customization-target > toolbaritem:last-of-type {
+  margin-inline-end: var(--uc-hamburger-width) !important;
+}
+
+/* Private windows: Firefox puts a mask toolbarbutton at the end of #TabsToolbar,
+   right where the fixed hamburger sits, so the two overlapped. Give the mask
+   the hamburger clearance instead of the extension cluster, so the strip reads
+   [extensions][mask][hamburger][window controls]. */
+#TabsToolbar .private-browsing-indicator-button {
+  margin-inline-end: var(--uc-hamburger-width) !important;
+}
+:root[privatebrowsingmode] #TabsToolbar-customization-target > toolbaritem:last-of-type {
+  margin-inline-end: 0 !important;
+}
+
+/* Opt-in: hide the pinned extension icons and reveal them on hamburger hover.
+   The hamburger is position:fixed in a separate toolbar, so there is no plain
+   combinator to the icons; the reveal is driven via :root:has(). The second
+   reveal selector (an extension item's own :hover) is the bridge that keeps
+   the icons open while the pointer travels from the hamburger onto them. It
+   must target the toolbaritems specifically, not the customization-target,
+   which spans the whole tab strip and would reveal on any tab hover. (#13) */
+@container style(--uc-hide-extension-icons: 1) {
+  #TabsToolbar-customization-target > toolbaritem {
+    max-width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    padding-inline: 0 !important;
+    overflow: hidden !important;
+    transition: max-width 0.2s ease, opacity 0.2s ease,
+                padding-inline 0.2s ease, margin-inline 0.2s ease !important;
+  }
+  /* collapsed last item drops the hamburger clearance so no gap is reserved */
+  #TabsToolbar-customization-target > toolbaritem:last-of-type {
+    margin-inline-end: 0 !important;
+  }
+
+  /* Reveal: hovering the hamburger, an extension item itself (the bridge), or
+     in private windows the mask button, which sits between the two and would
+     otherwise break the bridge on the way across. */
+  :root:is(
+    :has(#PanelUI-button:hover),
+    :has(#TabsToolbar-customization-target > toolbaritem:hover),
+    :has(#TabsToolbar .private-browsing-indicator-button:hover)
+  ) #TabsToolbar-customization-target > toolbaritem {
+    max-width: 60px !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    padding-inline: revert !important;
+  }
+  /* Hamburger clearance on the revealed cluster's last item as PADDING, not
+     margin, so the 44px lives inside the item's own hover box. That closes the
+     dead zone between the last icon and the fixed hamburger: the toolbaritem
+     :hover bridge now spans the whole gap, so the icons stay open while the
+     pointer travels from the hamburger onto them. max-width grows by the same
+     amount so the icon is not squeezed by the padding (border-box). (#13) */
+  :root:is(
+    :has(#PanelUI-button:hover),
+    :has(#TabsToolbar-customization-target > toolbaritem:hover),
+    :has(#TabsToolbar .private-browsing-indicator-button:hover)
+  ) #TabsToolbar-customization-target > toolbaritem:last-of-type {
+    max-width: calc(60px + var(--uc-hamburger-width)) !important;
+    padding-inline-end: var(--uc-hamburger-width) !important;
+  }
+  /* Private windows: the mask already carries the hamburger clearance as its
+     own margin (above), so the revealed cluster must not add it again or the
+     gap doubles. The mask's :hover in the lists above is the bridge here. */
+  :root[privatebrowsingmode]:is(
+    :has(#PanelUI-button:hover),
+    :has(#TabsToolbar-customization-target > toolbaritem:hover),
+    :has(#TabsToolbar .private-browsing-indicator-button:hover)
+  ) #TabsToolbar-customization-target > toolbaritem:last-of-type {
+    max-width: 60px !important;
+    padding-inline-end: revert !important;
+  }
+}
+
+/* ==========================================================================
+   EXTENSIONS BUTTON RIGHT (default on, --uc-extensions-button-right: 1)
+   Firefox locks the puzzle button to the nav-bar, so Customize Toolbar can't
+   drag it beside the hamburger. Same mechanism as the hamburger above:
+   position:fixed, anchored to the window controls, --uc-extensions-button-
+   width further left. Leaving the nav-bar flow hands its slot to the URL bar.
+   Fullscreen and vertical tabs follow the hamburger's handling. (#48)
+   ========================================================================== */
+@container style(--uc-extensions-button-right: 1) {
+  #unified-extensions-button {
+    position: fixed !important;
+    right: calc(var(--uc-window-buttons-width) + var(--uc-extensions-button-width)) !important;
+    top: 0 !important;
+    height: 44px !important;
+    /* the nav-bar 1px nudge from the trust-icon family no longer applies */
+    margin-top: 0 !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  @media not (-moz-platform: macos) {
+    #unified-extensions-button {
+      right: calc(anchor(--uc-winbtns left, var(--uc-window-buttons-width)) + var(--uc-extensions-button-width)) !important;
+    }
+  }
+  :root:has(#tabbrowser-tabs[orient="vertical"]) #unified-extensions-button {
+    position: static !important;
+  }
+
+  /* The extension cluster and the private-window mask now clear two fixed
+     buttons instead of one. The private-window zeroing of the cluster margin
+     above outranks this by specificity, so it keeps working. */
+  #TabsToolbar-customization-target > toolbaritem:last-of-type,
+  #TabsToolbar .private-browsing-indicator-button {
+    margin-inline-end: calc(var(--uc-hamburger-width) + var(--uc-extensions-button-width)) !important;
+  }
+
+  /* Hover-reveal (#13) with the puzzle in between: the collapsed cluster
+     drops the clearance again (restated, since the rule above is later in
+     source than the #13 collapse), and the puzzle's own hover joins the
+     reveal, because the pointer now crosses it on the way from the hamburger
+     to the icons and the bridge would otherwise break there. */
+  @container style(--uc-hide-extension-icons: 1) {
+    #TabsToolbar-customization-target > toolbaritem:last-of-type {
+      margin-inline-end: 0 !important;
+    }
+    :root:is(
+      :has(#PanelUI-button:hover),
+      :has(#unified-extensions-button:hover),
+      :has(#TabsToolbar-customization-target > toolbaritem:hover),
+      :has(#TabsToolbar .private-browsing-indicator-button:hover)
+    ) #TabsToolbar-customization-target > toolbaritem {
+      max-width: 60px !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      padding-inline: revert !important;
+    }
+    :root:is(
+      :has(#PanelUI-button:hover),
+      :has(#unified-extensions-button:hover),
+      :has(#TabsToolbar-customization-target > toolbaritem:hover),
+      :has(#TabsToolbar .private-browsing-indicator-button:hover)
+    ) #TabsToolbar-customization-target > toolbaritem:last-of-type {
+      max-width: calc(60px + var(--uc-hamburger-width) + var(--uc-extensions-button-width)) !important;
+      padding-inline-end: calc(var(--uc-hamburger-width) + var(--uc-extensions-button-width)) !important;
+    }
+    /* Private windows: the mask carries the two-button clearance (margin
+       above), the cluster adds none. Same reasoning as the #13 base block. */
+    :root[privatebrowsingmode]:is(
+      :has(#PanelUI-button:hover),
+      :has(#unified-extensions-button:hover),
+      :has(#TabsToolbar-customization-target > toolbaritem:hover),
+      :has(#TabsToolbar .private-browsing-indicator-button:hover)
+    ) #TabsToolbar-customization-target > toolbaritem:last-of-type {
+      max-width: 60px !important;
+      padding-inline-end: revert !important;
+    }
+  }
+}
+
+
+/* ==========================================================================
+   TABS
+   ========================================================================== */
+
+/* remove gap after pinned tabs */
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])
+  > #tabbrowser-arrowscrollbox
+  > .tabbrowser-tab:nth-child(1 of :not([pinned], [hidden])) {
+  margin-inline-start: 0 !important;
+}
+
+/* remove tab shadow */
+.tabbrowser-tab > .tab-stack > .tab-background {
+  box-shadow: none !important;
+}
+
+/* multi tab selection */
+:root[lwtheme] #tabbrowser-tabs:not([noshadowfortests])
+  .tabbrowser-tab:is([multiselected])
+  > .tab-stack
+  > .tab-background {
+  outline-color: var(--toolbarseparator-color) !important;
+}
+
+/* Tabs as size containers, so rules can react to the actual tab width. Only
+   matters once --uc-tab-min-width drops below ~50px (favicon-only tabs): the
+   audio button then no longer fits and gives way to the favicon badge below.
+   inline-size containment is safe here because tab widths come from the
+   strip's flexbox and the min/max-width clamps, not from content. */
+.tabbrowser-tab:not([pinned]) {
+  container-type: inline-size;
+}
+
+/* Tab close button: an overlay in the tab's top layer, not a flex child.
+   Idea and base code from NeroWolfe75 (comment on 22020af): lifting the X
+   out of the tab's flex row means it exists at EVERY tab width, replacing
+   the old sub-50px hiding and its container query (the container-type above
+   stays for the audio badge). FoxOne twist on the original: the X slides in
+   from the right, vertically centred on the label line, so nothing moves
+   vertically in the one-line layout. */
+.tabbrowser-tab:not([pinned]) .tab-content {
+  /* anchor for the absolutely positioned X */
+  position: relative !important;
+}
+.tabbrowser-tab:not([pinned]) .tab-close-button {
+  /* revert (not -moz-inline-block: a removed alias that parses as invalid
+     and gets dropped): restores the native close-button display. */
+  display: revert !important;
+  position: absolute !important;
+  inset-inline-end: 3px !important;
+  /* Box centred on the line, then 1px down: Nova's label line sits ~1px
+     below the geometric centre (same nudge the pre-overlay X needed). */
+  inset-block-start: calc(50% - 9px) !important;
+  z-index: 100 !important;
+  /* 20px box, 2px padding -> 16x16 content box: the 16px icon fits exactly,
+     unstretched (it won't scale below its intrinsic size via padding, it
+     overflows instead). scale(0.75) in the transform below renders the glyph
+     at 12px, the size the pre-overlay X used, and the plate at 15px, leaving
+     ~1.5px of air around the glyph. */
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  margin: 0 !important;
+  padding: 2px !important;
+  /* The plate is a constant surface chip in every state; the glyph's colour
+     change below is the only interaction cue (issue #16). Rest state pins
+     the base text colour: since 154 the X wears the tab's text colour via
+     fill: currentColor, which would read accent on the selected tab. The
+     outline kill drops 154's toolbarbutton focus/hover outline. */
+  background-color: var(--uc-color-surface) !important;
+  color: var(--uc-color-text) !important;
+  border: none !important;
+  border-radius: 2px !important;
+  outline: none !important;
+  /* Rest: parked outside the right tab edge, invisible; slides in on tab
+     hover. scale is part of the transform list so it must repeat in every
+     state that sets transform. */
+  transform: translateX(200%) scale(0.75) !important;
+  opacity: 0 !important;
+  transition:
+    transform 140ms ease-out,
+    opacity 100ms ease-out !important;
+  flex: none !important;
+  overflow: hidden !important;
+}
+.tabbrowser-tab:not([pinned]):hover .tab-close-button {
+  opacity: 0.9 !important;
+  transform: translateX(0) scale(0.75) !important;
+}
+/* Same three-step colour model as the toolbar icons (issue #16): rest white
+   (above), hover the X itself hover-yellow, press it amber. fill is
+   currentColor since 154, so color alone recolours the glyph. */
+.tabbrowser-tab:not([pinned]) .tab-close-button:hover {
+  opacity: 1 !important;
+  color: var(--uc-tab-hover-text) !important;
+}
+.tabbrowser-tab:not([pinned]) .tab-close-button:hover:active {
+  color: var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+/* adaptive tab width */
+.tabbrowser-tab[selected][fadein]:not([pinned]):not(tab-group[collapsed] .tabbrowser-tab) {
+  max-width: var(--uc-active-tab-width) !important;
+}
+.tabbrowser-tab[fadein]:not([selected]):not([pinned]):not(tab-group[collapsed] .tabbrowser-tab) {
+  max-width: var(--uc-inactive-tab-width) !important;
+}
+.tabbrowser-tab[fadein]:not([pinned]):not(tab-group[collapsed] .tabbrowser-tab) {
+  min-width: var(--uc-tab-min-width) !important;
+}
+
+/* active pinned tab — bottom glow indicator (mirrors container-line style) */
+.tabbrowser-tab[pinned][selected] .tab-background::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 10px !important;
+  right: 10px !important;
+  height: 1px !important;
+  background: var(--tab-selected-textcolor, #fabd2f) !important;
+  box-shadow: 0 -1px 10px 1px var(--tab-selected-textcolor, #fabd2f) !important;
+}
+
+/* container tabs indicator (position toggle in CONFIG)
+   Nova puts its 4px stripe at the top of the tab and shifts it a further -6px
+   into the edge; the 1px FoxOne line inherits both. Default pins it to the
+   bottom edge on the same geometry as the pinned-tab indicator above; the
+   style query at 1 puts it back on top, un-shifted. */
+#TabsToolbar .tab-context-line {
+  height: 1px !important;
+  position: absolute !important;
+  inset-block-start: auto !important;
+  inset-block-end: 0 !important;
+  inset-inline: 10px !important;
+  margin: 0 !important;
+  /* Glow points up, away from the bottom tab edge, so it isn't clipped. */
+  box-shadow: 0 -1px 10px 1px var(--identity-tab-color) !important;
+}
+.tab-context-line {
+  /* Same lift as the urlbar indicator: boosted core, raw colour for the glow.
+     Offset-free: vertical tabs live outside #TabsToolbar and get this rule
+     alone, where a directional glow has no edge to point away from. */
+  background-color: oklch(from var(--identity-icon-color) calc(l + 0.12) calc(c * 1.15) h) !important;
+  box-shadow: 0 0 10px 1px var(--identity-tab-color) !important;
+}
+/* Top placement is the 3.4.5 geometry: back into flow, 2px clear of the tab
+   edge so the glow has room on both sides, Nova's -6px shift cancelled by
+   inset-block-start: 0. Pinning it flat to the edge instead costs half the
+   glow and reads as the muted pre-3.4.5 line. */
+@container style(--uc-container-line-top: 1) {
+  #TabsToolbar .tab-context-line {
+    position: relative !important;
+    inset-block-start: 0 !important;
+    inset-block-end: auto !important;
+    inset-inline: auto !important;
+    margin: 2px 10px 0 10px !important;
+    box-shadow: 0 1px 10px 1px var(--identity-tab-color) !important;
+  }
+}
+
+/* show favicon when media is playing but tab is hovered */
+.tab-icon-image:not([pinned]) {
+  opacity: 1 !important;
+}
+
+/* speaker icon — always visible when tab is playing */
+.tab-icon-overlay:not([crashed]),
+.tab-icon-overlay[pinned][crashed][selected] {
+  top: 5px !important;
+  z-index: 1 !important;
+  padding: 1.5px !important;
+  inset-inline-end: -8px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 10px !important;
+}
+
+/* Audio on sub-50px tabs. Nova's horizontal audio indicator is NOT the
+   overlay above but a separate 24px .tab-audio-button sitting in flow between
+   icon stack and label; on a favicon-only tab it cannot fit and gets clipped
+   at the tab edge. Firefox already solves favicon-only tabs on the collapsed
+   vertical strip: hide the button, show .tab-icon-overlay as a small badge on
+   the favicon instead. Replicate that here. The badge's list-style-image must
+   be set explicitly because natively only the pinned/vertical-collapsed
+   selectors assign the small icons. Geometry and colours come from the base
+   overlay rules above; only the -8px end-overhang is pulled to -2px so the
+   badge stays inside the tab. Pinned tabs have no container (see the
+   close-button block), so the query never matches them. */
+@container (width < 50px) {
+  .tab-audio-button {
+    display: none !important;
+  }
+  /* Specificity must beat the base margin/inset rules below, hence the full
+     :not()/:is() chains instead of a bare .tab-icon-overlay. */
+  .tab-icon-overlay:not([pinned], [sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+    display: revert !important;
+    margin-inline-end: 0 !important;
+    top: 2px !important;
+    inset-inline-end: -2px !important;
+    /* At full 16px the badge covers the entire favicon. The box cannot
+       shrink the icon below its intrinsic size (see the close-button scale
+       note), so scale the rendered badge instead, anchored bottom-right so
+       it tucks onto the favicon corner: box bottom edge lands at 18 (top 2 +
+       16), right edge 2px past the favicon, and the ~11px badge grows up and
+       left from that corner. */
+    transform: scale(0.7) !important;
+    transform-origin: 100% 100% !important;
+  }
+  .tab-icon-overlay:not([pinned], [sharing], [crashed])[soundplaying] {
+    list-style-image: url("chrome://browser/skin/tabbrowser/tab-audio-playing-small.svg") !important;
+  }
+  .tab-icon-overlay:not([pinned], [sharing], [crashed])[muted] {
+    list-style-image: url("chrome://browser/skin/tabbrowser/tab-audio-muted-small.svg") !important;
+  }
+  .tab-icon-overlay:not([pinned], [sharing], [crashed])[activemedia-blocked] {
+    list-style-image: url("chrome://browser/skin/tabbrowser/tab-audio-blocked-small.svg") !important;
+  }
+}
+
+/* Badge colours, inverted from the native reading: light circle with a dark
+   glyph at rest, accent circle on hover (the glyph colours live in the
+   #TabsToolbar rules below). */
+.tab-icon-overlay:not([sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+  background: transparent !important;
+  opacity: 1 !important;
+  fill-opacity: 0.8 !important;
+  color: currentColor !important;
+  stroke: var(--toolbar-color) !important;
+  background-color: var(--toolbar-color) !important;
+}
+
+.tabbrowser-tab[selected]
+  .tab-icon-overlay:not([sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+  stroke: var(--toolbar-color) !important;
+  background-color: var(--toolbar-color) !important;
+}
+
+.tab-icon-overlay:not([pinned], [sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+  margin-inline-end: 9.5px !important;
+}
+
+.tabbrowser-tab:not([image])
+  .tab-icon-overlay:not([pinned], [sharing], [crashed]) {
+  top: 0 !important;
+  padding: 0 !important;
+  margin-inline-end: 5.5px !important;
+  inset-inline-end: 0 !important;
+}
+
+/* speaker icon hover — accent circle (unconditional accent cue, like the
+   other identity colours) */
+.tab-icon-overlay:not([crashed])[soundplaying]:hover,
+.tab-icon-overlay:not([crashed])[muted]:hover,
+.tab-icon-overlay:not([crashed])[activemedia-blocked]:hover {
+  color: currentColor !important;
+  stroke: var(--uc-color-accent) !important;
+  background-color: var(--uc-color-accent) !important;
+  fill-opacity: 0.95 !important;
+}
+
+.tabbrowser-tab[selected] .tab-icon-overlay:not([crashed])[soundplaying]:hover,
+.tabbrowser-tab[selected] .tab-icon-overlay:not([crashed])[muted]:hover,
+.tabbrowser-tab[selected] .tab-icon-overlay:not([crashed])[activemedia-blocked]:hover {
+  color: currentColor !important;
+  stroke: var(--uc-color-accent) !important;
+  background-color: var(--uc-color-accent) !important;
+  fill-opacity: 0.95 !important;
+}
+
+/* speaker icon colour fix — glyph colours for the inverted badge: theme-dark
+   on the light circle at rest, constant dark on the amber hover circle (the
+   "dark check on amber" pattern; the accent is unconditional, so the glyph
+   on it must not follow the theme either) */
+#TabsToolbar .tab-icon-overlay:not([crashed])[soundplaying],
+#TabsToolbar .tab-icon-overlay:not([crashed])[muted],
+#TabsToolbar .tab-icon-overlay:not([crashed])[activemedia-blocked] {
+  color: var(--toolbar-bgcolor) !important;
+}
+
+#TabsToolbar .tab-icon-overlay:not([crashed])[soundplaying]:hover,
+#TabsToolbar .tab-icon-overlay:not([crashed])[muted]:hover,
+#TabsToolbar .tab-icon-overlay:not([crashed])[activemedia-blocked]:hover {
+  color: var(--uc-color-base) !important;
+}
+
+/* selected tab: accent text only, no background tint or underline */
+.tabbrowser-tab[selected] .tab-background {
+  background-color: transparent !important;
+  /* Nova paints a gradient "border" on the active tab via a layered
+     background-image (--tab-border-color-accent). FoxOne marks the active
+     tab with accent text alone, so kill the gradient. */
+  background-image: none !important;
+  outline: none !important;
+}
+.tab-background {
+  margin: 0px !important;
+  border-radius: var(--uc-radius-surface) !important;
+}
+
+/* vertical tabs — stretch to fill sidebar width */
+#tabbrowser-tabs[orient="vertical"] {
+  flex: 1 !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] .tabbrowser-tab[fadein]:not([pinned]) {
+  max-width: none !important;
+}
+
+
+/* tab group labels — replace the FF152 inflated pastel pill with a compact,
+   saturated filled chip: the group's full colour (--tab-group-color, never the
+   pale "invert") with light text. One rule covers both the expanded label and
+   the collapsed group button, so the two stay consistent.
+   Nova inserted a .tab-group-label-hover-highlight wrapper between the container
+   and the label, so a direct-child (>) combinator no longer matches; use a
+   descendant combinator to step over it. White text is used deliberately: it
+   stays legible on every group colour, where the pale token would not. */
+.tab-group-label-container .tab-group-label {
+  outline: none !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  line-height: 1.6 !important;
+  padding-block: 0px 2px !important; /* lift the label text 1px to align with the normal tab title; total block padding stays 2px so the chip box and its translateY centring are untouched */
+  padding-inline: 8px !important;
+  border-radius: var(--uc-border-radius) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  color: #fff !important;
+  background-color: var(--tab-group-color) !important;
+  transform: translateY(1px) !important; /* centre the pill on the label text (was 8px top / 6px bottom) */
+}
+
+
+/* ==========================================================================
+   FINDBAR — floating search bar (based on LittleFox)
+   ========================================================================== */
+
+:root {
+  --show-margin: round(up, calc((var(--show-highlight-all) + var(--show-match-case) + var(--show-match-diacritics) + var(--show-whole-words)) / 4));
+  --options-width: calc(34px*var(--show-highlight-all) + 34px*var(--show-match-case) + 34px*var(--show-match-diacritics) + 34px*var(--show-whole-words) + 4px*var(--show-margin));
+
+  --findbar-min-width: calc(500px - 2 * var(--findbar-right));
+  --findbar-min-width-expanded: calc(var(--findbar-min-width) + var(--options-width));
+  --findbar-max-width: calc(100vw - 2 * var(--findbar-right));
+  --findbar-width-use: clamp(var(--findbar-min-width-expanded), var(--findbar-width), var(--findbar-max-width));
+
+  --textbox-min-width: calc(var(--findbar-min-width) - 116px);
+  --textbox-width: calc(var(--findbar-width-use) - 116px - var(--options-width));
+}
+
+findbar {
+  position: absolute !important;
+  /* FF155 turned .browserContainer into a CSS grid with a dedicated
+     "findbar" row at the very bottom (content-area.css). An absolutely
+     positioned grid item takes its containing block from its grid area, not
+     from the container, so top: 8px suddenly measured from a zero-height row
+     below the page and the bar landed outside the clipped container:
+     invisible. grid-area: auto drops the placement, and per spec an auto
+     placement hands the containing block back to the container's padding
+     box, which is the pre-155 geometry. */
+  grid-area: auto !important;
+  top: var(--findbar-top) !important;
+  left: var(--findbar-right) !important;
+  right: var(--findbar-right) !important;
+  width: var(--findbar-width-use) !important;
+  max-width: var(--findbar-max-width) !important;
+  margin-left: auto !important;
+  border: none !important;
+  border-radius: var(--uc-radius-surface) !important;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+findbar {
+  opacity: 1 !important;
+  transform-origin: top !important;
+  transform: scaleY(1) translateY(0px) !important;
+  transition: opacity 100ms ease-out, transform 100ms ease-out, visibility 0s step-end !important;
+}
+findbar[hidden] {
+  opacity: 0 !important;
+  transform: scaleY(0.96) translateY(-4px) !important;
+  transition-delay: 0s, 0s, 100ms !important;
+}
+
+.findbar-textbox {
+  width: var(--textbox-width) !important;
+  min-width: var(--textbox-min-width) !important;
+  border: none !important;
+  border-radius: var(--uc-radius-row) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.findbar-textbox:not([status]) {
+  background-color: transparent !important;
+}
+.findbar-textbox:not(:focus, [status]):hover {
+  background-color: var(--toolbar-field-background-color) !important;
+}
+
+label.found-matches {
+  position: absolute !important;
+  right: calc(100% - var(--textbox-width)) !important;
+  text-align: right !important;
+  margin: 0px !important;
+}
+
+.findbar-label:not(.found-matches) {
+  display: none !important;
+}
+
+.findbar-container > checkbox {
+  display: grid !important;
+  justify-items: center !important;
+  margin-left: 0px !important;
+  overflow: hidden !important;
+  /* Base colour for the ::before/::after glyphs below; the hover/checked
+     rules recolour it, same colour-as-signal model as the toolbar icons. */
+  color: var(--toolbar-color) !important;
+}
+.findbar-container > checkbox *{
+  display: none !important;
+}
+
+.findbar-highlight {
+  order: var(--highlight-all-position) !important;
+  width: calc(30px * var(--show-highlight-all)) !important;
+  height: calc(24px * var(--show-highlight-all)) !important;
+  margin-right: calc(4px * var(--show-highlight-all)) !important;
+}
+.findbar-case-sensitive {
+  order: var(--match-case-position) !important;
+  width: calc(30px * var(--show-match-case)) !important;
+  height: calc(24px * var(--show-match-case)) !important;
+  margin-right: calc(4px * var(--show-match-case)) !important;
+}
+.findbar-match-diacritics {
+  order: var(--match-diacritics-position) !important;
+  width: calc(30px * var(--show-match-diacritics)) !important;
+  height: calc(24px * var(--show-match-diacritics)) !important;
+  margin-right: calc(4px * var(--show-match-diacritics)) !important;
+}
+.findbar-entire-word {
+  order: var(--whole-words-position) !important;
+  width: calc(30px * var(--show-whole-words)) !important;
+  height: calc(24px * var(--show-whole-words)) !important;
+  margin-right: calc(4px * var(--show-whole-words)) !important;
+}
+.findbar-highlight::before {
+  content: "[ab]";
+  font-weight: bold;
+}
+.findbar-case-sensitive::before {
+  content: "Aa";
+  font-weight: bold;
+}
+.findbar-match-diacritics::before {
+  content: "aá";
+  font-weight: bold;
+}
+.findbar-entire-word::before {
+  content: "ab";
+  font-weight: bold;
+  grid-row: 1;
+  grid-column: 1;
+}
+.findbar-entire-word::after {
+  content: "";
+  width: 1.3em;
+  height: 0.2em;
+  margin-bottom: -1em;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+/* Colour-as-signal instead of the old background chip: hover dims toward
+   #ffda85, an active option holds the accent. Matches the toolbar-icon and
+   tab-title model since 3.3.3. */
+.findbar-container > checkbox:not([checked]):hover {
+  background-color: transparent !important;
+  color: var(--uc-tab-hover-text) !important;
+}
+.findbar-container > checkbox[checked] {
+  background-color: transparent !important;
+  color: var(--uc-color-accent) !important;
+}
+
+.findbar-closebutton {
+  margin-left: calc(4px * var(--show-margin)) !important;
+}
+
+
+/* ==========================================================================
+   SPLIT VIEW
+   ========================================================================== */
+
+tab-split-view-wrapper {
+    --tab-max-width: 300px!important;
+}
+
+/* No active-pane indicator. FoxOne used to paint an amber outline on the
+   focused split pane, but closing it cleanly on the centre seam differs across
+   platforms: Windows/KDE keep a scrollbar gutter, macOS/GNOME use overlay
+   scrollbars with none, so the 2px splitter overpaints the inner edge there
+   (the "C" / half-moon). Rather than chase a four-platform pixel fix, the
+   indicator is dropped entirely. Suppress BOTH our amber and Firefox's own
+   native pane outline, otherwise deleting the rule just lets the uncontrolled
+   grey native border return. Panes are separated by the splitter alone. The
+   old padding-bottom inset only existed to seat the amber outline and is gone
+   with it. */
+#tabbrowser-tabpanels[splitview] .split-view-panel > .browserContainer {
+  outline: none !important;
+}
+
+/* The inactive pane's URL footer is Firefox' split-view echo of #statuspanel.
+   Native it sits flush in the bottom-right corner with one square and one
+   rounded corner per side ("toothpaste"). Match the status panel: square all
+   corners (step 1) and float it off the corner by the same spacing, mirrored
+   to the right edge since the footer hugs bottom-right, not bottom-left
+   (step 2). */
+split-view-footer {
+  border: none !important;
+  border-radius: var(--uc-radius-surface) !important;
+  box-shadow: none !important;
+  margin: 0 var(--uc-status-panel-spacing) var(--uc-status-panel-spacing) 0 !important;
+}
+
+.split-view-splitter {
+  border: none !important;
+  /* same adaptive splitter colour as #sidebar-splitter — blends in light
+     and dark instead of a hardcoded dark base */
+  background: var(--toolbar-bgcolor) !important;
+  appearance: none !important;
+  width: 2px !important;
+  min-width: 2px !important;
+  max-width: 2px !important;
+}
+
+
+/* ==========================================================================
+   TASKBAR TABS — "Pin to taskbar" PWA-like windows.
+   These use html[id^="taskbartab"] instead of #main-window.
+   Strip the address bar, menu button and extensions button for a
+   clean app-like feel. Firefox stays reachable via the tab context
+   menu and keyboard shortcuts.
+   ========================================================================== */
+
+html[id^="taskbartab"] #urlbar-container,
+html[id^="taskbartab"] #PanelUI-button,
+html[id^="taskbartab"] #unified-extensions-button {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   WINDOW CONTROLS — FoxOne-ified. Firefox paints min/max/close itself
+   (the native titlebar is hidden), so they never quite matched the
+   DWM-drawn buttons of other windows. Instead of imitating Windows:
+   the FoxOne model — no hover block, the glyph itself takes the colour.
+   Min/max hover amber; close hovers in the Windows close-red, convention
+   beats theme there. Applies to every chrome window (Library included).
+   ========================================================================== */
+
+.titlebar-button {
+  background-color: transparent !important;
+}
+.titlebar-button:hover {
+  background-color: transparent !important;
+  color: var(--uc-color-accent) !important;
+}
+.titlebar-close:hover {
+  color: #e81123 !important; /* Windows close-red; FoxOne has no red token */
+}
+/* Glyphs are context-fill SVGs — bind them to the button colour so the
+   hover colours above actually reach them (close-hover natively forces a
+   white fill on a red block; that block is gone now). */
+.titlebar-button,
+.titlebar-button > .toolbarbutton-icon {
+  -moz-context-properties: fill, stroke !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+
+/* ==========================================================================
+   LIBRARY ("Bibliothek", places.xhtml) — selection follows the FoxOne
+   model: accent text instead of a background block (same as tabs, icons,
+   urlbar results, add-ons list). Hover gets an accent frame, square
+   corners like the urlbar rows.
+
+   Both panes (folder tree left, item list right) are XUL <tree>s and are
+   only styleable through ::-moz-tree-* pseudo-elements. Those CANNOT read
+   CSS variables — the palette values are hardcoded here on purpose:
+   #fabd2f = --uc-color-accent. Retheming means touching this block too.
+   The light scheme gets the same pseudos with #b57614 =
+   --uc-light-color-accent (block right after the hover rule); everything
+   past the pseudos is regular XUL and follows the palette swap on its own.
+
+   The Downloads category is the one pane that is not a tree but a
+   richlistbox (#downloadsListBox), covered with regular selectors in its
+   own section at the end of the block.
+   ========================================================================== */
+
+@-moz-document url("chrome://browser/content/places/places.xhtml") {
+
+  /* Selected row — amber text, no highlight block. The unfocused
+     variant (native: grey) gets the same treatment, so the pane that
+     doesn't hold focus still shows where you are. */
+  treechildren::-moz-tree-row(selected),
+  treechildren::-moz-tree-row(selected, focus) {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  treechildren::-moz-tree-cell-text(selected),
+  treechildren::-moz-tree-cell-text(selected, focus) {
+    color: #fabd2f !important;
+  }
+  /* Folder/page icons and twisties are context-fill — follow the text. */
+  treechildren::-moz-tree-image(selected),
+  treechildren::-moz-tree-image(selected, focus),
+  treechildren::-moz-tree-twisty(selected),
+  treechildren::-moz-tree-twisty(selected, focus) {
+    fill: #fabd2f !important;
+  }
+
+  /* Keyboard-cursor dashed ring: redundant next to the amber text
+     (arrow keys move the selection along anyway) — off. Sits BEFORE the
+     hover rule so hovering a current row still shows the frame. */
+  treechildren::-moz-tree-row(current),
+  treechildren::-moz-tree-row(current, focus) {
+    border: none !important;
+    /* the dashed ring is an outline, not a border (toolkit tree.css) */
+    outline: none !important;
+  }
+
+  /* Hover — accent frame, no fill. */
+  treechildren::-moz-tree-row(hover) {
+    background-color: transparent !important;
+    border: 1px solid #fabd2f !important;
+  }
+
+  @media (prefers-color-scheme: light) {
+    treechildren::-moz-tree-cell-text(selected),
+    treechildren::-moz-tree-cell-text(selected, focus) {
+      color: #b57614 !important;
+    }
+    treechildren::-moz-tree-image(selected),
+    treechildren::-moz-tree-image(selected, focus),
+    treechildren::-moz-tree-twisty(selected),
+    treechildren::-moz-tree-twisty(selected, focus) {
+      fill: #b57614 !important;
+    }
+    treechildren::-moz-tree-row(hover) {
+      border-color: #b57614 !important;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Surfaces — one tone for the whole window, like the main chrome.
+     Native it is a two-tone mix (#2b2a33 toolbar/list, #1c1b22 sidebar/
+     details pane); FoxOne paints everything base. Regular XUL from here
+     on, so the tokens work again.
+     ------------------------------------------------------------------ */
+  :root,
+  #placesToolbox,
+  #placesToolbar,
+  #placesView,
+  #detailsPane,
+  tree,
+  #downloadsListBox {
+    background-color: var(--uc-color-base) !important;
+  }
+
+  /* Separator lines. The visible strokes are NOT the treecol borders:
+     toolbox bottom edge, the trees' own borders and the pane splitter
+     all paint one, each in Nova's violet-tinted border token. Kill
+     every container border, then draw the one deliberate separator
+     (the pane splitter) as a surface hairline. Generic selectors on
+     purpose — the exact ids resisted two rounds of guessing. */
+  #placesToolbox,
+  #placesToolbar,
+  #placesView,
+  #detailsPane,
+  tree,
+  #downloadsListBox {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  splitter:not(.tree-splitter) {
+    appearance: none !important;
+    border: none !important;
+    background-color: var(--uc-color-surface) !important;
+    min-width: 1px !important;
+    max-width: 1px !important;
+  }
+
+  /* Column headers — flat on base, separator hairlines, sortable via
+     click so they get the accent-text hover like every other control. */
+  treecol,
+  .tree-columnpicker-button {
+    appearance: none !important;
+    background-color: var(--uc-color-base) !important;
+    color: var(--uc-color-text) !important;
+    /* kill the native borders first (inline-start comes in Nova's
+       violet-tinted border token), then draw FoxOne's own hairlines.
+       A header separator can also be painted as a background-image
+       gradient, box-shadow or outline — all off. */
+    border: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border-inline-end: 1px solid var(--uc-color-surface) !important;
+    border-bottom: 1px solid var(--uc-color-surface) !important;
+  }
+  /* Column-resize splitters between the headers — they paint their own
+     line on top of the treecol borders; keep the grab zone, lose the
+     paint. */
+  .tree-splitter {
+    appearance: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+  treecol:hover,
+  .tree-columnpicker-button:hover {
+    color: var(--uc-color-accent) !important;
+  }
+
+  /* ------------------------------------------------------------------
+     Toolbar buttons — no hover block, accent text instead. Verwalten /
+     Ansichten / Importieren und Sichern are <menu> elements dressed as
+     buttons (#placesMenu), only back/forward are real toolbarbuttons —
+     both need covering. Icons and dropmarkers are context-fill and
+     follow via currentColor.
+     ------------------------------------------------------------------ */
+  #placesToolbar toolbarbutton,
+  #placesMenu > menu {
+    appearance: none !important;
+    background: transparent !important;
+    color: var(--uc-color-text) !important;
+  }
+  #placesToolbar toolbarbutton:not([disabled]):hover,
+  #placesMenu > menu:hover,
+  #placesMenu > menu[_moz-menuactive],
+  #placesMenu > menu[open] {
+    background: transparent !important;
+    color: var(--uc-color-accent) !important;
+  }
+
+  /* ------------------------------------------------------------------
+     Text fields (search box, details-pane inputs) — urlbar model:
+     base at rest, surface plus accent border on focus.
+     ------------------------------------------------------------------ */
+  #searchFilter,
+  #detailsPane input {
+    appearance: none !important;
+    background-color: var(--uc-color-base) !important;
+    color: var(--uc-color-text) !important;
+    border: 1px solid var(--uc-color-surface) !important;
+    border-radius: var(--uc-border-radius) !important;
+  }
+  /* The search pill ignores the id selector — its input sits behind a
+     shadow boundary, which descendant selectors can't cross. User
+     sheets apply INSIDE chrome shadow trees though (same mechanism the
+     about:-page theming rides on), so bare element selectors reach it.
+     Blast radius is fine: every input in this window is the search box
+     or a details-pane field, and both get the same treatment. */
+  input {
+    background-color: var(--uc-color-base) !important;
+    color: var(--uc-color-text) !important;
+  }
+  input:focus {
+    background-color: var(--uc-color-surface) !important;
+  }
+  #searchFilter[focused],
+  #detailsPane input:focus {
+    background-color: var(--uc-color-surface) !important;
+    border-color: var(--uc-color-accent) !important;
+  }
+
+  /* Native focus ring — drawn straight in the Windows accent colour
+     (system cyan), past every token. Replace, don't tint: outline-style
+     auto is platform-rendered and unreliable to recolour. */
+  input:focus-visible {
+    outline: 2px solid var(--uc-color-accent) !important;
+  }
+
+  /* ------------------------------------------------------------------
+     Tag selector (the checkbox list behind the Schlagwörter expander).
+     Selection follows the tree model: amber text, no block. The native
+     checkboxes render in the Windows accent colour — redrawn flat:
+     base/surface at rest, filled amber with a dark check when set.
+     ------------------------------------------------------------------ */
+  #editBMPanel_tagsSelector {
+    background-color: var(--uc-color-base) !important;
+    border: 1px solid var(--uc-color-surface) !important;
+  }
+  #editBMPanel_tagsSelector richlistitem[selected] {
+    background-color: transparent !important;
+    color: var(--uc-color-accent) !important;
+    outline: none !important;
+  }
+  #editBMPanel_tagsSelector richlistitem[selected] checkbox {
+    color: inherit !important;
+  }
+  #editBMPanel_tagsSelector .checkbox-check {
+    appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 1px solid var(--uc-color-hover) !important;
+    border-radius: 3px !important;
+    background-color: var(--uc-color-base) !important;
+  }
+  #editBMPanel_tagsSelector checkbox[checked] .checkbox-check {
+    background-color: var(--uc-color-accent) !important;
+    border-color: var(--uc-color-accent) !important;
+    background-image: url("chrome://global/skin/icons/check.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 12px;
+    -moz-context-properties: fill;
+    fill: var(--uc-color-base); /* base-coloured check on the accent fill */
+  }
+
+  /* ------------------------------------------------------------------
+     Downloads pane (#downloadsListBox, a richlistbox). The list paints
+     --organizer-content-background (Nova: rgb(28,27,34) dark, white
+     light); the base fill is in the Surfaces rule above. Selection
+     follows the tree model: accent text, no block. Toolkit
+     richlistbox.css paints the unfocused selection -moz-cellhighlight and
+     the focused one SelectedItem, and allDownloadsView.css lays the
+     Windows bevel on top (four gradients, 6px radius, blue outline), so
+     clear all of it. Hover gets the tree's accent frame as an inset
+     outline, which leaves the row height alone.
+     ------------------------------------------------------------------ */
+  #downloadsListBox {
+    color: var(--uc-color-text) !important;
+  }
+  #downloadsListBox > richlistitem[selected],
+  #downloadsListBox:focus > richlistitem[selected] {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: var(--uc-color-accent) !important;
+    border-radius: 0 !important;
+    outline: none !important;
+  }
+  #downloadsListBox > richlistitem:hover {
+    outline: 1px solid var(--uc-color-accent) !important;
+    outline-offset: -1px !important;
+  }
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION - honour the OS "reduce motion" preference.
+   Overrides FoxOne's OWN decorative transitions/animations only; Firefox's
+   native chrome animations are left untouched. Placed at end-of-file on
+   purpose: media queries add no specificity, so these rules win over the
+   !important originals through later source order alone.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  /* Urlbar / titlebar width animation */
+  #nav-bar  { transition: none !important; }
+  #titlebar { transition: none !important; }
+
+  /* Auto-hide nav buttons reveal */
+  #reload-button,
+  #stop-reload-button,
+  #ipprotection-button { transition: none !important; }
+
+  /* Urlbar hover-reveal groups */
+  #identity-permission-box { transition: none !important; }
+
+  #userContext-label,
+  #userContext-indicator { transition: none !important; }
+
+  #reader-mode-button,
+  #taskbar-tabs-button,
+  #translations-button,
+  .urlbar-addon-page-action { transition: none !important; }
+
+  /* Tabstrip extension-icon reveal */
+  #TabsToolbar-customization-target > toolbaritem { transition: none !important; }
+
+  /* Dynamic bookmarks bar — reveal and collapse snap, delays included. The
+     bar still appears and disappears on hover, it just does not animate. */
+  #PersonalToolbar { transition: none !important; }
+
+  /* Findbar slide / scale */
+  findbar,
+  findbar[hidden] { transition: none !important; }
+
+  /* Loading progress bar - resting full stroke instead of growth.
+     Visibility stays bound to --uc-show-loading-progress, so the feature
+     remains opt-in exactly as before. */
+  .tabbrowser-tab .tab-background::before { transition: none !important; }
+
+  .tabbrowser-tab[busy] .tab-background::before,
+  .tabbrowser-tab[busy] .tab-background::after {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+}
+
   '';
 
-  # Stylix handles custom in-content background renderings natively.
-  # We preserve the custom Newtab layout variables.
   userContent = ''
-    @-moz-document url("about:newtab"), url("about:home") {
-      :root {
-        --newtab-background-color: #${config.lib.stylix.colors.base00} !important;
-        --newtab-background-color-secondary: #${config.lib.stylix.colors.base01} !important;
-        --newtab-element-hover-color: #${config.lib.stylix.colors.base01} !important;
-        --newtab-text-primary-color: #${config.lib.stylix.colors.base05} !important;
-        --newtab-wordmark-color: #${config.lib.stylix.colors.base05} !important;
-        --newtab-primary-action-background: #${config.lib.stylix.colors.base0E} !important;
-      }
-      .icon { color: #${config.lib.stylix.colors.base0E} !important; }
-      .card-outer:is(:hover, :focus, .active):not(.placeholder) .card-title { color: #${config.lib.stylix.colors.base0E} !important; }
-      .top-site-outer .search-topsite { background-color: #${config.lib.stylix.colors.base0D} !important; }
-      .compact-cards .card-outer .card-context .card-context-icon.icon-download { fill: #${config.lib.stylix.colors.base0B} !important; }
+/*==============================================================================================*
+
+  FoxOne 3.8 – userContent.css
+  Styles for browser content pages (new tab, home).
+
+*==============================================================================================*/
+
+
+/* ==========================================================================
+   CONFIG
+   ========================================================================== */
+
+:root {
+  /* Scrollbar visibility in web content
+   * thin = slim style, forced on all scroll containers
+   * none = hidden (scroll via mousewheel/keyboard/touchpad), forced too
+   * auto = hands off: pages keep full control of their own scrollbars */
+  --uc-content-scrollbar: thin;
+
+  /* Rounded corners for the in-content pages (about:preferences,
+   * about:addons, about:logins, ...). Same switch as in userChrome.css;
+   * userContent has no access to userChrome's variables, so set it here
+   * too. 0 = FoxOne's square edges, 1 = every surface FoxOne squares on
+   * those pages (cards, rows, buttons, fields, dropdowns, message bars,
+   * the category nav) takes --uc-border-radius instead. */
+  --uc-rounded: 0;
+  --uc-border-radius: 8px;
+}
+
+/* Derived: the radius every in-content surface reads. Zero at the default
+   --uc-rounded: 0, --uc-border-radius at 1. One value for everything, the
+   stock page runs three (24/16/12 under Nova) and the whole point of the
+   toggle is one shape language shared with the chrome. */
+:root {
+  --uc-radius-surface: calc(var(--uc-rounded) * var(--uc-border-radius));
+}
+
+
+/* ==========================================================================
+   SCROLLBAR
+   `thin` and `none` are enforced with !important (user-origin important
+   rules beat page CSS, so they win everywhere). `auto` matches neither
+   style query below, so a page's own scrollbar styling stays untouched –
+   the old single `* { scrollbar-width: var(...) !important }` rule forced
+   the OS default onto pages that deliberately style their scrollbars.
+   ========================================================================== */
+
+/* Root/viewport scrollbar. Style queries can't match on :root (it has no
+   query container), so the root gets a direct var() rule instead. Kept at
+   normal weight: a page that styles its own root scrollbar wins (author
+   origin beats non-important user origin), which is the defensive default. */
+:root {
+  scrollbar-width: var(--uc-content-scrollbar);
+}
+
+/* Inner scroll containers – forced only for the non-default values. */
+@container style(--uc-content-scrollbar: thin) {
+  * {
+    scrollbar-width: thin !important;
+  }
+}
+@container style(--uc-content-scrollbar: none) {
+  * {
+    scrollbar-width: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   NEW TAB / HOME — Gruvbox Dark (dark mode only)
+   ========================================================================== */
+
+
+@-moz-document url-prefix("about:newtab"), url-prefix("about:home") {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --newtab-background-color: #282828 !important;
+      --newtab-text-primary-color: #FFFFFF !important;
     }
+  }
+}
+
+
+/* ==========================================================================
+   PRIVILEGED PAGES — all of about: (Gruvbox Dark / Gruvbox Light)
+
+   One block for every about: page instead of per-page rules: the in-content
+   pages (preferences, addons, logins, support, protections, downloads/
+   library views, reader, …) all share the same design-token system as the
+   browser chrome (common-shared.css imports tokens-shared.css), so the same
+   central lever from userChrome's NOVA VIOLET PURGE works here. Under Nova
+   the semantic accent family maps to the violet palette; links, focus
+   rings, toggles, primary buttons, selected borders and table headers all
+   derive from it. Pages with hardcoded colours outside the token system
+   get individual rules appended below as they turn up.
+   Known unreachable: about:newtab / about:home / about:blank (separate
+   privileged process / compiled-in canvas colour; see memory).
+   Both the legacy --in-content-* names and the design tokens are set, so
+   older pages and token renames stay covered.
+   ========================================================================== */
+
+/* The chrome:// prefix covers the in-content SUBDIALOGS (site permissions,
+   clear data, … under chrome://browser/content/preferences/dialogs/): they
+   are separate documents in an iframe, so the about: prefix never matches
+   them, and they kept the full Nova violet. Same token system, same cure. */
+@-moz-document url-prefix("about:"), url-prefix("chrome://browser/content/preferences/") {
+  /* FoxOne palette (userContent has no shared config with userChrome;
+     keep in sync with the CONFIG block there). Dark set first, the light
+     scheme swaps in Gruvbox Light (issue #19); every rule below reads
+     --uc-color-* and follows. */
+  :root {
+    --uc-color-base:    #${config.lib.stylix.colors.base00};
+    --uc-color-surface: #${config.lib.stylix.colors.base01};
+    --uc-color-accent:  #${config.lib.stylix.colors.base0E};
+    --uc-color-text:    #${config.lib.stylix.colors.base05};
+    --uc-color-hover:   #${config.lib.stylix.colors.base03};
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --uc-color-base:    #fbf1c7;
+      --uc-color-surface: #ebdbb2;
+      --uc-color-accent:  #b57614;
+      --uc-color-text:    #3c3836;
+      --uc-color-hover:   #bdae93;
+    }
+  }
+
+  :root {
+    /* Page backgrounds */
+    --in-content-page-background: var(--uc-color-base) !important;
+    --background-color-canvas: var(--uc-color-base) !important;
+    /* Cards, message bars and info boxes sit flat on the canvas, same
+       tone as the page; borders do the grouping. Under Nova the message
+       bar host maps its background to --background-color-box, the
+       sponsor / sync info boxes read --background-color-box-info. */
+    --background-color-box: var(--uc-color-base) !important;
+    --background-color-box-info: var(--uc-color-base) !important;
+    --background-color-information: var(--uc-color-base) !important;
+
+    /* The central lever: everything accent-coloured (links, focus rings,
+       toggles, primary buttons, selected borders, table headers) derives
+       from the semantic accent family. */
+    --color-accent-primary: var(--uc-color-accent) !important;
+    --color-accent-primary-hover: var(--uc-color-accent) !important;
+    --color-accent-primary-active: var(--uc-color-accent) !important;
+    --color-accent-primary-selected: var(--uc-color-accent) !important;
+
+    /* Tables (about:support, about:unloads, about:profiles, …): the body
+       colour is hardcoded in the token layer (light-dark(#f8f8fa,
+       rgb(35,34,43))), not derived from anything we already override.
+       Base for the cells, surface for the zebra rows. */
+    --table-background-color: var(--uc-color-base) !important;
+    --table-row-background-color-alternate: var(--uc-color-surface) !important;
+
+    /* Text/search inputs: tokens-platform.css maps them to the Field
+       SYSTEM colour (dark standin: compiled-in #2b2a33). The consuming
+       input lives in the shadow DOM of moz-input-search/moz-input-text,
+       out of selector reach, but the custom property inherits across the
+       shadow boundary, so overriding it at :root lands inside. */
+    --input-text-background-color: var(--uc-color-base) !important;
+    --input-text-color: var(--uc-color-text) !important;
+
+    /* Direct violet references (same satellites as in userChrome) */
+    --icon-color-information: var(--uc-color-accent) !important;
+    --icon-color-accent-primary-desaturated: var(--uc-color-accent) !important;
+    /* Button hover like the hamburger menu rows: no background block,
+       accent text. Ghost and menu variants alias these at :root, so the
+       one pair covers plain, ghost and menu buttons; primary buttons keep
+       their accent fill via the separate -primary-hover token. The :active
+       pair too, so a click doesn't flash a block back in. */
+    --button-background-color-hover: transparent !important;
+    --button-background-color-active: transparent !important;
+    --button-text-color-hover: var(--uc-color-accent) !important;
+    --button-text-color-active: var(--uc-color-accent) !important;
+    --button-background-color-primary-disabled: color-mix(in srgb, var(--uc-color-accent) 40%, var(--uc-color-base)) !important;
+    --text-color: var(--uc-color-text) !important;
+
+    /* Legacy in-content names (pre-token pages) */
+    --in-content-accent-color: var(--uc-color-accent) !important;
+    --in-content-accent-color-active: var(--uc-color-accent) !important;
+    --in-content-item-selected: var(--uc-color-accent) !important;
+    --in-content-item-selected-text: var(--uc-color-base) !important;
+  }
+
+  /* Highlighted text */
+  ::selection {
+    background-color: #fabd2f !important;
+    color: #282828 !important;
+  }
+
+  /* Search/text boxes (about:preferences, about:addons, subdialogs): the
+     visible input lives in the SHADOW root of moz-input-search and reads
+     --input-text-background-color, which resolves to the Field system
+     colour (compiled-in dark standin #2b2a33) in there; the :root token
+     override above never arrives. Escape hatch: user sheets, unlike page
+     CSS, also match inside shadow trees (confirmed via toolbox: FoxOne's
+     ::selection rule lists on the shadow input), so style the input
+     element directly and skip the token plumbing. */
+  input:where([type="search"], [type="text"], [type="password"], [type="email"], [type="url"], [type="number"], [type="tel"]) {
+    /* Base in every state: with the cards flat on the canvas, any lighter
+       field (at rest or focused) was the one raised surface left on the
+       page. The accent border carries the focus cue. */
+    background-color: var(--uc-color-base, #282828) !important;
+    color: var(--uc-color-text, #FFFFFF) !important;
+  }
+
+  /* Corner radius, driven by --uc-radius-surface (the --uc-rounded toggle
+     in the CONFIG block). Cards (setting-group / moz-card), the moz-box rows
+     inside them and the moz-page-nav pills all read their radius from a
+     token; the box and page-nav families are re-declared on the component
+     HOST (`:root, :host` in the shadow token sheets), so a :root override
+     never reaches them. Setting the tokens on the host elements themselves
+     in the light DOM does: user-origin !important beats the author :host
+     rule on the same element. */
+  :root {
+    --card-border-radius: var(--uc-radius-surface) !important;
+    --card-border-radius-compact: var(--uc-radius-surface) !important;
+    /* Cards sit flat on the canvas: no raised surface, no shadow, a 1px
+       surface-tone border keeps the grouping legible. */
+    --card-background-color: var(--uc-color-base) !important;
+    --card-box-shadow: none !important;
+    --card-box-shadow-hover: none !important;
+    --card-border-color: var(--uc-color-surface) !important;
+    /* Buttons (moz-button, plain in-content button) and text/search
+       fields (moz-input-text, moz-input-search) read their radius from
+       these global tokens without a :host re-declaration, so :root is
+       enough. --toolbarbutton-border-radius aliases the button radius at
+       :root and inherits pre-resolved, hence the explicit line. */
+    --button-border-radius: var(--uc-radius-surface) !important;
+    --toolbarbutton-border-radius: var(--uc-radius-surface) !important;
+    --input-text-border-radius: var(--uc-radius-surface) !important;
+    --input-search-border-radius: var(--uc-radius-surface) !important;
+  }
+  /* Dropdowns re-declare their radius on the host (moz-select.tokens.css),
+     same host-level treatment as the box family below. */
+  moz-select,
+  menulist {
+    --select-border-radius: var(--uc-radius-surface) !important;
+  }
+  /* Message bars re-declare their tokens on the host (moz-message-bar
+     .tokens.css); the background follows --background-color-box from
+     :root, the radius needs the host. */
+  moz-message-bar {
+    --message-bar-border-radius: var(--uc-radius-surface) !important;
+  }
+  /* Segmented control (about:addons light/dark/system picker, 157+):
+     re-declared on the host, and the outer radius adds focus-ring width,
+     ring offset and border on top of the button radius, so a zero button
+     radius still left a 5px rounded frame. Multiplied by --uc-rounded:
+     square at 0, concentric with the inner buttons at 1. */
+  moz-segmented-control {
+    --segmented-control-border-radius: calc(var(--uc-rounded) * (var(--uc-radius-surface) + var(--focus-outline-width) + var(--focus-outline-offset) + var(--border-width))) !important;
+  }
+  /* Info boxes in preferences.css (sponsor note, sync info, QR box) get
+     their radius and a transparent border straight on the element. */
+  .info-box-container,
+  .sync-info-box,
+  .qr-code-box {
+    border-radius: var(--uc-radius-surface) !important;
+    border-color: var(--uc-color-surface) !important;
+  }
+  moz-box-item,
+  moz-box-group,
+  moz-box-button,
+  moz-box-link {
+    --box-border-radius: var(--uc-radius-surface) !important;
+    --box-border-color: var(--uc-color-surface) !important;
+    /* Row hover like the hamburger menu: no background block, accent
+       text. The :active pair too, so a click doesn't flash the grey back. */
+    --box-button-background-color-hover: transparent !important;
+    --box-button-background-color-active: transparent !important;
+    --box-button-text-color-hover: var(--uc-color-accent) !important;
+    --box-button-text-color-active: var(--uc-color-accent) !important;
+  }
+
+  /* Category nav (moz-page-nav): FoxOne's radius, no pill fill. Under Nova the
+     selected entry is an accent-filled circle with dark text; here the
+     selected and hovered entries mark with accent text on a transparent
+     background, the same cue as toolbar icons and panel rows. */
+  moz-page-nav {
+    --page-nav-button-border-radius: var(--uc-radius-surface) !important;
+    --page-nav-button-border-radius-focused: var(--uc-radius-surface) !important;
+    --page-nav-button-background-color-hover: transparent !important;
+    --page-nav-button-background-color-active: transparent !important;
+    --page-nav-button-background-color-selected: transparent !important;
+    --page-nav-button-text-color-hover: var(--uc-color-accent) !important;
+    --page-nav-button-text-color-active: var(--uc-color-accent) !important;
+    --page-nav-button-text-color-selected: var(--uc-color-accent) !important;
+    --page-nav-hr-background-color: var(--uc-color-surface) !important;
+  }
+
+  /* Two element-level canvas overrides in preferences.css that a :root
+     token can't reach: the in-content subdialog frame is hardcoded to
+     #42414d in dark mode, and the AI-controls card paints itself violet. */
+  dialog,
+  .dialogBox,
+  .ai-controls-description {
+    --background-color-canvas: var(--uc-color-base) !important;
+    --card-background-color: var(--uc-color-base) !important;
+    --ai-controls-description-background-color: var(--uc-color-base) !important;
+  }
+}
+
+
+/* ==========================================================================
+   PER-PAGE STRAGGLERS — pages with colours outside the token system.
+   Collected while walking about:about; one block per page.
+   ========================================================================== */
+
+/* about:downloads — the SELECTED row is amber only while the window is
+   inactive. With focus, browser/themes/windows/downloads/allDownloadsView.css
+   paints hardcoded Windows-blue bevel gradients plus a blue outline over it.
+   Flatten the focused state back to the selection tokens. */
+@-moz-document url-prefix("about:downloads") {
+  #downloadsListBox:focus > richlistitem[selected] {
+    background-image: none !important;
+    background-color: var(--in-content-item-selected, #fabd2f) !important;
+    color: var(--in-content-item-selected-text, #282828) !important;
+    outline: none !important;
+  }
+}
+
+/* about:debugging — a devtools page with its own Photon palette on top of
+   the design tokens. Two stragglers: the text-input focus ring
+   (--theme-focus-textinput-outline-color ← --blue-50, variables.css) and
+   the primary button ("Hinzufügen"), which resolves outside the amber
+   override. Repoint the local blues and cover the primary-button classes
+   directly. Scoped to the page, so DevTools proper keeps its blues. Reads
+   the palette from the PRIVILEGED PAGES block (about:debugging matches its
+   about: prefix), so both schemes are covered. */
+@-moz-document url-prefix("about:debugging") {
+  :root {
+    --blue-50: var(--uc-color-accent) !important;
+    --blue-55: var(--uc-color-accent) !important;
+    --blue-60: var(--uc-color-accent) !important;
+    --theme-focus-outline-color: var(--uc-color-accent) !important;
+    --theme-focus-textinput-outline-color: var(--uc-color-accent) !important;
+    --theme-link-color: var(--uc-color-accent) !important;
+  }
+  button.primary,
+  .primary-button,
+  .default-button.primary-button {
+    background-color: var(--uc-color-accent) !important;
+    color: var(--uc-color-base) !important;
+  }
+  button.primary:enabled:hover,
+  .primary-button:enabled:hover {
+    background-color: color-mix(in srgb, var(--uc-color-accent) 85%, var(--uc-color-base)) !important;
+  }
+}
+
+/* about:mozilla — the Book of Mozilla easter egg ships its own maroon
+   radial gradient and white serif text (toolkit aboutMozilla.css). Rebind
+   the scripture to the palette: base background, amber verse. Typography
+   stays untouched; only the colours convert. */
+@-moz-document url("about:mozilla") {
+  html {
+    background: var(--uc-color-base) !important;
+    color: var(--uc-color-accent) !important;
+  }
+  a {
+    color: var(--uc-color-accent) !important;
+  }
+}
+
   '';
 }
