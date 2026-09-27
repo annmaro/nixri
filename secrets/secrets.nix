@@ -11,4 +11,5 @@ in
   "git_key_id.age".publicKeys = [ user1 ] ++ systems;
   "gemini_api_key.age".publicKeys = [ user1 ] ++ systems;
   "pihole_env.age".publicKeys = [ user1 ] ++ systems;
+  "opodsync-password.age".publicKeys = [ user1 ] ++ systems;
 }
