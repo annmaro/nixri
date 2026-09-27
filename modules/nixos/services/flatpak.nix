@@ -8,9 +8,9 @@
     packages = [
       "com.github.tchx84.Flatseal"
       "io.github.flattool.Warehouse"
-      "app.opencomic.OpenComic"
       "com.logseq.Logseq"
       "io.github.giantpinkrobots.varia"
+      "com.yacreader.YACReader"
     ];
     update.onActivation = true;
   };
