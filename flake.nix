@@ -121,9 +121,6 @@
       ];
 
       perSystem = { pkgs, system, ... }: {
-        packages.podliner = pkgs.callPackage ./modules/home/apps/media/podliner-pkg.nix {
-          podlinerSrc = inputs.podliner;
-        };
       };
     };
 }
