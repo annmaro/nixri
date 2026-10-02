@@ -13,7 +13,11 @@
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_zen;
     kernel.sysctl."vm.swappiness" = 100;
-    kernelParams = [ "preempt=full" ];
+    kernelParams = [
+      "preempt=full"
+      "i915.enable_dc=0"
+      "i915.enable_psr=0"
+    ];
 
     loader = {
       systemd-boot.enable = true;
