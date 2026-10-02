@@ -117,7 +117,7 @@ let
     "Mod+Delete".quit = _: { };
     "Mod+Alt+L".spawn = "swaylock";
     "Mod+Shift+T".spawn-sh = "thunar -q && thunar --daemon";
-    "Mod+Ctrl+T".spawn = "Tor Browser";
+    "Mod+Ctrl+T".spawn = "tor-browser";
 
     "Mod+Shift+R".spawn = [
       (getExe screenRecorder)
