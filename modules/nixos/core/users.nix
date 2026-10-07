@@ -38,6 +38,7 @@ in
     # so it cannot be combined with useGlobalPkgs = true.
     useGlobalPkgs = false;
     useUserPackages = true;
+    backupFileExtension = "backup";
 
     # These modules are applied to every Home Manager user. Keeping the
     # feature set here makes additional users reproducible without copying
@@ -73,7 +74,7 @@ in
       programs.home-manager.enable = true;
 
       # KeePassXC uses a live rclone mount now.
-      
+
       xdg.enable = true;
       home = {
         inherit username;
