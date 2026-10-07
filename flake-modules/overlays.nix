@@ -35,14 +35,5 @@
         '')
       ];
     });
-    yacreaderApp = prev.yacreader.overrideAttrs (oldAttrs: rec {
-      version = "10.3.2";
-      src = prev.fetchFromGitHub {
-        owner = "YACReader";
-        repo = "yacreader";
-        rev = version;
-        hash = "sha256-SQhdD/SrEuPo2uIj9BSp5h6mdmQ/kDGNzEKV+AQKSE0=";
-      };
-    });
   };
 }
