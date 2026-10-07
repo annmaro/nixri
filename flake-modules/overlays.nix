@@ -35,7 +35,7 @@
         '')
       ];
     });
-    yacreader = prev.yacreader.overrideAttrs (oldAttrs: rec {
+    yacreaderApp = prev.yacreader.overrideAttrs (oldAttrs: rec {
       version = "10.3.2";
       src = prev.fetchFromGitHub {
         owner = "YACReader";
