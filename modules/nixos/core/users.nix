@@ -55,6 +55,7 @@ in
 
     users.${username} = {
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [ inputs.self.overlays.default ];
 
       homeSettings = {
         username = username;
