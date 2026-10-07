@@ -64,5 +64,6 @@
     nixfmt
     usbutils
     wget
+    ytsub
   ];
 }
