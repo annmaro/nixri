@@ -64,6 +64,6 @@
     nixfmt
     usbutils
     wget
-    ytsub
+    pipe-viewer
   ];
 }
