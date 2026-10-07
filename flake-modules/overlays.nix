@@ -41,7 +41,7 @@
         owner = "YACReader";
         repo = "yacreader";
         rev = version;
-        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        hash = "sha256-SQhdD/SrEuPo2uIj9BSp5h6mdmQ/kDGNzEKV+AQKSE0=";
       };
     });
   };
