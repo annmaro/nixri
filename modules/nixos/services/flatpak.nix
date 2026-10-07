@@ -10,7 +10,6 @@
       "io.github.flattool.Warehouse"
       "com.logseq.Logseq"
       "io.github.giantpinkrobots.varia"
-      "com.yacreader.YACReader"
     ];
     update.onActivation = true;
   };
