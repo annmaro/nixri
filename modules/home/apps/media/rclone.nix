@@ -5,9 +5,10 @@ let
   passwordsMountDir = "${config.home.homeDirectory}/Cloud/Passwords";
 in
 {
-  home.packages = [
-    pkgs.rclone
-    pkgs.mcomix
+  home.packages = with pkgs; [
+    rclone
+    mcomix
+    yacreader
   ];
 
   home.activation.createMountPoints = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
