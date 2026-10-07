@@ -12,6 +12,7 @@
             mpris # Essential for MPRIS daemon sync with Niri audio widgets
             thumbfast # Much faster, highly-optimized frame generation tool replacing 'thumbnail'
             uosc # Modern, completely flat, floating context menu and UI for mouse users
+            quality-menu # Change video and audio formats on the fly for youtube-dl/yt-dlp
           ];
 
           # Retaining your highly customized keyboard bindings cleanly mapped
@@ -72,6 +73,8 @@
             p = "cycle pause";
             SPACE = p;
             f = "cycle fullscreen";
+            F = "script-binding quality_menu/video_formats_toggle";
+            "Alt+f" = "script-binding quality_menu/audio_formats_toggle";
 
             n = "playlist-next";
             N = "playlist-prev";
