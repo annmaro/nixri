@@ -64,6 +64,5 @@
     nixfmt
     usbutils
     wget
-    youtube-tui
   ];
 }
