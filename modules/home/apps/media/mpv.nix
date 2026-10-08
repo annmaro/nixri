@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+
   programs.mpv = {
         # Removed Celluloid to ensure custom mpv keyboard shortcuts work perfectly without conflict
         # home.packages = with pkgs; [ celluloid ];
