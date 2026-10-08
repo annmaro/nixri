@@ -64,6 +64,6 @@
     nixfmt
     usbutils
     wget
-    pipe-viewer
+    youtube-tui
   ];
 }
