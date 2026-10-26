@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, ... }:
+{ config, inputs, pkgs, self, ... }:
 
 let
   username = config.systemSettings.username;
@@ -50,7 +50,7 @@ in
     ];
 
     extraSpecialArgs = {
-      inherit inputs;
+      inherit inputs self;
       systemSettings = config.systemSettings;
     };
 

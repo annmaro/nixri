@@ -1,7 +1,7 @@
-{ config, ... }:
+{ config, self, ... }:
 
 let
-  profileIcon = ../../../assets/nix.png;
+  profileIcon = "${self}/assets/nix.png";
   username = config.systemSettings.username;
 in
 {

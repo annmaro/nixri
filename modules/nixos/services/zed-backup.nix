@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, self, ... }:
 
 let
   cfg = config.services.zed-backup;
-  zedBackupScript = pkgs.callPackage ../../packages/zed-backup.nix {
+  zedBackupScript = pkgs.callPackage "${self}/modules/packages/zed-backup.nix" {
     inherit (cfg) interval maxBackups backupDir;
   };
 in

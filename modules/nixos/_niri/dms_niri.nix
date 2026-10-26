@@ -3,11 +3,12 @@
   inputs,
   lib,
   pkgs,
+  self,
   ...
 }:
 
 let
-  wrappedNiri = pkgs.callPackage ../../packages/niri.nix {
+  wrappedNiri = pkgs.callPackage "${self}/modules/packages/niri.nix" {
     inherit inputs config;
     bar = "DMS";
   };

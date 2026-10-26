@@ -3,11 +3,12 @@
   inputs,
   lib,
   pkgs,
+  self,
   ...
 }:
 
 let
-  theme = import ../../../data/browser/firefox-usertheme.nix { inherit config; };
+  theme = import "${self}/modules/data/browser/firefox-usertheme.nix" { inherit config; };
 in
 {
   # Keep Firefox available even when another browser is the default.
@@ -21,7 +22,7 @@ in
       "en-US"
     ];
 
-    policies = import ../../../data/browser/firefox-policies.nix {
+    policies = import "${self}/modules/data/browser/firefox-policies.nix" {
       inherit config lib;
     };
 
@@ -29,11 +30,11 @@ in
       id = 0;
       name = "default";
       isDefault = true;
-      settings = import ../../../data/browser/firefox-settings.nix {
+      settings = import "${self}/modules/data/browser/firefox-settings.nix" {
         inherit config lib;
       };
-      bookmarks = import ../../../data/browser/bookmarks.nix;
-      search = import ../../../data/browser/firefox-search.nix { inherit pkgs; };
+      bookmarks = import "${self}/modules/data/browser/bookmarks.nix";
+      search = import "${self}/modules/data/browser/firefox-search.nix" { inherit pkgs; };
       userChrome = theme.userChrome;
       userContent = theme.userContent;
 

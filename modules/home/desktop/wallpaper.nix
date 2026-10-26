@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 
 let
-  wallpaper = pkgs.callPackage ../../packages/niri-scripts/wallpaper.nix { };
+  wallpaper = pkgs.callPackage "${self}/modules/packages/niri-scripts/wallpaper.nix" { };
 in
 {
   home.packages = with pkgs; [

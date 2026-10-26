@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 
 let
-  rustypipe-botguard = pkgs.callPackage ./rustypipe-botguard.nix { };
+  rustypipe-botguard = pkgs.callPackage "${self}/modules/packages/rustypipe-botguard.nix" { };
 in
 {
   home.packages = with pkgs; [

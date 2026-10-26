@@ -1,11 +1,11 @@
-{ config, inputs, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, self, ... }:
 
 let
-  wallpaper = ../../../assets/output.mp4;
+  wallpaper = "${self}/assets/output.mp4";
   silviaWallpaper = pkgs.runCommand "silvia.mp4" { } ''
     cp ${wallpaper} $out
   '';
-  profileIcon = ../../../assets/nix.png;
+  profileIcon = "${self}/assets/nix.png";
 in
 {
   imports = [ inputs.silentSDDM.nixosModules.default ];

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, self, ... }:
 
 let
   stylixColors = config.lib.stylix.colors or { };
@@ -23,7 +23,7 @@ in
       "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
 
       logo = {
-        source = ../../data/terminal/nixos-logo.png;
+        source = "${self}/modules/data/terminal/nixos-logo.png";
         type = "sixel";
       };
 

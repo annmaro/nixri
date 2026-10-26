@@ -1,4 +1,10 @@
-{ config, inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  self,
+  ...
+}:
 
 {
   imports = [
@@ -23,20 +29,20 @@
 
     secrets = {
       private_ssh_key = {
-        file = ../../../secrets/private_ssh_key.age;
+        file = "${self}/secrets/private_ssh_key.age";
         path = "${config.home.homeDirectory}/.ssh/id_ed25519";
         mode = "0600";
       };
-      rclone_gdrive_env.file = ../../../secrets/rclone_gdrive_env.age;
-      git_key_id.file = ../../../secrets/git_key_id.age;
-      gemini_api_key.file = ../../../secrets/gemini_api_key.age;
+      rclone_gdrive_env.file = "${self}/secrets/rclone_gdrive_env.age";
+      git_key_id.file = "${self}/secrets/git_key_id.age";
+      gemini_api_key.file = "${self}/secrets/gemini_api_key.age";
       pihole_env = {
-        file = ../../../secrets/pihole_env.age;
+        file = "${self}/secrets/pihole_env.age";
         path = "${config.home.homeDirectory}/.config/agenix/pihole_env";
         mode = "0600";
       };
-      openrouter_api_key.file = ../../../secrets/openrouter_api_key.age;
-      opodsyncPassword.file = ../../../secrets/opodsync-password.age;
+      openrouter_api_key.file = "${self}/secrets/openrouter_api_key.age";
+      opodsyncPassword.file = "${self}/secrets/opodsync-password.age";
     };
   };
 }

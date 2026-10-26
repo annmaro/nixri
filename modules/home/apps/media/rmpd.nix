@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, self, ... }:
 
 let
-  rmpd = pkgs.callPackage ../../../packages/rmpd.nix { };
+  rmpd = pkgs.callPackage "${self}/modules/packages/rmpd.nix" { };
 in
 {
   home.packages = [ rmpd ];
