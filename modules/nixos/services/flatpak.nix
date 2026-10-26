@@ -9,7 +9,6 @@
       "com.github.tchx84.Flatseal"
       "io.github.flattool.Warehouse"
       "com.logseq.Logseq"
-      "io.github.giantpinkrobots.varia"
     ];
     update.onActivation = true;
   };
