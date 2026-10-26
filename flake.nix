@@ -108,6 +108,7 @@
 
     cliamp = {
       url = "github:bjarneo/cliamp";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
