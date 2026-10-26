@@ -36,16 +36,22 @@ in
     ];
 
     xdg.configFile."vimb/scripts.js".text = ''
-      // Cosmetic ad filters and dynamic Reddit promoted-post cleanup
-      if (window.location.hostname.includes("cloudflare.com") ||
-          document.title.includes("Just a moment") ||
-          document.title.includes("Security Check")) {
-          return;
-      }
       (function() {
           'use strict';
+
+          // Skip all user scripts on Cloudflare Turnstile / challenge pages to prevent anti-tampering flags
+          if (
+              window.location.hostname.includes("cloudflare.com") ||
+              /just a moment/i.test(document.title) ||
+              /security check/i.test(document.title) ||
+              document.querySelector('#challenge-running, #challenge-form, iframe[src*="challenges.cloudflare.com"]')
+          ) {
+              return;
+          }
+
           if (window !== window.top) return;
 
+          // 1. Cosmetic ad filters and dynamic Reddit promoted-post cleanup
           const adSelectors = [
               '.adsbox', '.ad-banner', '.adsbygoogle', 'amp-ad',
               'div[id^="div-gpt-ad"]', '.sponsored-post', '#sidebar-ads'
@@ -98,63 +104,46 @@ in
           } else {
               document.addEventListener('DOMContentLoaded', addStyle, { once: true });
           }
-      })();
 
-      // Anti-Adblock Defuser Scriptlet
-      (function() {
-          'use strict';
-          if (window !== window.top) return;
+          // 2. Anti-Adblock Defuser Scriptlet
+          window.canRunAds = true;
+          window.isAdBlockActive = false;
+          window.adsAreWithUs = true;
 
-      // Defuse standard variable checks
-        window.canRunAds = true;
-        window.isAdBlockActive = false;
-        window.adsAreWithUs = true;
+          if (!window.ga) { window.ga = function() {}; }
 
-      // Mock common Google / general ad objects to trick detection scripts
-        if (!window.ga) { window.ga = function() {}; }
+          Object.defineProperty(window, 'AdBlock', { value: false, writable: false });
+          Object.defineProperty(window, 'snack', { value: { isAdBlockerPresent: function() { return false; } }, writable: false });
 
-      // Prevent common anti-adblock scripts from redefining or crashing on these
-        Object.defineProperty(window, 'AdBlock', { value: false, writable: false });
-        Object.defineProperty(window, 'snack', { value: { isAdBlockerPresent: function() { return false; } }, writable: false });
-      })();
+          // 3. YouTube Player Ad Skipper
+          if (window.location.hostname.includes("youtube.com")) {
+              function checkAndSkipAds() {
+                  const skipButtons = [
+                      '.ytp-ad-skip-button-modern',
+                      '.ytp-skip-ad-button',
+                      '.ytp-ad-skip-button',
+                      'button[aria-label^="Skip ad"]'
+                  ];
 
-      // YouTube Player Ad Skipper
-      (function() {
-          'use strict';
-          if (window !== window.top) return;
+                  for (const selector of skipButtons) {
+                      const button = document.querySelector(selector);
+                      if (button && button.offsetParent !== null) {
+                          button.click();
+                      }
+                  }
 
-          if (!window.location.hostname.includes("youtube.com")) return;
-
-          function checkAndSkipAds() {
-              const skipButtons = [
-                  '.ytp-ad-skip-button-modern',
-                  '.ytp-skip-ad-button',
-                  '.ytp-ad-skip-button',
-                  'button[aria-label^="Skip ad"]'
-              ];
-
-              for (const selector of skipButtons) {
-                  const button = document.querySelector(selector);
-                  if (button && button.offsetParent !== null) {
-                      button.click();
+                  const video = document.querySelector('video');
+                  if (video && document.querySelector('.ad-showing, .ad-interrupting')) {
+                      if (video.duration && video.currentTime < video.duration - 0.5) {
+                          video.currentTime = video.duration - 0.1;
+                      }
                   }
               }
 
-              const video = document.querySelector('video');
-              if (video && document.querySelector('.ad-showing, .ad-interrupting')) {
-                  if (video.duration && video.currentTime < video.duration - 0.5) {
-                      video.currentTime = video.duration - 0.1;
-                  }
-              }
+              setInterval(checkAndSkipAds, 1000);
           }
 
-          setInterval(checkAndSkipAds, 1000);
-      })();
-
-      // Vimb Clickjack & Popup Blocker
-      (function() {
-          'use strict';
-
+          // 4. Vimb Clickjack & Popup Blocker
           window.open = function(url) {
               console.warn('Vimb blocked an attempted popup to:', url);
               return {
@@ -291,9 +280,6 @@ in
       # Accept all cookies or only first-party + visited third-party
       set cookie-accept=always
 
-      # Set custom user-agent
-      set user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
-
       # Default Full-Content zoom level in percent. Default is 100.
       set default-zoom=140
 
@@ -306,7 +292,10 @@ in
       shortcut-add cbh=https://www.comicbookherald.com/the-complete-marvel-reading-order-guide
       shortcut-add cmro=https://marvelreading.com/reading-order/main-616
 
+      # Ensure scripts are re-enabled by default, and only turned off where intended
+      autocmd LoadStarted * set scripts=on
       autocmd LoadStarted *readallcomics.com set scripts=off
+      autocmd LoadStarted *marvelreading.com* set user-scripts=off
 
       nmap ,b :open https://raindrop.io/add?link=%
       nmap ,s :set scripts!<CR>
