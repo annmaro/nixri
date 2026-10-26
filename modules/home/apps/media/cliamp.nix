@@ -1,28 +1,17 @@
 { config, pkgs, lib, inputs, ... }:
 
 let
-  patchedCliamp = (inputs.cliamp.packages.${pkgs.stdenv.hostPlatform.system}.default).overrideAttrs (old: {
-    patches = (old.patches or []) ++ [
-      (pkgs.writeText "cliamp-allow-local.patch" ''
---- a/luaplugin/api_http.go
-+++ b/luaplugin/api_http.go
-@@ -26,10 +26,6 @@
- 	if ip == nil {
- 		return fmt.Errorf("cannot resolve dial address %q", address)
- 	}
--	if ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() ||
--		ip.IsLinkLocalMulticast() || ip.IsMulticast() || ip.IsUnspecified() {
--		return fmt.Errorf("blocked request to non-public address %s", ip)
--	}
- 	return nil
- }
-      '')
-    ];
-  });
-
   cliampConfigTemplate = pkgs.writeText "cliamp-config-template.toml" ''
     # Your non-sensitive CLIAMP settings
     theme = "default"
+
+    [plugins]
+    allowed_private_addresses = ["172.0.0.1:8081", "127.0.0.1:8081"]
+
+    [plugins.gpodder-sync]
+    server = "http://172.0.0.1:8081"
+    username = "annmaro"
+    password = "@OPODSYNC_PASSWORD@"
 
     [sync]
     server = "http://172.0.0.1:8081"
@@ -32,7 +21,7 @@ let
 in
 {
   home.packages = with pkgs; [
-    patchedCliamp
+    cliamp
     yt-dlp
   ];
 
@@ -48,8 +37,8 @@ in
       $DRY_RUN_CMD chmod 600 "$CONFIG_DIR/config.toml"
     fi
 
-    if [ -x "${patchedCliamp}/bin/cliamp" ]; then
-      export PATH="${patchedCliamp}/bin:$PATH"
+    if [ -x "${pkgs.cliamp}/bin/cliamp" ]; then
+      export PATH="${pkgs.cliamp}/bin:$PATH"
       $DRY_RUN_CMD cliamp plugins install --yes sollymay/cliamp-plugin-gpodder-sync || true
     fi
   '';
