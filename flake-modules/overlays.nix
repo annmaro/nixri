@@ -17,23 +17,8 @@
       '';
     };
 
-    cliamp = (inputs.cliamp.packages.${final.stdenv.hostPlatform.system}.default).overrideAttrs (old: {
-      patches = (old.patches or []) ++ [
-        (final.writeText "cliamp-allow-local.patch" ''
-          --- a/luaplugin/api_http.go
-          +++ b/luaplugin/api_http.go
-          @@ -26,10 +26,6 @@
-           	if ip == nil {
-           		return fmt.Errorf("cannot resolve dial address %q", address)
-           	}
-          -	if ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() ||
-          -		ip.IsLinkLocalMulticast() || ip.IsMulticast() || ip.IsUnspecified() {
-          -		return fmt.Errorf("blocked request to non-public address %s", ip)
-          -	}
-           	return nil
-           }
-        '')
-      ];
+    cliamp = (inputs.cliamp.packages.${final.stdenv.hostPlatform.system}.default).overrideAttrs (_old: {
+      vendorHash = "sha256-4IobrZ8UBXehfWH1WvzaICcuZlk9zZaVHW7c7h1Wex0=";
     });
   };
 }
