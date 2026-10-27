@@ -37,7 +37,10 @@ in
   };
 
   services.displayManager = {
-    sddm.wayland.enable = lib.mkForce true;
+    sddm.wayland = {
+      enable = lib.mkForce true;
+      compositor = lib.mkForce "weston";
+    };
     defaultSession = "niri";
   };
 }
