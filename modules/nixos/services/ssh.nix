@@ -26,6 +26,6 @@
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    browseDomains = [ ];
+    settings.server.browse-domains = [ ];
   };
 }
