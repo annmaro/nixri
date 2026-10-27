@@ -10,6 +10,6 @@
       "io.github.flattool.Warehouse"
       "com.logseq.Logseq"
     ];
-    update.onActivation = true;
+    update.onActivation = false;
   };
 }
