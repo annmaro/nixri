@@ -138,8 +138,6 @@ let
     "Mod+Shift+S".spawn = "spotify";
     "Mod+Shift+Y".spawn = "youtube-music";
     "Ctrl+Alt+Delete".spawn = [
-      "ghostty"
-      "-e"
       "btop"
     ];
     "Mod+Ctrl+C".spawn = [
@@ -391,6 +389,13 @@ in
         "ipc"
         "call"
         "session"
+        "toggle"
+      ];
+      "Mod+Ctrl+S".spawn = [
+        "dms"
+        "ipc"
+        "call"
+        "processlist"
         "toggle"
       ];
       "Mod+Shift+C".spawn = "zededitor";

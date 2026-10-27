@@ -76,6 +76,7 @@ PanelWindow {
         ListElement { key: "Mod + F9 / F10"; desc: "Toggle wlsunset blue light filter"; cat: "Utilities" }
         ListElement { key: "Mod + Alt + L"; desc: "Lock screen (Swaylock)"; cat: "System" }
         ListElement { key: "Ctrl + Alt + Del"; desc: "System monitor (btop)"; cat: "System" }
+        ListElement { key: "Mod + Ctrl + S"; desc: "Toggle Process List (DMS)"; cat: "System" }
         ListElement { key: "Alt + S"; desc: "Restart desktop bar"; cat: "System" }
     }
 
