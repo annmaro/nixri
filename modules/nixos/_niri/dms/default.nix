@@ -141,9 +141,8 @@
               position = "top";
               spacing = 0; # Space between the bar and screen edges
 
-              # Setting bar transparency to 0 hides the background bar background,
-              # allowing only the styled widgets to display as floating pill capsules.
-              transparency = 0.0;
+              # Main Bar surface opacity override to 58%
+              transparency = 0.58;
               followInterfaceStyle = false;
 
               # Widget styling and opacity override to 58%
