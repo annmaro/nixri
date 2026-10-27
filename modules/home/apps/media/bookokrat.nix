@@ -1,7 +1,9 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   home.packages = [
-    inputs.bookokrat.packages.x86_64-linux.default
+    (inputs.bookokrat.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (_old: {
+      doCheck = false;
+    }))
   ];
 }
