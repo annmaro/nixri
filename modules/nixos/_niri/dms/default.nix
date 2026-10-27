@@ -74,14 +74,14 @@
           monoFontFamily = config.stylix.fonts.monospace.name;
 
           profileImage = "file://${config.home.homeDirectory}/.config/dms/nix.png"; # Set the path to your profile image for display in the overview and other DMS components. Make sure the image exists at this location and is in a supported format (e.g., PNG, JPEG).
-          launcherLogoMode = "os"; # Set to "os" to display your custom NixOS system logo (SystemLogo.qml) inside the launcher button
 
           widgetBackgroundColor = "s"; # Use DMS's color tokens for consistent theming
           widgetColorMode = "colorful"; # "colorful" to use theme colors, "default" for a more neutral look
           buttonColorMode = "primary"; # Use primary color for buttons
 
-          popupTransparency = 0.40; # Set popup transparency to create a frosted glass effect for notifications and other popups, allowing the wallpaper to subtly show through while keeping the content readable. Adjust as needed for your preferred balance of visibility and aesthetics.
-          cornerRadius = 16; # Apply a consistent border radius to all widgets for a cohesive look
+          popupTransparency = 0.58; # Surface opacity set to 58%
+          radiusMode = "scale"; # Material scale corner style
+          radiusStrength = 50; # 50 = Material 3 shape scale strength
 
           blurEnabled = true; # Enable blur for overview and other popups
           blurWallpaperOnOverview = true; # Blur the wallpaper when opening the overview for better focus on windows
@@ -99,10 +99,8 @@
               islandCompactThickness = 29;
               islandAlongOffset = 0;
               islandInteractionMode = "hybrid";
-              islandTransparency = 0.75;
-              islandCornerRadius = 16;
               islandSatellitesEnabled = true;
-              islandSatellitePosition = "adjacent";
+              islandSatellitePosition = "island"; # "island" = Near island ("edges" = Display edges)
               islandPalette = "dim";
               islandSatelliteGap = 4;
               islandHomeClockDisplay = "both";
@@ -145,6 +143,14 @@
 
               # Setting bar transparency to 0 hides the background bar background,
               # allowing only the styled widgets to display as floating pill capsules.
+              transparency = 0.0;
+              followInterfaceStyle = false;
+
+              # Widget styling and opacity override to 58%
+              widgetStyle = "pills";
+              noBackground = false;
+              widgetFollowInterfaceStyle = false; # Overrides interface style for widget opacity
+              widgetTransparency = 0.58; # 58% widget opacity
 
               widgetOutlineEnabled = false;
               widgetOutlineColor = "primary";
@@ -154,15 +160,21 @@
 
               fontScale = 1.2;
               iconScale = 1.2;
-              transparency = 0.0;
-              widgetTransparency = 0.85;
 
               network_click_action = "applet";
               audio_click_action = "applet";
 
               leftWidgets = [
-                "launcherButton"
-                "workspaceSwitcher"
+                {
+                  id = "launcherButton";
+                  launcherLogoMode = "os";
+                }
+                {
+                  id = "workspaceSwitcher";
+                  workspaceIndicatorStyle = "pills";
+                  showWorkspaceIndex = false;
+                  showWorkspaceName = false;
+                }
                 "focusedWindow"
               ];
               centerWidgets = [ ];
@@ -173,13 +185,6 @@
               ];
             }
           ];
-
-          widgets = {
-            workspace_switcher = {
-              show_labels = false;
-              indicator_style = "pill";
-            };
-          };
         };
       in
       {
