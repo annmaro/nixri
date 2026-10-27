@@ -84,6 +84,12 @@ let
       ];
       open-floating = true;
     }
+    {
+      matches = [
+        { app-id = "^(dev\\.duxlabs\\.shell|com\\.danklinux\\.dms)$"; }
+      ];
+      open-floating = true;
+    }
   ];
 
   commonBinds = {

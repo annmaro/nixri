@@ -1,15 +1,14 @@
 { pkgs, ... }:
 
-{
-  # Directly overwrite DMS's core system logo component
-  xdg.configFile."DankMaterialShell/Widgets/SystemLogo.qml".text = ''
+let
+  systemLogoQml = ''
     import QtQuick
     import QtQuick.Layouts
     import QtQuick.Effects
     import Quickshell
     import Quickshell.Widgets
-    import qs.Common
-    import qs.Widgets
+    import qs.DCommon.Common
+    import qs.DCommon.Widgets
 
     Item {
         id: root
@@ -46,7 +45,7 @@
             }
         }
 
-        DankNFIcon {
+        DNFIcon {
             id: nfIcon
             anchors.centerIn: parent
             visible: root.useNerdFont
@@ -56,5 +55,10 @@
         }
     }
   '';
+in
+{
+  # Directly overwrite DMS's core system logo component for both modern dms and legacy DankMaterialShell paths
+  xdg.configFile."dms/Widgets/SystemLogo.qml".text = systemLogoQml;
+  xdg.configFile."DankMaterialShell/Widgets/SystemLogo.qml".text = systemLogoQml;
 }
 

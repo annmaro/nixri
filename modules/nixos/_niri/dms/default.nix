@@ -48,72 +48,8 @@
           dark = themePayload;
           light = themePayload;
         };
-      in
-      {
-        imports = [
-          inputs.dms.homeModules.dank-material-shell
-          inputs.niri.homeModules.niri
-          ./logo.nix # Custom system logo plugin with inline QML for better performance and easier management
-        ];
 
-        # DMS currently declares Niri settings; import the schema only so
-        # Home Manager can type-check those settings without managing Niri's
-        # config file. The system-level wrapper owns the actual Niri config.
-        programs.niri.config = null;
-
-        programs.dank-material-shell = {
-          enable = true;
-          systemd.enable = true;
-
-
-        };
-
-        /*
-          Clear Out Stale Local DMS Configurations before generating colors from stylix to prevent conflicts and ensure a clean slate for the new theme.
-          This is necessary because DMS v6 introduced some changes to how it handles themes and configurations, and old files can cause unexpected behavior if not removed.
-
-          rm -rf ~/.config/niri/dms/colors.kdl
-          rm -rf ~/.config/niri/dms/layout.kdl
-        */
-
-        home.packages = with pkgs; [
-          dux-gop # Required for DMS system tracking features
-          nerd-fonts.jetbrains-mono
-          material-symbols
-          material-design-icons
-        ];
-
-        # =====================================================================
-        # 🎨 AUTOMATIC THEME GENERATION
-        # =====================================================================
-        # Nix now dynamically generates the file using your Stylix palette!
-                xdg.configFile."DankMaterialShell/themes/gruvbox/theme.json".text =
-          builtins.toJSON gruvboxTheme;
-        xdg.configFile."DankMaterialShell/nix.png".source = ./nix.png; # Symlink the local nix.png into the expected path in the home directory for DMS to use as the profile image
-
-        # =====================================================================
-        # 🎨 SETTINGS.JSON & SESSION STATE CONFIGURATION
-        # =====================================================================
-
-        home.activation.dmsWeather = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-          SESSION_FILE="$HOME/.local/state/DankMaterialShell/session.json"
-          if [ -f "$SESSION_FILE" ] && [ ! -L "$SESSION_FILE" ]; then
-            $DRY_RUN_CMD ${pkgs.jq}/bin/jq '.weatherLocation = "Jharkhand, India" | .weatherCoordinates = "23.63,85.52" | .use24HourClock = true' "$SESSION_FILE" > "$SESSION_FILE.tmp" && \
-            $DRY_RUN_CMD mv "$SESSION_FILE.tmp" "$SESSION_FILE"
-          elif [ ! -f "$SESSION_FILE" ]; then
-            $DRY_RUN_CMD mkdir -p "$HOME/.local/state/DankMaterialShell"
-            $DRY_RUN_CMD echo '{"weatherLocation": "Jharkhand, India", "weatherCoordinates": "23.63,85.52", "use24HourClock": true}' > "$SESSION_FILE"
-          fi
-        '';
-
-        # =====================================================================
-        # 🧩 THIRD-PARTY PLUGINS
-        # =====================================================================
-
-
-        xdg.configFile."DankMaterialShell/settings.json" = {
-          force = true;
-          text = builtins.toJSON {
+        dmsSettingsJson = builtins.toJSON {
           configVersion = 18;
           use24HourClock = true;
 
@@ -133,12 +69,12 @@
 
           dynamicTheming = false; # Disable dynamic theming to maintain a consistent look across all widgets, regardless of the current wallpaper or system theme. This ensures that your custom color choices are always applied.
           currentThemeName = "custom"; # Use "custom" to apply your custom theme file specified below
-          customThemeFile = "${config.home.homeDirectory}/.config/DankMaterialShell/themes/gruvbox/theme.json"; # Path to your custom theme file, which is generated dynamically from your Stylix palette. Make sure this path matches where your theme file is generated and stored.
+          customThemeFile = "${config.home.homeDirectory}/.config/dms/themes/gruvbox/theme.json"; # Path to your custom theme file, which is generated dynamically from your Stylix palette. Make sure this path matches where your theme file is generated and stored.
 
           fontFamily = config.stylix.fonts.sansSerif.name;
           monoFontFamily = config.stylix.fonts.monospace.name;
 
-          profileImage = "file://${config.home.homeDirectory}/.config/DankMaterialShell/nix.png"; # Set the path to your profile image for display in the overview and other DMS components. Make sure the image exists at this location and is in a supported format (e.g., PNG, JPEG).
+          profileImage = "file://${config.home.homeDirectory}/.config/dms/nix.png"; # Set the path to your profile image for display in the overview and other DMS components. Make sure the image exists at this location and is in a supported format (e.g., PNG, JPEG).
           launcherLogoMode = "os"; # Set to "os" to display your custom NixOS system logo (SystemLogo.qml) inside the launcher button
 
           widgetBackgroundColor = "s"; # Use DMS's color tokens for consistent theming
@@ -245,7 +181,81 @@
               indicator_style = "pill";
             };
           };
-          };
+        };
+      in
+      {
+        imports = [
+          (inputs.dms.homeModules.default or inputs.dms.homeModules.dank-material-shell)
+          inputs.niri.homeModules.niri
+          ./logo.nix # Custom system logo plugin with inline QML for better performance and easier management
+        ];
+
+        # DMS currently declares Niri settings; import the schema only so
+        # Home Manager can type-check those settings without managing Niri's
+        # config file. The system-level wrapper owns the actual Niri config.
+        programs.niri.config = null;
+
+        programs.dank-material-shell = {
+          enable = true;
+          systemd.enable = true;
+        };
+
+        /*
+          Clear Out Stale Local DMS Configurations before generating colors from stylix to prevent conflicts and ensure a clean slate for the new theme.
+          This is necessary because DMS v6 introduced some changes to how it handles themes and configurations, and old files can cause unexpected behavior if not removed.
+
+          rm -rf ~/.config/niri/dms/colors.kdl
+          rm -rf ~/.config/niri/dms/layout.kdl
+        */
+
+        home.packages = with pkgs; [
+          dux-gop # Required for DMS system tracking features
+          nerd-fonts.jetbrains-mono
+          material-symbols
+          material-design-icons
+        ];
+
+        # =====================================================================
+        # 🎨 AUTOMATIC THEME GENERATION
+        # =====================================================================
+        # Nix dynamically generates the theme file using your Stylix palette!
+        # Write to both modern ~/.config/dms and legacy ~/.config/DankMaterialShell paths
+        xdg.configFile."dms/themes/gruvbox/theme.json".text =
+          builtins.toJSON gruvboxTheme;
+        xdg.configFile."DankMaterialShell/themes/gruvbox/theme.json".text =
+          builtins.toJSON gruvboxTheme;
+        xdg.configFile."dms/nix.png".source = ./nix.png;
+        xdg.configFile."DankMaterialShell/nix.png".source = ./nix.png;
+
+        # =====================================================================
+        # 🎨 SETTINGS.JSON & SESSION STATE CONFIGURATION
+        # =====================================================================
+
+        home.activation.dmsWeather = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+          for STATE_DIR in "$HOME/.local/state/dms" "$HOME/.local/state/DankMaterialShell"; do
+            SESSION_FILE="$STATE_DIR/session.json"
+            if [ -f "$SESSION_FILE" ] && [ ! -L "$SESSION_FILE" ]; then
+              $DRY_RUN_CMD ${pkgs.jq}/bin/jq '.weatherLocation = "Jharkhand, India" | .weatherCoordinates = "23.63,85.52" | .use24HourClock = true' "$SESSION_FILE" > "$SESSION_FILE.tmp" && \
+              $DRY_RUN_CMD mv "$SESSION_FILE.tmp" "$SESSION_FILE"
+            elif [ ! -f "$SESSION_FILE" ]; then
+              $DRY_RUN_CMD mkdir -p "$STATE_DIR"
+              $DRY_RUN_CMD echo '{"weatherLocation": "Jharkhand, India", "weatherCoordinates": "23.63,85.52", "use24HourClock": true}' > "$SESSION_FILE"
+            fi
+          done
+        '';
+
+        # =====================================================================
+        # 🧩 SETTINGS CONFIGURATION
+        # =====================================================================
+        # Deploy settings to both modern dms and legacy DankMaterialShell paths
+        xdg.configFile."dms/settings.json" = {
+          force = true;
+          text = dmsSettingsJson;
+        };
+
+        xdg.configFile."DankMaterialShell/settings.json" = {
+          force = true;
+          text = dmsSettingsJson;
         };
       }
     )
