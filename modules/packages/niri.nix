@@ -7,8 +7,7 @@
 }:
 
 let
-  system = pkgs.stdenv.hostPlatform.system;
-  baseNiri = inputs.niri.packages.${system}.niri-unstable;
+  baseNiri = pkgs.niri;
 
   wallpaper = pkgs.callPackage ./niri-scripts/wallpaper.nix { };
   screenRecorder = pkgs.callPackage ./niri-scripts/screen-record.nix { };
