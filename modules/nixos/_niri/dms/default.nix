@@ -91,6 +91,44 @@
           systemTrayIconTintSaturation = 40; # Increase saturation of tinted system tray icons to make them pop against the background. Adjust as needed based on your custom theme's color palette and desired level of emphasis on the icons.
           systemTrayIconTintStrength = 150; # Increase tint strength for system tray icons to create a more pronounced effect and better integration with the overall theme. Adjust as needed based on your custom theme's color palette and desired level of emphasis on the icons.
 
+          dashCards = [
+            {
+              id = "clock";
+              w = 1;
+              h = 2;
+              col = 0;
+              row = 0;
+            }
+            {
+              id = "calendar";
+              w = 3;
+              h = 3;
+              col = 0;
+              row = 2;
+            }
+            {
+              id = "media";
+              w = 3;
+              h = 5;
+              col = 3;
+              row = 0;
+            }
+            {
+              id = "sysmon";
+              w = 2;
+              h = 1;
+              col = 1;
+              row = 1;
+            }
+            {
+              id = "weather";
+              w = 2;
+              h = 1;
+              col = 1;
+              row = 0;
+            }
+          ];
+
           barConfigs = [
             {
               id = "default";
