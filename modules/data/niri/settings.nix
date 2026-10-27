@@ -138,6 +138,8 @@ let
     "Mod+Shift+S".spawn = "spotify";
     "Mod+Shift+Y".spawn = "youtube-music";
     "Ctrl+Alt+Delete".spawn = [
+      "footclient"
+      "e"
       "btop"
     ];
     "Mod+Ctrl+C".spawn = [
