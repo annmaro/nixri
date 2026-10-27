@@ -1,17 +1,10 @@
 { lib, config, ... }:
 {
-  nav-bar = [
-    "_c4b582ec-4343-438c-bda2-2f691c16c262_-browser-action"
-    "firemonkey_eros_man-browser-action"
-    "ublock0_raymondhill_net-browser-action"
-    # "addon_darkreader_org-browser-action"
-    # "queryamoid_kaply_com-browser-action"
-    # "_aecec67f-0d10-4fa7-b7c7-609a2db280cf_-browser-action"
-  ];
+  nav-bar = [ ];
 
   unified-extensions-area = [
+    "_c4b582ec-4343-438c-bda2-2f691c16c262_-browser-action"
     "ublock0_raymondhill_net-browser-action"
-    "firemonkey_eros_man-browser-action"
     "addon_darkreader_org-browser-action"
     "queryamoid_kaply_com-browser-action"
     # "_aecec67f-0d10-4fa7-b7c7-609a2db280cf_-browser-action"
@@ -24,37 +17,31 @@
     };
     "uBlock0@raymondhill.net" = {
       private_browsing = true;
-      default_area = "navbar";
+      default_area = "menupanel";
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
     };
     "keepassxc-browser@keepassxc.org" = {
       private_browsing = true;
-      default_area = "navbar";
+      default_area = "menupanel";
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/keepassxc-browser/latest.xpi";
     };
     "vpn@proton.ch" = {
       private_browsing = true;
-      default_area = "navbar";
+      default_area = "menupanel";
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-vpn-firefox-extension/latest.xpi";
     };
     "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack" = {
       private_browsing = true;
-      default_area = "navbar";
+      default_area = "menupanel";
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/raindropio/latest.xpi";
     };
-    "firemonkey@eros.man" = {
-      private_browsing = true;
-      default_area = "navbar";
-      installation_mode = "force_installed";
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/firemonkey/latest.xpi";
-    };
     "addon@darkreader.org" = {
       private_browsing = true;
-      # default_area = "navbar";
+      default_area = "menupanel";
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/darkreader/latest.xpi";
     };
