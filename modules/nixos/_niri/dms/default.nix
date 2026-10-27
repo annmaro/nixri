@@ -50,7 +50,6 @@
         };
 
         dmsSettingsJson = builtins.toJSON {
-          configVersion = 18;
           use24HourClock = true;
 
           screenPreferences = {
