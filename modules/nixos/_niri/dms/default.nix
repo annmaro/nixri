@@ -132,7 +132,8 @@
           dashOptions = {
            weather = {
            panelColumns = 5;
-          };
+           }
+           };
 
           barConfigs = [
             {
