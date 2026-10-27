@@ -77,7 +77,7 @@
         */
 
         home.packages = with pkgs; [
-          dgop # Required for DMS system tracking features
+          dux-gop # Required for DMS system tracking features
           nerd-fonts.jetbrains-mono
           material-symbols
           material-design-icons
