@@ -49,7 +49,6 @@
     spek
     losslessaudiochecker
     qbittorrent
-    libreoffice-stable
     android-tools
     vulkan-tools
     age
