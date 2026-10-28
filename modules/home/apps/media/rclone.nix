@@ -11,8 +11,7 @@ in
 {
   home.packages = with pkgs; [
     rclone
-    mcomix
-    yacreader
+    komikku
   ];
 
   home.activation.createMountPoints = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
