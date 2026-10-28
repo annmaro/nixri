@@ -25,7 +25,10 @@
 
         # Text files
         "text/plain" = [ "dev.duxlabs.shell.notepad.desktop" ];
-        "text/markdown" = [ "dev.duxlabs.shell.notepad.desktop" ];
+        "text/markdown" = [
+          "com.logseq.Logseq.desktop"
+          "logseq.desktop"
+        ];
 
         # Images and video
         "image/png" = [
