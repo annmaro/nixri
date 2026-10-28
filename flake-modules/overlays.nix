@@ -20,5 +20,7 @@
     cliamp = (inputs.cliamp.packages.${final.stdenv.hostPlatform.system}.default).overrideAttrs (_old: {
       vendorHash = "sha256-4IobrZ8UBXehfWH1WvzaICcuZlk9zZaVHW7c7h1Wex0=";
     });
+
+    komelia = final.callPackage ../modules/packages/komelia.nix { };
   };
 }

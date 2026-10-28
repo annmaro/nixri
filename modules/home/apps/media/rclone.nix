@@ -12,6 +12,7 @@ in
   home.packages = with pkgs; [
     rclone
     komikku
+    komelia
   ];
 
   home.activation.createMountPoints = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
