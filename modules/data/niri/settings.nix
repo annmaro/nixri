@@ -20,7 +20,7 @@ let
   appOpacityRules = [
     {
       matches = [
-        { app-id = "^(firefox|floorp|vivaldi-stable|brave-|vlc|easyeffects|gapless)$"; }
+        { app-id = "^(firefox|floorp|vivaldi-stable|snd-komelia-MainKt|vlc|easyeffects|gapless)$"; }
       ];
       open-maximized = true;
       draw-border-with-background = false;
@@ -89,6 +89,10 @@ let
         { app-id = "^(dev\\.duxlabs\\.shell|com\\.danklinux\\.dms)$"; }
       ];
       open-floating = true;
+      background-effect = {
+        blur = true;
+        xray = false;
+      };
     }
   ];
 
