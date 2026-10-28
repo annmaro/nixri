@@ -1,21 +1,26 @@
 { ... }:
 
 {
-  # 1. Automount the comics btrfs partition on demand
-  fileSystems."/mnt/comics" = {
+  # 1. Mount the Data partition containing Marvel_Comics and user media
+  fileSystems."/mnt/Data" = {
     device = "/dev/disk/by-uuid/fcd8693d-39c7-49cc-a9de-c18d15f2d69d";
     fsType = "btrfs";
     options = [
       "nofail"                      # Do not halt boot if drive is missing
-      "x-systemd.automount"         # Mount automatically when directory is accessed
-      "x-systemd.idle-timeout=10min" # Unmount after 10m idle
+      "x-systemd.automount"         # Mount automatically when accessed
+      "x-gvfs-show"                 # Force Thunar / GVFS to show this drive in the sidebar
+      "x-gvfs-name=Data"            # Display name in Thunar sidebar
     ];
   };
 
-  # 2. Ensure Komga persistent directories exist with correct permissions
+  # 2. Compatibility symlinks & persistent directories
   systemd.tmpfiles.rules = [
     "d /var/lib/komga 0755 1000 100 -"
-    # Declarative Pi-hole local DNS record for komga.lan
+    # Symlinks so both /mnt/comics and legacy /run/media/annmaro/Data paths work seamlessly
+    "L+ /mnt/comics - - - - /mnt/Data"
+    "d /run/media/annmaro 0755 annmaro users -"
+    "L+ /run/media/annmaro/Data - - - - /mnt/Data"
+    # Declarative Pi-hole local DNS record for komga.lan pointing to host IP
     "f+ /var/lib/pihole/dnsmasq.d/05-custom-records.conf 0644 root root - address=/komga.lan/192.168.31.193\n"
   ];
 
@@ -28,9 +33,9 @@
     ];
     volumes = [
       "/var/lib/komga:/config"
-      # Host path to Marvel Comics mapped to /data in container
-      "/mnt/comics/Marvel_Comics:/data"
-      "/mnt/comics:/mnt/comics"
+      # Marvel Comics mapped to /data in container
+      "/mnt/Data/Marvel_Comics:/data"
+      "/mnt/Data:/mnt/Data"
     ];
     environment = {
       # Do not delete missing libraries if drive disconnects/fails to mount
@@ -39,10 +44,10 @@
     };
   };
 
-  # 4. Dependency ordering: ensure docker-komga waits for the comics mount
+  # 4. Dependency ordering: ensure docker-komga starts the mount before running
   systemd.services."docker-komga" = {
-    after = [ "mnt-comics.mount" ];
-    requires = [ "mnt-comics.mount" ];
+    after = [ "mnt-Data.mount" ];
+    wants = [ "mnt-Data.mount" ];
   };
 
   # 5. Open Komga port in NixOS firewall
