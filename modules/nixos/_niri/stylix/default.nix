@@ -76,7 +76,7 @@
             zed.enable = false;
             waybar.enable = false; # We want to manage Waybar's theme manually to leverage its native styling capabilities
             dank-material-shell.enable = false;
-            superfile.enable = false;
+            spf.enable = false;
 
             # Add any other apps here if you want to manage their themes manually:
             rofi.enable = false;
