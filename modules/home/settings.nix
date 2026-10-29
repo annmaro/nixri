@@ -77,7 +77,6 @@ in
         bar = mkOption {
           type = types.enum [
             "DMS"
-            "noctalia"
           ];
           default = "DMS";
           description = "Desktop bar or shell for this user.";

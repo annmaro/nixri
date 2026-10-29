@@ -3,7 +3,6 @@
   config,
   lib,
   pkgs,
-  bar,
 }:
 
 let
@@ -13,7 +12,7 @@ let
   screenRecorder = pkgs.callPackage ./niri-scripts/screen-record.nix { };
 
   settings = import ../data/niri/settings.nix {
-    inherit config lib pkgs wallpaper screenRecorder bar;
+    inherit config lib pkgs wallpaper screenRecorder;
   };
 in
 inputs.wrapper-modules.wrappers.niri.wrap {

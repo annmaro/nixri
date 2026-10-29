@@ -10,7 +10,6 @@
 let
   wrappedNiri = pkgs.callPackage "${self}/modules/packages/niri.nix" {
     inherit inputs config;
-    bar = "DMS";
   };
 in
 {

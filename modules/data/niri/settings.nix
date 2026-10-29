@@ -4,17 +4,15 @@
   pkgs,
   wallpaper,
   screenRecorder,
-  bar,
 }:
 
 let
   inherit (lib) getExe;
   kbdLayout = config.systemSettings.kbdLayout;
   kbdVariant = config.systemSettings.kbdVariant;
-  isDms = bar == "DMS";
   accentColor = "#${lib.attrByPath [ "lib" "stylix" "colors" "base0A" ] "d8a657" config}";
-  barNamespace = if isDms then "^dms:.*" else "^noctalia:.*";
-  restartBar = if isDms then "dms" else "noctalia";
+  barNamespace = "^dms:.*";
+  restartBar = "dms";
   screenshot = ''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.satty}/bin/satty -f - -o ~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png'';
   launcherConfig = "/home/${config.systemSettings.username}/.config/qml-launcher";
   appOpacityRules = [
@@ -95,8 +93,9 @@ let
       };
     }
   ];
-
-  commonBinds = {
+in
+{
+  binds = {
     "Mod+Return".spawn = "thunar";
     "Mod+T".spawn = "footclient";
     "Ctrl+T".spawn = [
@@ -106,6 +105,44 @@ let
       "-e"
       "tmux-sessionizer"
     ];
+    "Mod+Q".spawn = [
+      "env"
+      "QML_XHR_ALLOW_FILE_READ=1"
+      "${pkgs.quickshell}/bin/quickshell"
+      "--no-duplicate"
+      "-p"
+      launcherConfig
+    ];
+    "Mod+K".spawn = [
+      "${pkgs.quickshell}/bin/quickshell"
+      "--no-duplicate"
+      "-p"
+      "/home/${config.systemSettings.username}/.config/qml-keybinds"
+    ];
+    "Mod+N".spawn = [
+      "dms"
+      "ipc"
+      "call"
+      "notifications"
+      "toggle"
+    ];
+    "Mod+Shift+E".spawn = [
+      "dms"
+      "ipc"
+      "call"
+      "session"
+      "toggle"
+    ];
+    "Mod+Ctrl+S".spawn = [
+      "dms"
+      "ipc"
+      "call"
+      "processlist"
+      "toggle"
+    ];
+    "Mod+Shift+C".spawn = "zededitor";
+    "Mod+W".spawn = "waypaper";
+    "Mod+S".switch-focus-between-floating-and-tiling = _: { };
     "Mod+C".spawn = "editor";
     "Mod+F".spawn = "firefox";
     "Mod+A".spawn = "antigravity";
@@ -239,8 +276,7 @@ let
     "Mod+P".spawn = "keepassxc";
     "Mod+Ctrl+P".spawn-sh = screenshot;
   };
-in
-{
+
   prefer-no-csd = _: { };
 
   hotkey-overlay.skip-at-startup = _: { };
@@ -259,8 +295,8 @@ in
     SDL_VIDEODRIVER = "wayland";
     WLR_RENDERER_ALLOW_SOFTWARE = "1";
     NIXPKGS_ALLOW_UNFREE = "1";
-  }
-  // lib.optionalAttrs isDms { DMS_DISABLE_MATUGEN = "0"; };
+    DMS_DISABLE_MATUGEN = "0";
+  };
 
   spawn-sh-at-startup = [
     "sleep 1 && wlsunset -T 3800 -t 3799"
@@ -365,65 +401,4 @@ in
     }
   ]
   ++ appOpacityRules;
-
-  binds =
-    commonBinds
-    // lib.optionalAttrs isDms {
-      "Mod+Q".spawn = [
-        "env"
-        "QML_XHR_ALLOW_FILE_READ=1"
-        "${pkgs.quickshell}/bin/quickshell"
-        "--no-duplicate"
-        "-p"
-        launcherConfig
-      ];
-      "Mod+K".spawn = [
-        "${pkgs.quickshell}/bin/quickshell"
-        "--no-duplicate"
-        "-p"
-        "/home/${config.systemSettings.username}/.config/qml-keybinds"
-      ];
-      "Mod+N".spawn = [
-        "dms"
-        "ipc"
-        "call"
-        "notifications"
-        "toggle"
-      ];
-      "Mod+Shift+E".spawn = [
-        "dms"
-        "ipc"
-        "call"
-        "session"
-        "toggle"
-      ];
-      "Mod+Ctrl+S".spawn = [
-        "dms"
-        "ipc"
-        "call"
-        "processlist"
-        "toggle"
-      ];
-      "Mod+Shift+C".spawn = "zededitor";
-      "Mod+W".spawn = "waypaper";
-      "Mod+S".switch-focus-between-floating-and-tiling = _: { };
-    }
-    // lib.optionalAttrs (!isDms) {
-      "Mod+Space".spawn = [
-        "noctalia"
-        "toggle"
-        "launcher"
-      ];
-      "Mod+N".spawn = [
-        "noctalia"
-        "toggle"
-        "notifications"
-      ];
-      "Mod+Shift+E".spawn = [
-        "noctalia"
-        "toggle"
-        "session"
-      ];
-      "Mod+S".spawn-sh = "niri msg action toggle-overview";
-    };
 }
