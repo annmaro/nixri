@@ -32,9 +32,9 @@
 > </p>
 >
 > <h3 align="center">
->   👉 <b><a href="https://codeberg.org/annmaro/nixri">codeberg.org/&lt;user&gt;/&lt;repo&gt;</a></b> 👈
+>   👉 <b><a href="https://codeberg.org/annmaro/nixri">codeberg.org/&lt;annmaro&gt;/&lt;nixri&gt;</a></b> 👈
 > </h3>
->
+> Noctalia support is also ending. 
 > **Do not submit PRs or open issues here.** Any activity on GitHub will be closed or ignored.
 
 ---
