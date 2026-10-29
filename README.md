@@ -17,16 +17,16 @@
     </a>
   </p>
 
- > [!CAUTION]
-> # 🛑 IMPORTANT: READ-ONLY MIRROR
+ >                     [!CAUTION]
+>                 # 🛑 IMPORTANT: READ-ONLY MIRROR
 >
 > ### Active development, issues, and PRs have permanently moved to Codeberg.
 >
 > <p align="center">
->   <a href="https://codeberg.org/<user>/<repo>">
+>   <a href="https://codeberg.org/annmaro/nixri">
 >     <img src="https://img.shields.io/badge/Codeberg-Open%20Canonical%20Repo-2185d0?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Repo" />
 >   </a>
->   <a href="https://codeberg.org/<user>/<repo>/issues">
+>   <a href="https://codeberg.org/annmaro/nixri/issues">
 >     <img src="https://img.shields.io/badge/Issues-Report%20on%20Codeberg-red?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Issues" />
 >   </a>
 > </p>
