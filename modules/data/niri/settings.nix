@@ -26,7 +26,7 @@ let
     }
     {
       matches = [
-        { app-id = "^(footclient|foot|yazi|com.mitchellh.ghostty|Alacritty|org.wezfurlong.wezterm)$"; }
+        { app-id = "^(footclient|foot|superfile|fileManager|com.mitchellh.ghostty|Alacritty|org.wezfurlong.wezterm)$"; }
       ];
       opacity = 0.80;
       draw-border-with-background = false;
@@ -96,7 +96,7 @@ let
 in
 {
   binds = {
-    "Mod+Return".spawn = "thunar";
+    "Mod+Space".spawn = "thunar";
     "Mod+T".spawn = "footclient";
     "Ctrl+T".spawn = [
       "footclient"
@@ -179,7 +179,7 @@ in
     "Mod+Shift+S".spawn = "spotify";
     "Mod+Shift+Y".spawn = "youtube-music";
     "Ctrl+Alt+Delete".spawn = [
-      "footclient"
+      "foot"
       "e"
       "btop"
     ];

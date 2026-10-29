@@ -60,10 +60,10 @@ in
 
     tuiFileManager = mkOption {
       type = types.enum [
-        "yazi"
+        "superfile"
         "lf"
       ];
-      default = "yazi";
+      default = "superfile";
       description = "Default terminal file manager.";
     };
 

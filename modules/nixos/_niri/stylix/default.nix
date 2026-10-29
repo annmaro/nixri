@@ -83,7 +83,6 @@
             cava.enable = false;
             feh.enable = false;
             neovim.enable = false;
-            yazi.enable = false;
           };
 
           # Generate a 1x1 solid black pixel on the fly as your wallpaper engine source

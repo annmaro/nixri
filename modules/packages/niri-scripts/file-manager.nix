@@ -3,11 +3,11 @@
 pkgs.writeShellApplication {
   name = "file-manager";
 
-  # Nix will safely bundle Thunar and Yazi into the script's execution path
+  # Nix will safely bundle Thunar and Superfile into the script's execution path
   runtimeInputs = with pkgs; [
     coreutils
     thunar
-    yazi
+    superfile
   ];
 
   text = ''
@@ -15,8 +15,8 @@ pkgs.writeShellApplication {
       thunar)
         thunar
         ;;
-      yazi)
-        ${terminal} --class "fileManager" -e yazi
+      superfile|spf)
+        ${terminal} --class "fileManager" -e superfile
         ;;
       *)
         echo "Unknown file manager option: $1"
