@@ -17,6 +17,28 @@
     </a>
   </p>
 
+ > [!CAUTION]
+> # 🛑 IMPORTANT: READ-ONLY MIRROR
+>
+> ### Active development, issues, and PRs have permanently moved to Codeberg.
+>
+> <p align="center">
+>   <a href="https://codeberg.org/<user>/<repo>">
+>     <img src="https://img.shields.io/badge/Codeberg-Open%20Canonical%20Repo-2185d0?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Repo" />
+>   </a>
+>   <a href="https://codeberg.org/<user>/<repo>/issues">
+>     <img src="https://img.shields.io/badge/Issues-Report%20on%20Codeberg-red?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Issues" />
+>   </a>
+> </p>
+>
+> <h3 align="center">
+>   👉 <b><a href="https://codeberg.org/<user>/<repo>">codeberg.org/&lt;user&gt;/&lt;repo&gt;</a></b> 👈
+> </h3>
+>
+> **Do not submit PRs or open issues here.** Any activity on GitHub will be closed or ignored.
+
+---
+
   
   A modular NixOS configuration built around **flake-parts**, **import-tree**, **Home Manager**, and the **Niri** Wayland compositor.
   
