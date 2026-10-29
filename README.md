@@ -22,7 +22,7 @@
 # <span style="color: #cf222e;">🚨 IMPORTANT NOTICE 🚨</span>
 
 ## **This GitHub repository is now READ-ONLY.**
-## **Going forward, Noctalia support is ending as well.
+## **Going forward, Noctalia support is ending as well.**
 
 ### All active development, pull requests, and bug reports belong on Codeberg.
 
@@ -34,7 +34,7 @@
 <br/>
 <br/>
 
-**Canonical Repository:** [`https://codeberg.org/annmaro/nixri`](https://codeberg.org/annmaro/nixri)
+## **Codeberg Repository:** [`https://codeberg.org/annmaro/nixri`](https://codeberg.org/annmaro/nixri)
 
 </div>
 
