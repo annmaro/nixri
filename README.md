@@ -1,21 +1,4 @@
-  <p align="center">
-  <img src="https://cdn.simpleicons.org/nixos/5277C3" alt="NixOS Logo" width="102" height="102" />
-  </p>
 
-  <p align="center">
-    <a href="https://github.com/YaLTeR/niri">
-      <img src="https://img.shields.io/badge/WM-Niri-f4b8e4?style=for-the-badge&labelColor=363a4f&logo=niri&logoColor=f4b8e4" alt="Niri" />
-    </a>
-    <a href="https://github.com/duxlabs-dev/dux-shell">
-      <img src="https://img.shields.io/badge/SHELL-DMS-babbf1?style=for-the-badge&labelColor=363a4f&logo=materialdesign&logoColor=babbf1" alt="DMS" />
-    </a>
-    <a href="https://nixos.org">
-      <img src="https://img.shields.io/badge/NIXOS-UNSTABLE-81c8be?style=for-the-badge&labelColor=363a4f&logo=nixos&logoColor=81c8be" alt="NixOS" />
-    </a>
-    <a href="LICENSE">
-      <img src="https://img.shields.io/badge/LICENSE-MIT-ef9f76?style=for-the-badge&labelColor=363a4f&logo=opensourceinitiative&logoColor=ef9f76" alt="License" />
-    </a>
-  </p>
 
 <div align="center" style="border: 4px solid #cf222e; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
 
@@ -25,14 +8,6 @@
 ## **Going forward, Noctalia support is ending as well.**
 
 ### All active development, pull requests, and bug reports belong on Codeberg.
-
-<br/>
-
-[![Codeberg](https://img.shields.io/badge/VISIT_CODEBERG_REPO-2185d0?style=for-the-badge&logo=codeberg&logoColor=white)](https://codeberg.org/annmaro/nixri)
-[![Issues](https://img.shields.io/badge/OPEN_AN_ISSUE-red?style=for-the-badge&logo=codeberg&logoColor=white)](https://codeberg.org/annmaro/nixri/issues)
-
-<br/>
-<br/>
 
 ## **Codeberg Repository:** [`https://codeberg.org/annmaro/nixri`](https://codeberg.org/annmaro/nixri)
 
