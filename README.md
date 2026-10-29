@@ -17,25 +17,28 @@
     </a>
   </p>
 
- > [!CAUTION]
-> # 🛑 IMPORTANT: READ-ONLY MIRROR
->
-> ### Active development, issues, and PRs have permanently moved to Codeberg.
->
-> <p align="center">
->   <a href="https://codeberg.org/annmaro/nixri">
->     <img src="https://img.shields.io/badge/Codeberg-Open%20Canonical%20Repo-2185d0?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Repo" />
->   </a>
->   <a href="https://codeberg.org/annmaro/nixri/issues">
->     <img src="https://img.shields.io/badge/Issues-Report%20on%20Codeberg-red?style=for-the-badge&logo=codeberg&logoColor=white" height="38" alt="Codeberg Issues" />
->   </a>
-> </p>
->
-> <h3 align="center">
->   👉 <b><a href="https://codeberg.org/annmaro/nixri">codeberg.org/&lt;annmaro&gt;/&lt;nixri&gt;</a></b> 👈
-> </h3>
-> Noctalia support is also ending. 
-> **Do not submit PRs or open issues here.** Any activity on GitHub will be closed or ignored.
+<div align="center" style="border: 4px solid #cf222e; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+
+# <span style="color: #cf222e;">🚨 IMPORTANT NOTICE 🚨</span>
+
+## **This GitHub repository is now READ-ONLY.**
+## **Going forward, Noctalia support is ending as well.
+
+### All active development, pull requests, and bug reports belong on Codeberg.
+
+<br/>
+
+[![Codeberg](https://img.shields.io/badge/VISIT_CODEBERG_REPO-2185d0?style=for-the-badge&logo=codeberg&logoColor=white)](https://codeberg.org/annmaro/nixri)
+[![Issues](https://img.shields.io/badge/OPEN_AN_ISSUE-red?style=for-the-badge&logo=codeberg&logoColor=white)](https://codeberg.org/annmaro/nixri/issues)
+
+<br/>
+<br/>
+
+**Canonical Repository:** [`https://codeberg.org/annmaro/nixri`](https://codeberg.org/annmaro/nixri)
+
+</div>
+
+---
 
 ---
 
