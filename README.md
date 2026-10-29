@@ -17,8 +17,8 @@
     </a>
   </p>
 
- >                     [!CAUTION]
->                 # 🛑 IMPORTANT: READ-ONLY MIRROR
+ > [!CAUTION]
+> # 🛑 IMPORTANT: READ-ONLY MIRROR
 >
 > ### Active development, issues, and PRs have permanently moved to Codeberg.
 >
@@ -32,7 +32,7 @@
 > </p>
 >
 > <h3 align="center">
->   👉 <b><a href="https://codeberg.org/<user>/<repo>">codeberg.org/&lt;user&gt;/&lt;repo&gt;</a></b> 👈
+>   👉 <b><a href="https://codeberg.org/annmaro/nixri">codeberg.org/&lt;user&gt;/&lt;repo&gt;</a></b> 👈
 > </h3>
 >
 > **Do not submit PRs or open issues here.** Any activity on GitHub will be closed or ignored.
